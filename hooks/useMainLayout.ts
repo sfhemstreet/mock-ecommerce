@@ -1,10 +1,10 @@
-type NavigationBarState = {
+type MainLayoutState = {
   isSearching: boolean;
   searchText: string;
   sideMenuOpen: boolean;
 };
 
-export const initNavigationBarState: NavigationBarState = {
+export const initMainLayoutState: MainLayoutState = {
   isSearching: false,
   searchText: "",
   sideMenuOpen: false
@@ -27,12 +27,12 @@ interface TypingSearchAction {
   payload: string;
 }
 
-export type NavigationBarAction = SideDrawerAction | SearchAction | TypingSearchAction;
+export type MainLayoutAction = SideDrawerAction | SearchAction | TypingSearchAction;
 
 export function mainLayOutReducer(
-  state: NavigationBarState,
-  action: NavigationBarAction
-): NavigationBarState {
+  state: MainLayoutState,
+  action: MainLayoutAction
+): MainLayoutState {
   switch (action.type) {
     case SIDE_DRAWER:
       return {
@@ -54,4 +54,8 @@ export function mainLayOutReducer(
     default:
       return state;
   }
+}
+
+export function useMainLayout(){
+  
 }

@@ -16,26 +16,29 @@ type RowProps = {
 };
 
 /**
- * Row Container
+ * Flex Box Row Container
+ * 
+ * Row that takes up 100% of parent.
  *
- * Takes one optional align-items param, and one optional justify-content param.
- * @param {boolean} reverse
- * @param {boolean} alignCenter
- * @param {boolean} alignStart
- * @param {boolean} alignEnd
- * @param {boolean} alignStretch
- * @param {boolean} alignBaseline
- * @param {boolean} justifyCenter
- * @param {boolean} justifyStart
- * @param {boolean} justifyEnd
- * @param {boolean} justifyAround
- * @param {boolean} justifyBetween
- * @param {boolean} justifyEvenly
+ * Takes one optional align-items param, one optional justify-content param, and optional reverse.
+ * 
+ * @param {boolean} reverse flex: row-reverse
+ * @param {boolean} alignCenter align-items: center
+ * @param {boolean} alignStart align-items: flex-start
+ * @param {boolean} alignEnd align-items: flex-end
+ * @param {boolean} alignStretch align-items: stretch
+ * @param {boolean} alignBaseline align-items: baseline
+ * @param {boolean} justifyCenter justify-content: center
+ * @param {boolean} justifyStart justify-content: flex-start
+ * @param {boolean} justifyEnd justify-content: flex-end
+ * @param {boolean} justifyAround justify-content: space-around
+ * @param {boolean} justifyBetween justify-content: space-between
+ * @param {boolean} justifyEvenly justify-content: space-evenly
  */
 export const Row = styled.div<RowProps>`
-  position: relative;
   width: 100%;
   height: auto;
+
   display: flex;
   flex-wrap: nowrap;
   flex-direction: ${props => (props.reverse ? "row-reverse" : "row")};

@@ -14,5 +14,5 @@ type FilteredProps = {
 */
 export const Filtered = styled.div<FilteredProps>`
   filter: ${props => props.isActive ? (props.filter ?? "none") : "none" };
-  transition: filter ${props => props.transition ?? "none"};
+  transition: filter ${props => props.transition ?? props.theme.transitions.filtered};
 `;

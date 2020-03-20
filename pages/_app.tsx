@@ -2,12 +2,12 @@ import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { MainTheme } from '../themes/mainTheme';
+import { AppTheme } from '../themes/AppTheme';
 
-type MainThemeType = typeof MainTheme;
+type MyThemeType = typeof AppTheme;
 
 export interface ThemeWrapper {
-  theme: MainThemeType;
+  theme: MyThemeType;
 }
 
 const GlobalStyle = createGlobalStyle<ThemeWrapper>`
@@ -29,7 +29,7 @@ export default class MyApp extends App {
           <title>E Store</title>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
         </Head>
-        <ThemeProvider theme={MainTheme}>
+        <ThemeProvider theme={AppTheme}>
           <GlobalStyle />
           <Component {...pageProps} />
         </ThemeProvider>

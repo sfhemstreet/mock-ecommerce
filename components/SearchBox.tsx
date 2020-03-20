@@ -2,10 +2,12 @@ import styled from "styled-components";
 import { ChangeEvent, useRef } from "react";
 import { Row } from "./Row";
 import { SearchIcon } from "./SearchIcon";
+import { Padded } from "./Padded";
+import { Centered } from "./Centered";
 
 const SearchBoxContainer = styled.div`
   height: 30px;
-  width: auto;
+  width: 164px;
 
   padding: 10px;
 
@@ -23,8 +25,10 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
   color: ${props => props.theme.colors.white};
   font-size: ${props => props.theme.typography.fontSize};
 
-  width: ${props => (props.isActive ? "200px" : "0px")};
+  width: ${props => (props.isActive ? "130px" : "0px")};
   transition: all 0.5s ease-out;
+
+  pointer-events:  ${props => (props.isActive ? "auto" : "none")};
 `;
 
 type SearchBoxProps = {
@@ -45,16 +49,16 @@ export const SearchBox = ({
 
   if (inputRef && inputRef.current && isActive) {
     inputRef.current.focus();
-  }
-
-  if (inputRef && inputRef.current && !isActive) {
+  } else if (inputRef && inputRef.current && !isActive) {
     inputRef.current.blur();
   }
 
   return (
     <SearchBoxContainer>
-      <Row alignCenter justifyEvenly>
-        <SearchIcon onClick={onActiveClick} />
+      <Row alignCenter justifyEnd>
+        <Centered padding={"0px 10px"}>
+          <SearchIcon onClick={onActiveClick} />
+        </Centered>
         <SearchBoxInput
           isActive={isActive}
           type="text"

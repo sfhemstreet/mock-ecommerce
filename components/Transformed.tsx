@@ -17,7 +17,7 @@ type TransformedProps = {
  */
 export const Transformed = styled.div<TransformedProps>`
   position: relative;
-  transition: ${props => props.transition ? props.transition : "all 0.5s ease-in-out"};
+  transition: ${props => props.transition ? props.transition : props.theme.transitions.transformed};
   transform: ${props => (props.isTransformed ? props.transform : "none")};
   opacity: ${props => (props.isTransformed ? (props.willFade ? 0 : 1) : 1)};
 `;
