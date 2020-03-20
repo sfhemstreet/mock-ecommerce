@@ -6,23 +6,29 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "storybook": "start-storybook"
+    "storybook": "start-storybook -s ./public -p 9001"
   },
   "dependencies": {
-    "next": "9.3.0",
+    "next": "9.3.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
+    "react-transition-group": "^4.3.0",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@storybook/react": "^5.3.14",
-    "@types/node": "^13.9.0",
+    "@storybook/addon-backgrounds": "^5.3.17",
+    "@storybook/react": "^5.3.17",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.1",
     "@types/react": "^16.9.23",
+    "@types/react-transition-group": "^4.2.4",
     "@types/styled-components": "^5.0.1",
     "babel-loader": "^8.0.6",
     "babel-plugin-styled-components": "^1.10.7",
     "babel-preset-react-app": "^9.1.1",
+    "jest": "^25.1.0",
+    "themeprovider-storybook": "^1.4.0",
+    "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
   }
 }

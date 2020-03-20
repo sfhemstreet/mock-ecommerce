@@ -5,7 +5,7 @@ import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
 const MenuIconContainer = styled.div`
   width: 33px;
-  height: 33px;
+  height: 28px;
   position: relative;
   cursor: pointer;
 `;

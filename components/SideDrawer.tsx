@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import styled from "styled-components";
 import { MenuIcon } from "./MenuIcon";
+import { getWindowDimensions } from "../util/getWindowDimensions";
 
 type SideDrawerContainerProps = {
   drawerHeight: string;
@@ -22,7 +23,8 @@ const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
 
   background: ${props => props.theme.colors.black};
 
-  transition: ${props => (props.animated ? `all 0.3s ease-out` : "none")};
+  transition: ${props =>
+    props.animated ? props.theme.transitions.sideDrawer : "none"};
 `;
 
 type SideDrawerBorderProps = {
@@ -43,7 +45,8 @@ const SideDrawerBorder = styled.div<SideDrawerBorderProps>`
 
   background: ${props => props.theme.colors.white};
 
-  transition: ${props => (props.animated ? `all 0.3s ease-out` : "none")};
+  transition: ${props =>
+    props.animated ? props.theme.transitions.sideDrawer : "none"};
 
   cursor: ew-resize;
 `;
@@ -59,21 +62,13 @@ const OpenCloseButtonContainer = styled.div<OpenCloseButtonContainerProps>`
 
   z-index: ${props => props.zIndex};
 
-  transition: ${props => (props.animated ? `all 0.3s ease-out` : "none")};
+  transition: ${props =>
+    props.animated ? props.theme.transitions.sideDrawer : "none"};
 `;
 
-interface WindowDimensions {
-  width: number;
-  height: number;
-}
-
-export function getWindowDimensions(): WindowDimensions {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height
-  };
-}
+// When resizing or on first render we want siebar off screen
+const SIDEDRAWER_OFF_SCREEN = 100000;
+const INIT_SCREEN_WIDTH = 200000;
 
 export type SideDrawerProps = {
   open?: boolean;
@@ -85,31 +80,41 @@ export type SideDrawerProps = {
   maxWidth?: number;
   drawerHeight?: string;
   zIndex?: number;
-  background?: string;
-  borderColor?: string;
   borderWidth?: number;
   drawerButtonWidth?: number;
-  drawerButtonColor?: string;
-  drawerButtonHoverColor?: string;
 };
 
 /**
- * Extendable SideDrawer
+ * SideDrawer that extends from left side of screen, from minWidth (closed) to maxWidth (open).
+ * The border can be click/touch dragged to open or close the drawer.
+ * 
  * @param {(boolean) => void} setOpen Function to call that will either open or close the drawer
- * @param {boolean} open If drawer will start at fully open or closed. Default value: false
- * @param {boolean} showDrawerButton Choose to display open and close button.
- * When true, minWidth will be adjusted to always show the button,
- * and draggableWidth will be set to false. Default value: false
+ * 
+ * @param {boolean} open Boolean, drawer position is open (true) or closed (false). Default value: `false`
+ * 
+ * @param {boolean} showDrawerButton Choose to display an open and close button.
+ * When true, minWidth will be adjusted to allow the button to stay on screen,
+ * and draggableWidth will be set to false. Default value: `false`
+ * 
  * @param {boolean} draggableWidth When true, SideDrawer is draggable between minWidth and maxWidth.
- * When false the SideDrawer can either be fully open at maxWidth or closed at minWidth. Default value: false
- * @param {boolean} permanentlyOpen sets SideDrawer to always be open. Removes drawer button. Default value: false
- * @param {number} minWidth Minimum width SideDrawer takes up on screen, in px. Default value: 0
- * @param {number} maxWidth Maximum width SideDrawer takes up on screen, in px. Default value: 370
- * @param {string} drawerHeight Height of SideDrawer. Default value: "100vh"
- * @param {number} zIndex zIndex for SideDrawer. Default value: 5
- * @param {string} background Background of SideDrawer. Default value: "#111"
- * @param {number} borderWidth Width of SideDrawer border in px. Default value: 10
- * @param {number} drawerButtonWidth Width of DrawerButton, in px. Default value: 33
+ * When false the SideDrawer can either be fully open at maxWidth or closed at minWidth. Default value: `false`
+ * 
+ * @param {boolean} permanentlyOpen sets SideDrawer to always be open. Removes drawer button. Default value: `false`
+ * 
+ * @param {number} minWidth Minimum width SideDrawer takes up on screen, in px. 
+ * Can be negative to insure it is not visible while closed. Default value: `0`
+ * 
+ * @param {number} maxWidth Maximum width SideDrawer takes up on screen, in px. 
+ * Will be adjusted if the screen is too small and a warning will be put on the console. Default value: `370`
+ * 
+ * @param {string} drawerHeight Height of SideDrawer. Default value: `"100vh"`
+ * 
+ * @param {number} zIndex zIndex for SideDrawer. Default value: `5`
+ * 
+ * @param {number} borderWidth Width of SideDrawer border in px. Default value: `10`
+ * 
+ * @param {number} drawerButtonWidth Width of DrawerButton, in px. 
+ * Used to calculate proper postion for button. Default value: `33`
  */
 export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   open = false,
@@ -125,17 +130,29 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   drawerButtonWidth = 33,
   children
 }): JSX.Element => {
-  const [screenWidth, setScreenWidth] = useState(200000);
-  const [sideDrawerPosition, setSideDrawerPosition] = useState(100000);
+  // Screen width is used to calculate right position of the SideDrawer 
+  const [screenWidth, setScreenWidth] = useState(INIT_SCREEN_WIDTH);
+
+  // The current right border position of the SideDrawer 
+  const [sideDrawerPosition, setSideDrawerPosition] = useState(
+    SIDEDRAWER_OFF_SCREEN
+  );
+
+  // Used to remove SideDrawer when screen is resized. Fixes resizing bug. 
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleScreenResize = (): void => {
-    // Get width of screen for correct drawer position calculations.
+    // Remove side drawer so the drawer is percieved to be the same width
+    setIsVisible(false);
+
+    // Get width of screen for correct drawer position.
     const { width } = getWindowDimensions();
     setScreenWidth(width);
 
-    // Set the initial drawer position.
+    // Set the drawer position and display it again. 
     const initSideDrawerPosition = open ? width - maxWidth : width - minWidth;
     setSideDrawerPosition(initSideDrawerPosition);
+    setIsVisible(true);
   };
 
   useEffect(() => {
@@ -147,14 +164,14 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     };
   }, [open]);
 
-  // Check for valid borderWidth
+  // Check for valid borderWidth 
   try {
-    if (borderWidth < 1) {
-      throw new Error("borderWidth must be greater than or equal to 1");
+    if (borderWidth < 0) {
+      throw new Error("borderWidth must be greater than or equal to 0");
     }
   } catch (err) {
     console.log(err);
-    borderWidth = 1;
+    borderWidth = 0;
   }
 
   // Check if maxWidth is bigger than the screen width.
@@ -294,41 +311,44 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
 
   return (
     <>
-      <SideDrawerContainer
-        style={{ right: sideDrawerPosition }}
-        drawerHeight={drawerHeight}
-        drawerWidth={maxWidth}
-        zIndex={zIndex}
-        animated={!draggableWidth}
-      >
-        {/* Only show children when
+      {/*  This will always be true unless the screen is being resized. 
+      When the screen is resized do not display the sidedrawer, this fixes weird size changes. */}
+      {isVisible && (
+        <>
+          <SideDrawerContainer
+            style={{ right: sideDrawerPosition }}
+            drawerHeight={drawerHeight}
+            drawerWidth={maxWidth}
+            zIndex={zIndex}
+            animated={!draggableWidth}
+          >
+            {/* Only show children when
           - drawer is open and draggableWidth is false
           - draggableWidth is true but its not really close to closed position
-        */}
-        {showDrawerButton && !draggableWidth
-          ? open && children
-          : sideDrawerPosition + 10 <= screenWidth - minWidth && children}
-      </SideDrawerContainer>
-      <SideDrawerBorder
-        style={{ right: sideDrawerPosition - borderWidth / 2 }}
-        borderWidth={borderWidth}
-        drawerHeight={drawerHeight}
-        zIndex={zIndex}
-        animated={!draggableWidth}
-        onTouchStart={handleTouchStart}
-        onMouseDown={handleMouseStart}
-      />
-      {showDrawerButton && (
-        <OpenCloseButtonContainer
-          style={{ right: sideDrawerPosition + borderWidth / 2 + 5 }}
-          zIndex={zIndex + 1}
-          animated={!draggableWidth}
-        >
-          <MenuIcon
-            isOpen={open}
-            onClick={handleOpenCloseButtonClick}
+            */}
+            {showDrawerButton && !draggableWidth
+              ? open && children
+              : sideDrawerPosition + 10 <= screenWidth - minWidth && children}
+          </SideDrawerContainer>
+          <SideDrawerBorder
+            style={{ right: sideDrawerPosition - borderWidth / 2 }}
+            borderWidth={borderWidth}
+            drawerHeight={drawerHeight}
+            zIndex={zIndex}
+            animated={!draggableWidth}
+            onTouchStart={handleTouchStart}
+            onMouseDown={handleMouseStart}
           />
-        </OpenCloseButtonContainer>
+          {showDrawerButton && (
+            <OpenCloseButtonContainer
+              style={{ right: sideDrawerPosition + borderWidth / 2 + 5 }}
+              zIndex={zIndex + 1}
+              animated={!draggableWidth}
+            >
+              <MenuIcon isOpen={open} onClick={handleOpenCloseButtonClick} />
+            </OpenCloseButtonContainer>
+          )}
+        </>
       )}
     </>
   );

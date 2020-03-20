@@ -23,8 +23,16 @@ enum Typography {
   fontFamily = "'Rubik', Arial, sans-serif",
 }
 
-export const MainTheme = {
+enum Transitions {
+  sideDrawer = "all 0.3s linear",
+  transformed = "all 0.5s ease-in-out",
+  filtered = "0.4s ease-in",
+}
+
+export const AppTheme = {
+  name: "AppTheme",
   colors: Colors,
   gradients: Gradients,
   typography: Typography,
+  transitions: Transitions,
 }

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MainLayout } from "../layouts/MainLayout";
+import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Column } from "../components/Column";
 import { Padded } from "../components/Padded";
 
@@ -15,8 +15,8 @@ const Img = styled.img`
 `;
 
 const Home = (): JSX.Element => (
-  <MainLayout>
-    <Padded>
+  <NavigationBarSideDrawerLayout>
+    <Padded padding={"20px"}>
       <Column justifyEnd alignCenter reverse>
         <Text>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error, et
@@ -27,7 +27,7 @@ const Home = (): JSX.Element => (
         <Img src="/images/mountainbike_huge.jpg" />
       </Column>
     </Padded>
-  </MainLayout>
+  </NavigationBarSideDrawerLayout>
 );
 
 export default Home;

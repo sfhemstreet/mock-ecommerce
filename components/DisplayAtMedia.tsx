@@ -27,6 +27,15 @@ type DisplayAtMediaProps = {
   desktop?: boolean;
 };
 
+/**
+ * Displays children only at specified screen sizes (width).
+ * You can specify multiple sizes.
+ * 
+ * @param {boolean} mobile Displays children on mobile screen sizes
+ * @param {boolean} tablet Displays children on tablet screen sizes
+ * @param {boolean} laptop Displays children on laptop screen sizes
+ * @param {boolean} desktop Displays children on desktop screen sizes
+ */
 export const DisplayAtMedia = styled.div<DisplayAtMediaProps>`
   display: none;
 
