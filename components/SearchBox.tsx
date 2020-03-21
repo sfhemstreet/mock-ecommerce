@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useRef, useEffect } from "react";
 import { Row } from "./Row";
 import { SearchIcon } from "./SearchIcon";
 import { Padded } from "./Padded";
@@ -47,12 +47,14 @@ export const SearchBox = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  if (inputRef && inputRef.current && isActive) {
-    inputRef.current.focus();
-  } else if (inputRef && inputRef.current && !isActive) {
-    inputRef.current.blur();
-  }
-
+  useEffect(() => {
+    if (inputRef && inputRef.current && isActive) {
+      inputRef.current.focus();
+    } else if (inputRef && inputRef.current && !isActive) {
+      inputRef.current.blur();
+    }
+  }, [isActive]);
+  
   return (
     <SearchBoxContainer>
       <Row alignCenter justifyEnd>

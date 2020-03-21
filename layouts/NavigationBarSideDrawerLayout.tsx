@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { BackgroundBlackGradient } from "../components/Background";
-import { NavigationBar } from "../containers/NavigationBar/NavigationBar";
+import { NavigationBar } from "../containers/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
 import { SideDrawer } from "../components/SideDrawer";
 import { Transformed } from "../components/Transformed";
