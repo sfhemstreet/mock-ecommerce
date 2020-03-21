@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import fetch from "node-fetch";
+import { GetStaticProps } from 'next';
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Column } from "../components/Column";
 import { Padded } from "../components/Padded";
@@ -30,4 +32,15 @@ const Home = (): JSX.Element => (
   </NavigationBarSideDrawerLayout>
 );
 
+// TODO
+// use get static props to get content from CMS to give to redux store 
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+
+// }
+
+
+
 export default Home;
+
+
