@@ -1,0 +1,126 @@
+{
+  "headers": [
+    {
+      "name": "Clothing",
+      "url": "",
+      "items": [
+        {
+          "name": "Mens",
+          "url": "",
+          "items": [
+            {
+              "name": "Jackets",
+              "url": ""
+            },
+            {
+              "name": "Shirts",
+              "url": ""
+            },
+            {
+              "name": "Pants",
+              "url": ""
+            }
+          ]
+        },
+        {
+          "name": "Womens",
+          "url": "",
+          "items": [
+            {
+              "name": "Jackets",
+              "url": ""
+            },
+            {
+              "name": "Shirts",
+              "url": ""
+            },
+            {
+              "name": "Pants",
+              "url": ""
+            }
+          ]
+        },
+        {
+          "name": "Kids",
+          "url": "",
+          "items": [
+            {
+              "name": "Jackets",
+              "url": ""
+            },
+            {
+              "name": "Shirts",
+              "url": ""
+            },
+            {
+              "name": "Pants",
+              "url": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "url": "",
+      "items": [
+        {
+          "name": "Climb",
+          "url": ""
+        },
+        {
+          "name": "Bike",
+          "url": ""
+        },
+        {
+          "name": "Run",
+          "url": ""
+        },
+        {
+          "name": "Ski",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Brands",
+      "url": "",
+      "items": [
+        {
+          "name": "Patagucci",
+          "url": ""
+        },
+        {
+          "name": "Southface",
+          "url": ""
+        },
+        {
+          "name": "Bikecartt",
+          "url": ""
+        },
+        {
+          "name": "Peepoo Lemoo",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "Sale",
+      "url": "",
+      "items": [
+        {
+          "name": "Mens",
+          "url": ""
+        },
+        {
+          "name": "Womens",
+          "url": ""
+        },
+        {
+          "name": "Kids",
+          "url": ""
+        }
+      ]
+    }
+  ]
+}

@@ -5,4 +5,6 @@ export const FullPageContainer = styled.div`
   height: 100vh;
 
   position: relative;
+
+  overflow-x: hidden;
 `;

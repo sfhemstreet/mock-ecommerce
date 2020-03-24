@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import styled from "styled-components";
-import { MenuIcon } from "./MenuIcon";
-import { getWindowDimensions } from "../util/getWindowDimensions";
+import { MenuIcon } from "../MenuIcon";
+import { getWindowDimensions } from "../../util/getWindowDimensions";
 
 type SideDrawerContainerProps = {
   drawerHeight: string;

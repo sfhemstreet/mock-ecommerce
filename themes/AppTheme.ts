@@ -31,6 +31,7 @@ enum Transitions {
 
 export const AppTheme = {
   name: "AppTheme",
+  primaryColor: Colors.green,
   colors: Colors,
   gradients: Gradients,
   typography: Typography,
