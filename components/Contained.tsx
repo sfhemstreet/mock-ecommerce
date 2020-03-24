@@ -6,6 +6,7 @@ type ContainedProps = {
   padding?: string;
   margin?: string;
   transition?: string;
+  
 }
 
 export const Contained = styled.div<ContainedProps>`

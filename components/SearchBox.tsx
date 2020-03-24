@@ -36,19 +36,21 @@ type SearchBoxProps = {
   onActiveClick: () => void;
   text: string;
   onTextChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  focusOnActive?: boolean;
 };
 
 export const SearchBox = ({
   isActive,
   onActiveClick,
   text,
-  onTextChange
+  onTextChange,
+  focusOnActive = true,
 }: SearchBoxProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (inputRef && inputRef.current && isActive) {
+    if (inputRef && inputRef.current && focusOnActive && isActive) {
       inputRef.current.focus();
     } else if (inputRef && inputRef.current && !isActive) {
       inputRef.current.blur();

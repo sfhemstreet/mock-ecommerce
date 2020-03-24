@@ -1,33 +1,29 @@
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
-import { FunctionComponent, useState } from "react";
+import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
+import { NavigationContentItem } from "../../content/navigation/navigationContentTypes";
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   position: absolute;
-  top: 66px;
+  top: 70px;
   left: 0;
   right: 0;
-  ${props => (props.state !== "entered" && 'bottom: -10px')};
+  ${props => props.state !== "entered" && "bottom: -10px"};
 
   overflow: hidden;
 
-  display: ${props =>
-    props.state === "entering" ||
-    props.state === "entered" ||
-    props.state === "exiting" ||
-    props.state === "exited"
-      ? "block"
-      : "none"};
+  display: ${props => props.state === "unmount" ? "none" : "block"};
   opacity: ${props => (props.state === "entered" ? 1 : 1)};
 
   transition: all 0.5s ease-in-out;
 
   width: auto;
-  height: ${props => (props.state === "entered" ? '170px' : '1px')};
+  height: ${props => (props.state === "entered" ? "170px" : "1px")};
 
-  padding: ${props => (props.state === "entered" ? '30px' : '0px')};
+  padding: ${props => (props.state === "entered" ? "20px" : "0px")};
 
-  background-color: ${props => props.theme.colors.green};
+  background-color: ${props => props.theme.colors.white};
+  color: ${props => props.theme.colors.black};
 
   border-top-style: solid;
   border-bottom-style: solid;
@@ -40,18 +36,20 @@ const NavigationBarDropDownContainer = styled.div<{ state: string }>`
 type NavigationBarDropDownProps = {
   isActive: boolean;
   onMouseLeave: () => void;
+  navigationContentItem?: NavigationContentItem;
 };
 
 /**
  * Drop down for the navigation bar
  * @param {boolean} isActive
  * @param {() => void} onMouseLeave
+ * @param {NavigationContentItem} navigationContentItem
  */
-export const NavigationBarDropDown: FunctionComponent<NavigationBarDropDownProps> = ({
+export const NavigationBarDropDown = ({
   isActive,
   onMouseLeave,
-  children
-}): JSX.Element => {
+  navigationContentItem
+}: NavigationBarDropDownProps): JSX.Element => {
   return (
     <>
       <Transition
@@ -65,7 +63,7 @@ export const NavigationBarDropDown: FunctionComponent<NavigationBarDropDownProps
             onMouseLeave={onMouseLeave}
             state={state}
           >
-            {children}
+            <NavigationBarDropDownItem navigationContentItem={navigationContentItem} />
           </NavigationBarDropDownContainer>
         )}
       </Transition>

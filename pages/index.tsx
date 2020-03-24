@@ -5,6 +5,9 @@ import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawe
 import { Column } from "../components/Column";
 import { Padded } from "../components/Padded";
 
+// TEMP CONTENT DATA: Get this from redux store in future ?
+import navigationContent from "../content/navigation/navigation.json";
+
 const Text = styled.p`
   max-width: 500px;
   padding: 20px;
@@ -17,7 +20,10 @@ const Img = styled.img`
 `;
 
 const Home = (): JSX.Element => (
-  <NavigationBarSideDrawerLayout>
+  <NavigationBarSideDrawerLayout
+    filterChildrenWhenSideDrawerOpen
+    navigationContent={navigationContent}
+  >
     <Padded padding={"20px"}>
       <Column justifyEnd alignCenter reverse>
         <Text>
