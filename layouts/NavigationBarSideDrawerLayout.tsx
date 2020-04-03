@@ -6,11 +6,12 @@ import { SideDrawer } from "../components/SideDrawer/SideDrawer";
 import { Transformed } from "../components/Transformed";
 import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
-import { NavigationContent } from '../content/navigation/navigationContentTypes';
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
+import { Category } from "../queries/getCategories";
+
 
 type NavigationBarSideDrawerLayoutProps = {
-  navigationContent: NavigationContent,
+  navigationContent: Category[],
   filterChildrenWhenSideDrawerOpen?: boolean;
   sideDrawerOpenWidth?: number;
   sideDrawerClosedWidth?: number;
@@ -20,7 +21,7 @@ type NavigationBarSideDrawerLayoutProps = {
 /**
  * Displays a Navigation Bar and uses a SideDrawer on smaller displays.
  * When SideDrawer is active, children has optional blur and grayscale effect.
- * @param {NavigationContent} navigationContent 
+ * @param {Category[]} navigationContent 
  * @param {boolean} filterChildrenWhenSideDrawerOpen Puts blurr and grayscalee effect on children when SideDrawer is open.
  * @param {number} sideDrawerOpenWidth Width in px that sideDrawer will open to.
  * @param {number} sideDrawerClosedWidth Width in px that sideDrawer will close to.

@@ -6,7 +6,7 @@ type ContainedProps = {
   padding?: string;
   margin?: string;
   transition?: string;
-  
+  hideOverflow?: boolean;
 }
 
 export const Contained = styled.div<ContainedProps>`
@@ -16,4 +16,5 @@ export const Contained = styled.div<ContainedProps>`
   margin: ${props => props.margin ?? '0'};
   transition: ${props => props.transition ?? 'none'};
   position: relative;
+  overflow: ${props => props.hideOverflow ? 'hidden' : 'none'};
 `;

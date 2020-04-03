@@ -1,9 +1,5 @@
 import { useState } from "react";
 import { Contained } from "../Contained";
-import {
-  NavigationContent,
-  NavigationContentItem
-} from "../../content/navigation/navigationContentTypes";
 import { Row } from "../Row";
 import { Column } from "../Column";
 import { SearchBox } from "../SearchBox";
@@ -13,12 +9,13 @@ import { SideDrawerMenuItem } from "./SideDrawerMenuItem";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
+import { Category } from "../../queries/getCategories";
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;
 
 type SideDrawerMenuProps = {
-  navigationContent: NavigationContent;
+  navigationContent: Category[];
   sideDrawerWidth: number;
 };
 
@@ -26,7 +23,7 @@ type SideDrawerMenuProps = {
  * Displays SearchBox and NavigationContent `headers` in column, inside of SideDrawer.
  * Uses a stack to navigate thru nested `items` in each NavigationContentItem.
  *
- * @param {NavigationContent} navigationContent NavigationContent to display
+ * @param {Category[]} navigationContent NavigationContent to display
  * @param {number} sideDrawerWidth Width of parent SideDrawer in px
  *
  * @todo Add Link from next/link to headers and last subItems
@@ -41,7 +38,7 @@ export const SideDrawerMenu = ({
 
   // Stack holds nested content, allowing us to go deeper and to go back
   const [contentStack, setContentStack] = useState(
-    new Array<NavigationContentItem>()
+    new Array<Category>()
   );
   // Stack length is used to animate the view position.
   // When backing out of nested content this length changes before we pop the stack
@@ -54,8 +51,8 @@ export const SideDrawerMenu = ({
     setSearchBoxActive(!isSearchBoxActive);
   };
 
-  const handleMenuItemClick = (item: NavigationContentItem): void => {
-    if (item.items) {
+  const handleMenuItemClick = (item: Category): void => {
+    if (item.SubCategories) {
       const now = Date.now();
       // Makes sure we are waiting for removal from stack before pushing onto it
       if (
@@ -114,7 +111,7 @@ export const SideDrawerMenu = ({
               <BackArrowButton onClick={handleBackButtonClick} />
               {contentStack.length > 0 && (
                 <Txt padding={"0px 20px"} big>
-                  {contentStack[contentStack.length - 1].name}
+                  {contentStack[contentStack.length - 1].Name}
                 </Txt>
               )}
             </Row>
@@ -133,29 +130,29 @@ export const SideDrawerMenu = ({
         <Contained width={`${sideDrawerWidth * (contentStackLength ?? 1)}px`}>
           <Row>
             <Column>
-              {navigationContent.headers.map((header, index) => (
+              {navigationContent.map((header, index) => (
                 <SideDrawerMenuItem
                   navigationContentItem={header}
                   onClick={item => handleMenuItemClick(item)}
                   width={`${sideDrawerWidth}px`}
                   hasBottomBorder={
-                    navigationContent.headers.length - 1 === index
+                    navigationContent.length - 1 === index
                   }
-                  key={`SideDrawerMenuHeader${header.name}`}
+                  key={`SideDrawerMenuHeader${header.Name}`}
                 />
               ))}
             </Column>
             {contentStack.map((item, itemIndex) => (
-              <Column key={`NestedNavigationColumn${item.name}${itemIndex}`}>
-                {item.items?.map((subItem, subItemIndex) => (
+              <Column key={`NestedNavigationColumn${item.Name}${itemIndex}`}>
+                {item.SubCategories?.map((subItem, subItemIndex) => (
                   <SideDrawerMenuItem
                     navigationContentItem={subItem}
                     onClick={subItem => handleMenuItemClick(subItem)}
                     width={`${sideDrawerWidth}px`}
                     hasBottomBorder={
-                      item.items && item.items.length - 1 === subItemIndex
+                      item.SubCategories && item.SubCategories.length - 1 === subItemIndex
                     }
-                    key={`NestedNavigationSubItem${subItem.name}${subItemIndex}`}
+                    key={`NestedNavigationSubItem${subItem.Name}${subItemIndex}`}
                   />
                 ))}
               </Column>

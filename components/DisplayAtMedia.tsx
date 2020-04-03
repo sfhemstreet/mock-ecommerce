@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-enum mediaSizes {
+export enum mediaSizes {
   mobileS = '320px',
   mobileM = '375px',
   mobileL = '425px',
@@ -10,7 +10,7 @@ enum mediaSizes {
   desktop = '2560px',
 }
 
-const mediaDevices = {
+export const mediaDevices = {
   mobileS: `(min-width: ${mediaSizes.mobileS})`,
   mobileM: `(min-width: ${mediaSizes.mobileM})`,
   mobileL: `(min-width: ${mediaSizes.mobileL})`,

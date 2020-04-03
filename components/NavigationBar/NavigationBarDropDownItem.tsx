@@ -4,10 +4,11 @@ import { Row } from "../Row";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
 import { Column } from "../Column";
-import { NavigationContentItem } from "../../content/navigation/navigationContentTypes";
+import { Category } from "../../queries/getCategories";
+
 
 type NavigationBarDropDownItemProps = {
-  navigationContentItem?: NavigationContentItem;
+  navigationContentItem?: Category;
 };
 
 export const NavigationBarDropDownItem = ({
@@ -18,21 +19,21 @@ export const NavigationBarDropDownItem = ({
       {navigationContentItem && (
         <Contained height={"150px"}>
           <Txt alignCenter big bold>
-            {navigationContentItem.name}
+            {navigationContentItem.Name}
           </Txt>
           <Padded padding={"20px 10px"}>
             <Row justifyEvenly alignStart>
-              {navigationContentItem?.items?.map(item => (
-                <Column key={`NavDataItem${item.name}`}>
+              {navigationContentItem?.SubCategories?.map(item => (
+                <Column key={`NavDataItem${item.Name}`}>
                   <Txt underline padding={"0px 0px 10px 0px"}>
-                    {item.name}
+                    {item.Name}
                   </Txt>
-                  {item.items?.map(subItem => (
+                  {item.SubCategories?.map(subItem => (
                     <Txt
                       padding={"4px 0px"}
-                      key={`NavDataSubItem${subItem.name}`}
+                      key={`NavDataSubItem${subItem.Name}`}
                     >
-                      {subItem.name}
+                      {subItem.Name}
                     </Txt>
                   ))}
                 </Column>
