@@ -1,13 +1,43 @@
 import styled from "styled-components";
 import { ProductPreview } from "../../queries/getProducts";
 import { Contained } from "../Contained";
-import { mediaDevices } from "../DisplayAtMedia";
+import { mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Txt } from "../Txt";
 import { Row } from "../Row";
+import { Padded } from "../Padded";
+import { Column } from "../Column";
+import { getWindowDimensions } from "../../util/getWindowDimensions";
+import { useEffect } from "react";
 
-type ProductPreviewCardProps = {
-  productInfo: ProductPreview;
-};
+
+
+const ProductPreviewCardContainer = styled.div`
+  width: 150px;
+  height: 210px;
+  position: relative;
+  color: ${props => props.theme.colors.productPreviewText};
+  background: ${props => props.theme.colors.productPreviewBackground};
+
+  @media ${mediaDevices.mobileM} {
+    width: 160px;
+    height: 230px;
+  }
+
+  @media ${mediaDevices.mobileL} {
+    width: 200px;
+    height: 250px;
+  }
+
+  @media ${mediaDevices.tablet} {
+    width: 250px;
+    height: 300px;
+  }
+
+  @media ${mediaDevices.laptop} {
+    width: 300px;
+    height: 350px;
+  }
+`;
 
 const ProductCardThumbnailImg = styled.img`
   width: 150px;
@@ -30,39 +60,93 @@ const ProductCardThumbnailImg = styled.img`
   }
 `;
 
-const ProductPreviewCardContainer = styled.div`
-  width: 150px;
+const ProductBrandLogo = styled.img`
+  width: 50px;
   height: auto;
 
-  @media ${mediaDevices.mobileM} {
-    width: 160px;
-  }
+  position: absolute;
+  top: 5px;
+  right: 5px;
 
   @media ${mediaDevices.mobileL} {
-    width: 200px;
+    width: 60px;
   }
 
   @media ${mediaDevices.tablet} {
-    width: 250px;
+    width: 80px;
   }
 
   @media ${mediaDevices.laptop} {
-    width: 300px;
+    width: 100px;
   }
 `;
 
+type ProductPreviewCardProps = {
+  // onClick: (id: number) => void;
+  productInfo: ProductPreview;
+};
+
 export const ProductPreviewCard = ({
+  // onClick,
   productInfo
 }: ProductPreviewCardProps): JSX.Element => {
+  const displayNames = {
+    brandName: productInfo.Brand.Name,
+    productName: productInfo.Name
+  };
+
+  const checkTextLength = () => {
+    if (typeof window !== "undefined" && window) {
+      const { width } = getWindowDimensions();
+      let maxLength = 30;
+
+      if (width <= mediaSizes.mobileM) {
+        maxLength = 14;
+      } else if (width <= mediaSizes.mobileL) {
+        maxLength = 16;
+      } else if (width <= mediaSizes.tablet) {
+        maxLength = 22;
+      } else if (width <= mediaSizes.laptop) {
+        maxLength = 26;
+      }
+
+      if (productInfo.Name.length > maxLength) {
+        if (productInfo.Name[maxLength - 1] === " ") maxLength -= 1;
+        displayNames.productName =
+          productInfo.Name.substring(0, maxLength) + "...";
+      }
+      if (productInfo.Brand.Name.length > maxLength) {
+        if (productInfo.Brand.Name[maxLength - 1] === " ") maxLength -= 1;
+        displayNames.brandName =
+          productInfo.Brand.Name.substring(0, maxLength) + "...";
+      }
+    }
+  };
+
+  checkTextLength();
+
   return (
     <ProductPreviewCardContainer>
-      <ProductCardThumbnailImg
-        src={process.env.BACKEND_URL + productInfo.Preview.url}
-      />
-      <Row justifyBetween>
-        <Txt alignCenter>{productInfo.Name}</Txt>
-        <Txt alignCenter>${productInfo.Price}</Txt>
-      </Row>
+      <Column justifyBetween>
+        <ProductCardThumbnailImg
+          src={process.env.BACKEND_URL + productInfo.Preview.url}
+          alt={`Product: ${productInfo.Name}, Brand: ${productInfo.Brand.Name}, Price: $${productInfo.Price}`}
+        />
+        <ProductBrandLogo
+          src={process.env.BACKEND_URL + productInfo.Brand.Logo.url}
+        />
+        <Padded padding={"5px"}>
+          <Column justifyBetween>
+            <Txt bold noWrap>
+              {displayNames.brandName}
+            </Txt>
+            <Txt noWrap>{displayNames.productName}</Txt>
+            <Txt padding={"4px 0px 0px 0px"} noWrap>
+              ${productInfo.Price}
+            </Txt>
+          </Column>
+        </Padded>
+      </Column>
     </ProductPreviewCardContainer>
   );
 };

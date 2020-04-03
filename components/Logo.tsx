@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { SiteLogo } from '../queries/getSiteLogo';
 
 const MyLogo = styled.img`
   width: 100%;
@@ -18,18 +19,22 @@ const MyLogoContainerSmall = styled(MyLogoContainer)`
   width: 31px;
 `;
 
-export const SportsAtticLogo = (): JSX.Element => {
+type SiteLogoProps = {
+  siteLogo: SiteLogo;
+}
+
+export const Logo = ({siteLogo}: SiteLogoProps): JSX.Element => {
   return (
     <MyLogoContainer>
-      <MyLogo src="/images/sportattic_logo_green.png" alt="Sports Attic Logo" />
+      <MyLogo src={process.env.BACKEND_URL + siteLogo.NormalLogo.url} alt="Site Logo" />
     </MyLogoContainer>
   );
 }
 
-export const SportsAtticLogoSmall = (): JSX.Element => {
+export const LogoSmall = ({siteLogo}: SiteLogoProps): JSX.Element => {
   return (
     <MyLogoContainerSmall>
-      <MyLogo src="/images/sportattic_logo_green_small.png" alt="Sports Attic Logo Small" />
+      <MyLogo src={process.env.BACKEND_URL + siteLogo.SmallLogo.url} alt="Site Logo Small" />
     </MyLogoContainerSmall>
   );
 }

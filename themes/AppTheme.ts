@@ -11,6 +11,8 @@ enum Colors {
   transparentRose = 'rgba(161, 110, 131, 0.6)',
   transparentBrown = 'rgba(177, 159, 158, 0.6)',
   transparentWhite = 'rgba(238, 238, 238, 0.6)',
+  productPreviewText = '#19181A',
+  productPreviewBackground = '#FFF',
 }
 
 enum Gradients {
@@ -20,6 +22,7 @@ enum Gradients {
 
 enum Typography {
   fontSize = '16px',
+  bigFontSize = '20px',
   fontFamily = "'Rubik', Arial, sans-serif",
 }
 

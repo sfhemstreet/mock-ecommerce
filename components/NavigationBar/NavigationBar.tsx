@@ -3,7 +3,7 @@ import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { Row } from "../Row";
 import { BackgroundBlack } from "../Background";
-import { SportsAtticLogo } from "../SportsAtticLogo";
+import { Logo } from "../Logo";
 import { SearchBox } from "../SearchBox";
 import { Padded } from "../Padded";
 import { DisplayAtMedia } from "../DisplayAtMedia";
@@ -12,6 +12,7 @@ import { ShoppingCartIcon } from "../ShoppingCartIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
 import { Category } from "../../queries/getCategories";
+import { SiteLogo } from "../../queries/getSiteLogo";
 
 
 export const NAV_HEIGHT = "85px";
@@ -48,12 +49,14 @@ const initNavigationBarState = {
 };
 
 type NavigationBarProps = {
+  siteLogo: SiteLogo;
   navigationContent: Category[];
   isSideDrawerOpen: boolean;
   onClickSideDrawer: () => void;
 };
 
 export function NavigationBar({
+  siteLogo,
   navigationContent,
   isSideDrawerOpen,
   onClickSideDrawer
@@ -90,7 +93,7 @@ export function NavigationBar({
           </DisplayAtMedia>
 
           <Padded padding={"20px"}>
-            <SportsAtticLogo />
+            <Logo siteLogo={siteLogo}/>
           </Padded>
 
           {!isSideDrawerOpen && (

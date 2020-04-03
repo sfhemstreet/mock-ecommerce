@@ -1,23 +1,33 @@
 import styled from "styled-components";
 
 export enum mediaSizes {
-  mobileS = '320px',
-  mobileM = '375px',
-  mobileL = '425px',
-  tablet = '768px',
-  laptop = '1000px',
-  laptopL = '1440px',
-  desktop = '2560px',
+  mobileS = 320,
+  mobileM = 375,
+  mobileL = 425,
+  tablet = 768,
+  laptop = 1000,
+  laptopL = 1440,
+  desktop = 2560,
+}
+
+export const mediaSizesString = {
+  mobileS: `${mediaSizes.mobileS}px`,
+  mobileM: `${mediaSizes.mobileM}px`,
+  mobileL: `${mediaSizes.mobileL}px`,
+  tablet: `${mediaSizes.tablet}px`,
+  laptop: `${mediaSizes.laptop}px`,
+  laptopL: `${mediaSizes.laptopL}px`,
+  desktop: `${mediaSizes.desktop}px`,
 }
 
 export const mediaDevices = {
-  mobileS: `(min-width: ${mediaSizes.mobileS})`,
-  mobileM: `(min-width: ${mediaSizes.mobileM})`,
-  mobileL: `(min-width: ${mediaSizes.mobileL})`,
-  tablet: `(min-width: ${mediaSizes.tablet})`,
-  laptop: `(min-width: ${mediaSizes.laptop})`,
-  laptopL: `(min-width: ${mediaSizes.laptopL})`,
-  desktop: `(min-width: ${mediaSizes.desktop})`,
+  mobileS: `(min-width: ${mediaSizesString.mobileS})`,
+  mobileM: `(min-width: ${mediaSizesString.mobileM})`,
+  mobileL: `(min-width: ${mediaSizesString.mobileL})`,
+  tablet: `(min-width: ${mediaSizesString.tablet})`,
+  laptop: `(min-width: ${mediaSizesString.laptop})`,
+  laptopL: `(min-width: ${mediaSizesString.laptopL})`,
+  desktop: `(min-width: ${mediaSizesString.desktop})`,
 }
 
 type DisplayAtMediaProps = {
