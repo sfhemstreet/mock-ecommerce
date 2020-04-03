@@ -1,7 +1,8 @@
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
-import { NavigationContentItem } from "../../content/navigation/navigationContentTypes";
+import { Category } from "../../queries/getCategories";
+
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   position: absolute;
@@ -36,7 +37,7 @@ const NavigationBarDropDownContainer = styled.div<{ state: string }>`
 type NavigationBarDropDownProps = {
   isActive: boolean;
   onMouseLeave: () => void;
-  navigationContentItem?: NavigationContentItem;
+  navigationContentItem?: Category;
 };
 
 /**

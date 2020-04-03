@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { NavigationContentItem } from "../../content/navigation/navigationContentTypes";
 import { Padded } from "../Padded";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
+import { Category } from "../../queries/getCategories";
+
 
 const SideDrawerMenuItemContainer = styled.div<{ hasBottomBorder: boolean, width: string }>`
   width: ${props => props.width};
@@ -30,8 +31,8 @@ const SideDrawerMenuItemContainer = styled.div<{ hasBottomBorder: boolean, width
 `;
 
 type SideDrawerMenuItemProps = {
-  navigationContentItem: NavigationContentItem;
-  onClick: (item: NavigationContentItem) => void;
+  navigationContentItem: Category;
+  onClick: (item: Category) => void;
   width: string;
   hasBottomBorder?: boolean;
 };
@@ -58,7 +59,7 @@ export const SideDrawerMenuItem = ({
       onKeyPress={accessibleEnterKeyPress(() => onClick(navigationContentItem))}
       tabIndex={0}
     >
-      <Padded padLeft={"50px"}>{navigationContentItem.name}</Padded>
+      <Padded padLeft={"50px"}>{navigationContentItem.Name}</Padded>
     </SideDrawerMenuItemContainer>
   );
 };

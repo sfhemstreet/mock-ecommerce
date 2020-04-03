@@ -11,11 +11,14 @@ import { MenuIcon } from "../MenuIcon";
 import { ShoppingCartIcon } from "../ShoppingCartIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
-import { NavigationContent } from "../../content/navigation/navigationContentTypes";
+import { Category } from "../../queries/getCategories";
+
+
+export const NAV_HEIGHT = "85px";
 
 const NavLinkItem = styled.a<{ isActive: boolean }>`
   position: relative;
-  padding: 20px 0px;
+  
   width: 100px;
   text-align: center;
 
@@ -45,7 +48,7 @@ const initNavigationBarState = {
 };
 
 type NavigationBarProps = {
-  navigationContent: NavigationContent;
+  navigationContent: Category[];
   isSideDrawerOpen: boolean;
   onClickSideDrawer: () => void;
 };
@@ -77,7 +80,7 @@ export function NavigationBar({
   };
 
   return (
-    <Positioned zIndex={4}>
+    <Positioned zIndex={4} >
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
           <DisplayAtMedia mobile tablet>
@@ -94,31 +97,31 @@ export function NavigationBar({
             <DisplayAtMedia laptop desktop>
               <Positioned left={"60px"}>
                 <Row justifyCenter>
-                  {navigationContent.headers.map(item => (
+                  {navigationContent.map(item => (
                     <NavLinkItem
-                      onMouseEnter={() => handleNavLinkItemFocus(item.name)}
-                      onFocus={() => handleNavLinkItemFocus(item.name)}
+                      onMouseEnter={() => handleNavLinkItemFocus(item.Name)}
+                      onFocus={() => handleNavLinkItemFocus(item.Name)}
                       isActive={
-                        state.dropDownActive && state.dropDownOption === item.name
+                        state.dropDownActive && state.dropDownOption === item.Name
                       }
                       tabIndex={0}
-                      key={`DropDown${item.name}`}
+                      key={`DropDown${item.Name}`}
                     >
-                      {item.name}
+                      {item.Name}
                       <Transition
                         in={
-                          state.dropDownActive && state.dropDownOption === item.name
+                          state.dropDownActive && state.dropDownOption === item.Name
                         }
                         mountOnEnter
                         unmountOnExit
                         timeout={{
                           appear: 10,
                           enter: 100,
-                          exit: state.dropDownOption === item.name ? 500 : 0
+                          exit: state.dropDownOption === item.Name ? 500 : 0
                         }}
                       >
                         {state => (
-                          <Positioned absolute top={"55px"} zIndex={5}>
+                          <Positioned absolute top={"44px"} zIndex={5}>
                             <NavLinkBottomBorderCoverStrip state={state} />
                           </Positioned>
                         )}
@@ -155,8 +158,8 @@ export function NavigationBar({
       <NavigationBarDropDown
         isActive={state.dropDownActive && !isSideDrawerOpen}
         onMouseLeave={() => setState({ ...state, dropDownActive: false })}
-        navigationContentItem={navigationContent.headers.filter(item => {
-          if (item.name === state.dropDownOption){
+        navigationContentItem={navigationContent.filter(item => {
+          if (item.Name === state.dropDownOption){
             return item;
           } 
         })[0]}

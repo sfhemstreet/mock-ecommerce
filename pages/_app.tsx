@@ -1,8 +1,9 @@
-import React from 'react';
-import App from 'next/app';
-import Head from 'next/head';
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { AppTheme } from '../themes/AppTheme';
+import React from "react";
+import App from "next/app";
+import Head from "next/head";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { AppTheme } from "../themes/AppTheme";
+import { NextComponentType, NextPageContext } from "next";
 
 type MyThemeType = typeof AppTheme;
 
@@ -19,21 +20,24 @@ const GlobalStyle = createGlobalStyle<ThemeWrapper>`
   }
 `;
 
-export default class MyApp extends App {
-  render() {
-    const { Component, pageProps } = this.props;
-
-    return (
-      <> 
-        <Head>
-          <title>E Store</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        </Head>
-        <ThemeProvider theme={AppTheme}>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </>
-    )
-  }
+interface MyAppProps extends App {
+  Component: NextComponentType<NextPageContext, any, {}>;
+  pageProps: any;
 }
+
+const MyApp = ({ Component, pageProps }: MyAppProps) => {
+  return (
+    <>
+      <Head>
+        <title>E Store</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <ThemeProvider theme={AppTheme}>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </>
+  );
+};
+
+export default MyApp;
