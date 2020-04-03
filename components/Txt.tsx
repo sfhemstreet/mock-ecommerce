@@ -14,6 +14,7 @@ type TxtProps = {
   underline?: boolean;
   linethru?: boolean;
   overline?: boolean;
+  noWrap?: boolean;
 };
 
 export const Txt = styled.p<TxtProps>`
@@ -38,4 +39,5 @@ export const Txt = styled.p<TxtProps>`
     if (text === "") return "none";
     else return text;
   }};
+  white-space: ${props => props.noWrap ? "nowrap" : "normal"};
 `;

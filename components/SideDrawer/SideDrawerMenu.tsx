@@ -3,18 +3,20 @@ import { Contained } from "../Contained";
 import { Row } from "../Row";
 import { Column } from "../Column";
 import { SearchBox } from "../SearchBox";
-import { SportsAtticLogoSmall } from "../SportsAtticLogo";
+import { LogoSmall } from "../Logo";
 import { Txt } from "../Txt";
 import { SideDrawerMenuItem } from "./SideDrawerMenuItem";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
 import { Category } from "../../queries/getCategories";
+import { SiteLogo } from "../../queries/getSiteLogo";
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;
 
 type SideDrawerMenuProps = {
+  siteLogo: SiteLogo;
   navigationContent: Category[];
   sideDrawerWidth: number;
 };
@@ -22,13 +24,14 @@ type SideDrawerMenuProps = {
 /**
  * Displays SearchBox and NavigationContent `headers` in column, inside of SideDrawer.
  * Uses a stack to navigate thru nested `items` in each NavigationContentItem.
- *
+ * @param {SiteLogo} siteLogo 
  * @param {Category[]} navigationContent NavigationContent to display
  * @param {number} sideDrawerWidth Width of parent SideDrawer in px
  *
  * @todo Add Link from next/link to headers and last subItems
  */
 export const SideDrawerMenu = ({
+  siteLogo,
   navigationContent,
   sideDrawerWidth
 }: SideDrawerMenuProps): JSX.Element => {
@@ -99,7 +102,7 @@ export const SideDrawerMenu = ({
             <Row alignCenter>
               <Contained width={`${sideDrawerWidth}px`}>
                 <Row alignCenter justifyEvenly>
-                  <SportsAtticLogoSmall />
+                  <LogoSmall siteLogo={siteLogo}/>
                   <SearchBox
                     isActive={isSearchBoxActive}
                     text={searchBoxText}

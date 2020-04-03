@@ -14,7 +14,7 @@ const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
   width: ${props => props.drawerWidth};
   height: ${props => props.drawerHeight};
 
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
 
@@ -164,9 +164,10 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     };
   }, [open]);
 
+
   // Check for valid borderWidth 
   try {
-    if (borderWidth < 0) {
+    if (process.env.NODE_ENV === 'development' && borderWidth < 0) {
       throw new Error("borderWidth must be greater than or equal to 0");
     }
   } catch (err) {
@@ -177,7 +178,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   // Check if maxWidth is bigger than the screen width.
   // Adjust maxWidth if invalid.
   try {
-    if (maxWidth > screenWidth) {
+    if (process.env.NODE_ENV === 'development' && maxWidth > screenWidth) {
       throw new Error("maxWidth is greater than width of display");
     }
   } catch (err) {

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useState, useEffect } from "react";
 import { BackgroundBlackGradient } from "../components/Background";
 import { NavigationBar } from "../components/NavigationBar/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
@@ -8,9 +8,10 @@ import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
 import { Category } from "../queries/getCategories";
-
+import { SiteLogo } from "../queries/getSiteLogo";
 
 type NavigationBarSideDrawerLayoutProps = {
+  siteLogo: SiteLogo;
   navigationContent: Category[],
   filterChildrenWhenSideDrawerOpen?: boolean;
   sideDrawerOpenWidth?: number;
@@ -21,6 +22,7 @@ type NavigationBarSideDrawerLayoutProps = {
 /**
  * Displays a Navigation Bar and uses a SideDrawer on smaller displays.
  * When SideDrawer is active, children has optional blur and grayscale effect.
+ * @param {SiteLogo} siteLogo
  * @param {Category[]} navigationContent 
  * @param {boolean} filterChildrenWhenSideDrawerOpen Puts blurr and grayscalee effect on children when SideDrawer is open.
  * @param {number} sideDrawerOpenWidth Width in px that sideDrawer will open to.
@@ -28,6 +30,7 @@ type NavigationBarSideDrawerLayoutProps = {
  * @param {number} sideDrawerBorderWidth width in px of border, can be used open and close the sidedrawer thru dragging.
  */
 export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideDrawerLayoutProps> = ({
+  siteLogo,
   navigationContent,
   filterChildrenWhenSideDrawerOpen,
   sideDrawerOpenWidth = 300,
@@ -48,28 +51,32 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
           borderWidth={sideDrawerBorderWidth}
         >
           <SideDrawerMenu 
+            siteLogo={siteLogo}
             sideDrawerWidth={sideDrawerOpenWidth}
             navigationContent={navigationContent}
           />
         </SideDrawer>
-        <Transformed
-          isTransformed={isSideDrawerOpen}
-          transform={`translateX(${sideDrawerOpenWidth}px)`}
-          transition={AppTheme.transitions.sideDrawer}
-        >
-          <NavigationBar
-            isSideDrawerOpen={isSideDrawerOpen}
-            onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
-            navigationContent={navigationContent}
-          />
-          <Filtered
-            isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
-            filter={"blur(1px) grayscale(100%)"}
+        <div onClick={() => {if (isSideDrawerOpen) setSideDrawerOpen(false)}}>
+          <Transformed
+            isTransformed={isSideDrawerOpen}
+            transform={`translateX(${sideDrawerOpenWidth}px)`}
             transition={AppTheme.transitions.sideDrawer}
           >
-            {children}
-          </Filtered>
-        </Transformed>
+            <NavigationBar
+              isSideDrawerOpen={isSideDrawerOpen}
+              onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
+              navigationContent={navigationContent}
+              siteLogo={siteLogo}
+            />
+            <Filtered
+              isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
+              filter={"blur(1px) grayscale(100%)"}
+              transition={AppTheme.transitions.sideDrawer}
+            >
+              {children}
+            </Filtered>
+          </Transformed>
+        </div>
       </BackgroundBlackGradient>
     </FullPageContainer>
   );

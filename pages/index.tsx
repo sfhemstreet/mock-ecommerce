@@ -10,27 +10,50 @@ import {
   HomePageContent
 } from "../queries/getHomePageContent";
 import { Contained } from "../components/Contained";
-import { DisplayAtMedia } from "../components/DisplayAtMedia";
+import { mediaDevices } from "../components/DisplayAtMedia";
 import { Positioned } from "../components/Positioned";
 import { Centered } from "../components/Centered";
 import { Txt } from "../components/Txt";
 import { ProductPreviewCard } from "../components/ProductPreviewCard/ProductPreviewCard";
+import { FlexBox } from "../components/FlexBox";
+import { getSiteLogo, SiteLogo } from "../queries/getSiteLogo";
 
-const CoverImg = styled.div<{ src: string }>`
+type CoverImgProps = {
+  mobileSrc: string;
+  tabletSrc: string;
+  laptopSrc: string;
+  desktopSrc: string;
+};
+
+const CoverImg = styled.div<CoverImgProps>`
   width: 100%;
   height: 200px;
-  background-image: ${props => `url(${props.src})`};
+  background-image: ${props => `url(${props.mobileSrc})`};
   background-repeat: no-repeat;
   background-position-x: center;
+
+  @media ${mediaDevices.mobileL} {
+    background-image: ${props => `url(${props.tabletSrc})`};
+  }
+
+  @media ${mediaDevices.tablet} {
+    background-image: ${props => `url(${props.laptopSrc})`};
+  }
+
+  @media ${mediaDevices.laptopL} {
+    background-image: ${props => `url(${props.desktopSrc})`};
+  }
 `;
 
 type HomeProps = {
+  siteLogo: SiteLogo;
   homePageContent: HomePageContent;
   navCategories: Category[];
   topFiveProducts: ProductPreview[];
 };
 
 const Home = ({
+  siteLogo,
   homePageContent,
   navCategories,
   topFiveProducts
@@ -39,49 +62,44 @@ const Home = ({
     <NavigationBarSideDrawerLayout
       filterChildrenWhenSideDrawerOpen
       navigationContent={navCategories}
+      siteLogo={siteLogo}
     >
-      <DisplayAtMedia mobile>
-        <CoverImg
-          src={process.env.BACKEND_URL + homePageContent.mobileCover.url}
-        />
-      </DisplayAtMedia>
-      <DisplayAtMedia tablet>
-        <CoverImg
-          src={process.env.BACKEND_URL + homePageContent.tabletCover.url}
-        />
-      </DisplayAtMedia>
-      <DisplayAtMedia laptop>
-        <CoverImg
-          src={process.env.BACKEND_URL + homePageContent.laptopCover.url}
-        />
-      </DisplayAtMedia>
-      <DisplayAtMedia desktop>
-        <CoverImg
-          src={process.env.BACKEND_URL + homePageContent.desktopCover.url}
-        />
-      </DisplayAtMedia>
+      <CoverImg
+        mobileSrc={process.env.BACKEND_URL + homePageContent.mobileCover.url}
+        tabletSrc={process.env.BACKEND_URL + homePageContent.tabletCover.url}
+        laptopSrc={process.env.BACKEND_URL + homePageContent.laptopCover.url}
+        desktopSrc={process.env.BACKEND_URL + homePageContent.desktopCover.url}
+      />
       <Padded padding={"10px"}>
-        <Txt big bold alignCenter>
-          {homePageContent.title}
-        </Txt>
-        <Txt alignCenter padding={"5px"}>
+        <Txt alignCenter underline padding={"5px"}>
           {homePageContent.subtitle}
         </Txt>
       </Padded>
-      <Padded padding={"10px"}>
-        <ProductPreviewCard productInfo={topFiveProducts[0]} />  
+      <Padded padding={"0px 5px 5px 5px"}>
+        <Txt alignCenter padding={"0px 0px 8px 0px"}>
+          {homePageContent.content}
+        </Txt>
+        <FlexBox justifyCenter>
+          {topFiveProducts.map(productInfo => (
+            <Padded padding={"3px"} key={productInfo.id}>
+              <ProductPreviewCard productInfo={productInfo} />
+            </Padded>
+          ))}
+        </FlexBox>
       </Padded>
     </NavigationBarSideDrawerLayout>
   );
 };
 
 export const getStaticProps: GetStaticProps = async context => {
+  const siteLogo = await getSiteLogo();
   const navCategories = await getNavigationCategories();
   const topFiveProducts = await getTop5Products();
   const homePageContent = await getHomePageContent();
 
   return {
     props: {
+      siteLogo,
       homePageContent,
       navCategories,
       topFiveProducts
