@@ -23,6 +23,7 @@ enum Gradients {
 enum Typography {
   fontSize = '16px',
   bigFontSize = '20px',
+  smallFontSize = '14px',
   fontFamily = "'Rubik', Arial, sans-serif",
 }
 

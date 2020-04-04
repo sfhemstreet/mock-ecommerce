@@ -10,6 +10,7 @@ type TxtProps = {
   width?: string;
   height?: string;
   big?: boolean;
+  small?: boolean;
   bold?: boolean;
   underline?: boolean;
   linethru?: boolean;
@@ -19,18 +20,23 @@ type TxtProps = {
 
 export const Txt = styled.p<TxtProps>`
   text-align: ${props => {
-    if (props.alignCenter) return 'center';
-    if (props.alignLeft) return 'left';
-    if (props.alignRight) return 'right';
-    if (props.alignJustify) return 'justify';
-    return 'initial';
+    if (props.alignCenter) return "center";
+    if (props.alignLeft) return "left";
+    if (props.alignRight) return "right";
+    if (props.alignJustify) return "justify";
+    return "initial";
   }};
   margin: ${props => props.margin ?? "0px"};
   padding: ${props => props.padding ?? "0px"};
   width: ${props => props.width ?? "auto"};
   height: ${props => props.height ?? "auto"};
   font-weight: ${props => (props.bold ? "500" : "400")};
-  font-size: ${props => (props.big ? "20px" : props.theme.typography.fontSize)};
+  font-size: ${props =>
+    props.big
+      ? props.theme.typography.bigFontSize
+      : props.small
+      ? props.theme.typography.smallFontSize
+      : props.theme.typography.fontSize};
   text-decoration: ${props => {
     let text = "";
     if (props.underline) text += "underline ";
@@ -39,5 +45,5 @@ export const Txt = styled.p<TxtProps>`
     if (text === "") return "none";
     else return text;
   }};
-  white-space: ${props => props.noWrap ? "nowrap" : "normal"};
+  white-space: ${props => (props.noWrap ? "nowrap" : "normal")};
 `;

@@ -9,11 +9,11 @@ import { Column } from "../Column";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { useEffect } from "react";
 
-
+// 1.4375
 
 const ProductPreviewCardContainer = styled.div`
   width: 150px;
-  height: 210px;
+  height: 216px;
   position: relative;
   color: ${props => props.theme.colors.productPreviewText};
   background: ${props => props.theme.colors.productPreviewBackground};
@@ -25,17 +25,17 @@ const ProductPreviewCardContainer = styled.div`
 
   @media ${mediaDevices.mobileL} {
     width: 200px;
-    height: 250px;
+    height: 288px;
   }
 
   @media ${mediaDevices.tablet} {
     width: 250px;
-    height: 300px;
+    height: 359px;
   }
 
   @media ${mediaDevices.laptop} {
     width: 300px;
-    height: 350px;
+    height: 431px;
   }
 `;
 

@@ -54,8 +54,8 @@ type HomeProps = {
 
 const Home = ({
   siteLogo,
-  homePageContent,
   navCategories,
+  homePageContent,
   topFiveProducts
 }: HomeProps): JSX.Element => {
   return (
