@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Contained } from "../Contained";
 import { Row } from "../Row";
 import { Column } from "../Column";
-import { SearchBox } from "../SearchBox";
+import { SearchBox } from "../SearchBox/SearchBox";
 import { LogoSmall } from "../Logo";
 import { Txt } from "../Txt";
 import { SideDrawerMenuItem } from "./SideDrawerMenuItem";
@@ -11,11 +11,13 @@ import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
 import { Category } from "../../queries/getCategories";
 import { SiteLogo } from "../../queries/getSiteLogo";
+import { SearchBoxData } from "../../queries/getSearchBoxData";
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;
 
 type SideDrawerMenuProps = {
+  searchBoxData: SearchBoxData,
   siteLogo: SiteLogo;
   navigationContent: Category[];
   sideDrawerWidth: number;
@@ -31,12 +33,12 @@ type SideDrawerMenuProps = {
  * @todo Add Link from next/link to headers and last subItems
  */
 export const SideDrawerMenu = ({
+  searchBoxData,
   siteLogo,
   navigationContent,
   sideDrawerWidth
 }: SideDrawerMenuProps): JSX.Element => {
-  // SearchBox text and active setter
-  const [searchBoxText, setSearchBoxText] = useState("");
+  // SearchBox active setter
   const [isSearchBoxActive, setSearchBoxActive] = useState(false);
 
   // Stack holds nested content, allowing us to go deeper and to go back
@@ -104,10 +106,9 @@ export const SideDrawerMenu = ({
                 <Row alignCenter justifyEvenly>
                   <LogoSmall siteLogo={siteLogo}/>
                   <SearchBox
+                    data={searchBoxData}
                     isActive={isSearchBoxActive}
-                    text={searchBoxText}
                     onActiveClick={handleSearchActive}
-                    onTextChange={e => setSearchBoxText(e.target.value)}
                   />
                 </Row>
               </Contained>

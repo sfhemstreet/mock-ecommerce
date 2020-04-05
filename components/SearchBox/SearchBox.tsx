@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import { ChangeEvent, useRef, useEffect } from "react";
-import { Row } from "./Row";
+import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { Row } from "../Row";
 import { SearchIcon } from "./SearchIcon";
-import { Padded } from "./Padded";
-import { Centered } from "./Centered";
+import { Padded } from "../Padded";
+import { Centered } from "../Centered";
+import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { SearchBoxResults } from "./SearchBoxResults";
+
 
 const SearchBoxContainer = styled.div`
   height: 30px;
@@ -13,6 +16,8 @@ const SearchBoxContainer = styled.div`
 
   display: flex;
   align-items: center;
+
+  position: relative;
 `;
 
 const SearchBoxInput = styled.input<{ isActive: boolean }>`
@@ -32,21 +37,20 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
 `;
 
 type SearchBoxProps = {
+  data: SearchBoxData,
   isActive: boolean;
   onActiveClick: () => void;
-  text: string;
-  onTextChange: (event: ChangeEvent<HTMLInputElement>) => void;
   focusOnActive?: boolean;
 };
 
 export const SearchBox = ({
+  data,
   isActive,
   onActiveClick,
-  text,
-  onTextChange,
   focusOnActive = true,
 }: SearchBoxProps) => {
 
+  const [searchText, setSearchText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,6 +60,8 @@ export const SearchBox = ({
       inputRef.current.blur();
     }
   }, [isActive]);
+
+
   
   return (
     <SearchBoxContainer>
@@ -66,12 +72,15 @@ export const SearchBox = ({
         <SearchBoxInput
           isActive={isActive}
           type="text"
-          value={text}
-          onChange={onTextChange}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
           placeholder="Search"
           ref={inputRef}
         />
       </Row>
+      {isActive && (
+        <SearchBoxResults data={data} text={searchText}/>
+      )}
     </SearchBoxContainer>
   );
 };
