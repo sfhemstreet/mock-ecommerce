@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import { ProductPreview } from "../../queries/getProducts";
 import { Contained } from "../Contained";
@@ -9,7 +9,7 @@ import { Padded } from "../Padded";
 import { Column } from "../Column";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { useEffect } from "react";
-import { accessibleEnterKeyPress } from '../../util/accessibleEnterKeyPress';
+import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 
 // ratio used for width height: 1.4375
 
@@ -33,6 +33,19 @@ const ProductPreviewCardContainer = styled.div`
   @media ${mediaDevices.tablet} {
     width: 250px;
     height: 359px;
+  }
+
+  transition: all 0.4s ease-out;
+
+  cursor: pointer;
+
+  :hover,
+  :focus {
+    transform: scale(1.05);
+  }
+
+  :active {
+    transform: scale(0.9);
   }
 `;
 
@@ -77,12 +90,11 @@ type ProductPreviewCardProps = {
 export const ProductPreviewCard = ({
   productInfo
 }: ProductPreviewCardProps): JSX.Element => {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/product/${productInfo.id}`)
-  }
+    router.push(`/product/${productInfo.id}`);
+  };
 
   const displayNames = {
     brandName: productInfo.Brand.Name,
@@ -120,7 +132,11 @@ export const ProductPreviewCard = ({
   checkTextLength();
 
   return (
-    <ProductPreviewCardContainer onClick={handleClick} onKeyPress={accessibleEnterKeyPress(handleClick)} tabIndex={0}>
+    <ProductPreviewCardContainer
+      onClick={handleClick}
+      onKeyPress={accessibleEnterKeyPress(handleClick)}
+      tabIndex={0}
+    >
       <Column justifyBetween>
         <ProductCardThumbnailImg
           src={process.env.BACKEND_URL + productInfo.Preview.url}
