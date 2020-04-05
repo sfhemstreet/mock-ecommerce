@@ -17,6 +17,8 @@ import { Txt } from "../components/Txt";
 import { ProductPreviewCard } from "../components/ProductPreviewCard/ProductPreviewCard";
 import { FlexBox } from "../components/FlexBox";
 import { getSiteLogo, SiteLogo } from "../queries/getSiteLogo";
+import { getSearchBoxData, SearchBoxData } from "../queries/getSearchBoxData";
+import { getNavigationBarSideDrawerData, NavigationBarSideDrawerData } from "../queries/getNavigationBarSideDrawerData";
 
 type CoverImgProps = {
   mobileSrc: string;
@@ -46,23 +48,20 @@ const CoverImg = styled.div<CoverImgProps>`
 `;
 
 type HomeProps = {
-  siteLogo: SiteLogo;
+  navigationBarSideDrawerData: NavigationBarSideDrawerData;
   homePageContent: HomePageContent;
-  navCategories: Category[];
   topFiveProducts: ProductPreview[];
 };
 
 const Home = ({
-  siteLogo,
-  navCategories,
+  navigationBarSideDrawerData,
   homePageContent,
   topFiveProducts
 }: HomeProps): JSX.Element => {
   return (
     <NavigationBarSideDrawerLayout
       filterChildrenWhenSideDrawerOpen
-      navigationContent={navCategories}
-      siteLogo={siteLogo}
+      data={navigationBarSideDrawerData}
     >
       <CoverImg
         mobileSrc={process.env.BACKEND_URL + homePageContent.mobileCover.url}
@@ -92,17 +91,15 @@ const Home = ({
 };
 
 export const getStaticProps: GetStaticProps = async context => {
-  const siteLogo = await getSiteLogo();
-  const navCategories = await getNavigationCategories();
+  const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
   const topFiveProducts = await getTop5Products();
   const homePageContent = await getHomePageContent();
 
   return {
     props: {
-      siteLogo,
+      navigationBarSideDrawerData,
+      topFiveProducts,
       homePageContent,
-      navCategories,
-      topFiveProducts
     }
   };
 };

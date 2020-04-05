@@ -79,10 +79,11 @@ export function ProductImageDisplay({
 
   return (
     <ProductImageDisplayContainer>
-        <SelectedProductImg
-          src={process.env.BACKEND_URL + photos[selectedIndex].url}
-          alt={"Product Photo"}
-        />
+      <SelectedProductImg
+        src={process.env.BACKEND_URL + photos[selectedIndex].url}
+        alt={"Product Photo"}
+      />
+      {thumbnails.length > 1 && (
         <AllThumbnails>
           {thumbnails.map((thumb, index) => (
             <ThumbnailContainer
@@ -97,6 +98,7 @@ export function ProductImageDisplay({
             </ThumbnailContainer>
           ))}
         </AllThumbnails>
+      )}
     </ProductImageDisplayContainer>
   );
 }

@@ -5,8 +5,6 @@ import {
   ProductInfo,
   getAllProductsIds
 } from "../../queries/getProducts";
-import { getSiteLogo, SiteLogo } from "../../queries/getSiteLogo";
-import { getNavigationCategories, Category } from "../../queries/getCategories";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
 import { Row } from "../../components/Row";
@@ -17,25 +15,23 @@ import { Padded } from "../../components/Padded";
 import { Centered } from "../../components/Centered";
 import { Contained } from "../../components/Contained";
 import { ProductImageDisplay } from "../../components/ProductImageDisplay/ProductImageDisplay";
+import { getNavigationBarSideDrawerData, NavigationBarSideDrawerData } from "../../queries/getNavigationBarSideDrawerData";
 
 // <BrandLogo src={process.env.BACKEND_URL + product.Brand.Logo.url} />
 
 type ProductPageProps = {
-  siteLogo: SiteLogo;
-  navCategories: Category[];
+  navigationBarSideDrawerData: NavigationBarSideDrawerData;
   product: ProductInfo;
 };
 
 export default function SingleProductPage({
-  siteLogo,
-  navCategories,
+  navigationBarSideDrawerData,
   product
 }: ProductPageProps) {
   return (
     <NavigationBarSideDrawerLayout
+      data={navigationBarSideDrawerData}
       filterChildrenWhenSideDrawerOpen
-      navigationContent={navCategories}
-      siteLogo={siteLogo}
     >
       <CategoryLinkBox
         mainCategory={product.Category}
@@ -67,13 +63,11 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 
   const product = await getProductById(id);
-  const siteLogo = await getSiteLogo();
-  const navCategories = await getNavigationCategories();
+  const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
 
   return {
     props: {
-      siteLogo,
-      navCategories,
+      navigationBarSideDrawerData,
       product
     }
   };

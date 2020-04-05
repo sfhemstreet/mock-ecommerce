@@ -259,3 +259,7 @@ export async function getAllProductsIds() {
   const ids = productIds.map(product => product.id);
   return ids;
 }
+
+const GET_ALL_PRODUCTS_ID_NAMES_PARENT_SUB = `
+  
+`;

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Row } from "../Row";
 import { BackgroundBlack } from "../Background";
 import { Logo } from "../Logo";
-import { SearchBox } from "../SearchBox";
+import { SearchBox } from "../SearchBox/SearchBox";
 import { Padded } from "../Padded";
 import { DisplayAtMedia } from "../DisplayAtMedia";
 import { MenuIcon } from "../MenuIcon";
@@ -13,6 +13,7 @@ import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
 import { Category } from "../../queries/getCategories";
 import { SiteLogo } from "../../queries/getSiteLogo";
+import { SearchBoxData } from "../../queries/getSearchBoxData";
 
 
 export const NAV_HEIGHT = "85px";
@@ -44,11 +45,11 @@ const NavLinkBottomBorderCoverStrip = styled.div<{ state: string }>`
 const initNavigationBarState = {
   dropDownOption: "",
   dropDownActive: false,
-  searchBoxText: "",
   searchBoxActive: false
 };
 
 type NavigationBarProps = {
+  searchBoxData: SearchBoxData,
   siteLogo: SiteLogo;
   navigationContent: Category[];
   isSideDrawerOpen: boolean;
@@ -56,6 +57,7 @@ type NavigationBarProps = {
 };
 
 export function NavigationBar({
+  searchBoxData,
   siteLogo,
   navigationContent,
   isSideDrawerOpen,
@@ -141,15 +143,9 @@ export function NavigationBar({
               <DisplayAtMedia laptop desktop>
                 <Padded padRight={"10px"}>
                   <SearchBox
+                    data={searchBoxData}
                     isActive={state.searchBoxActive}
                     onActiveClick={handleSearchOpenClose}
-                    text={state.searchBoxText}
-                    onTextChange={evt =>
-                      setState({
-                        ...state,
-                        searchBoxText: evt.target.value
-                      })
-                    }
                   />
                 </Padded>
               </DisplayAtMedia>

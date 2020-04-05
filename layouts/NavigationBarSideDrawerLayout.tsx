@@ -7,12 +7,10 @@ import { Transformed } from "../components/Transformed";
 import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
-import { Category } from "../queries/getCategories";
-import { SiteLogo } from "../queries/getSiteLogo";
+import { NavigationBarSideDrawerData } from "../queries/getNavigationBarSideDrawerData";
 
 type NavigationBarSideDrawerLayoutProps = {
-  siteLogo: SiteLogo;
-  navigationContent: Category[],
+  data: NavigationBarSideDrawerData;
   filterChildrenWhenSideDrawerOpen?: boolean;
   sideDrawerOpenWidth?: number;
   sideDrawerClosedWidth?: number;
@@ -22,16 +20,14 @@ type NavigationBarSideDrawerLayoutProps = {
 /**
  * Displays a Navigation Bar and uses a SideDrawer on smaller displays.
  * When SideDrawer is active, children has optional blur and grayscale effect.
- * @param {SiteLogo} siteLogo
- * @param {Category[]} navigationContent 
+ * @param {NavigationBarSideDrawerData} navigationBarSideDrawerData
  * @param {boolean} filterChildrenWhenSideDrawerOpen Puts blurr and grayscalee effect on children when SideDrawer is open.
  * @param {number} sideDrawerOpenWidth Width in px that sideDrawer will open to.
  * @param {number} sideDrawerClosedWidth Width in px that sideDrawer will close to.
  * @param {number} sideDrawerBorderWidth width in px of border, can be used open and close the sidedrawer thru dragging.
  */
 export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideDrawerLayoutProps> = ({
-  siteLogo,
-  navigationContent,
+  data,
   filterChildrenWhenSideDrawerOpen,
   sideDrawerOpenWidth = 300,
   sideDrawerClosedWidth = -20,
@@ -51,9 +47,10 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
           borderWidth={sideDrawerBorderWidth}
         >
           <SideDrawerMenu 
-            siteLogo={siteLogo}
+            searchBoxData={data.searchBoxData}
+            siteLogo={data.siteLogo}
             sideDrawerWidth={sideDrawerOpenWidth}
-            navigationContent={navigationContent}
+            navigationContent={data.navCategories}
           />
         </SideDrawer>
         <div onClick={() => {if (isSideDrawerOpen) setSideDrawerOpen(false)}}>
@@ -63,10 +60,11 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
             transition={AppTheme.transitions.sideDrawer}
           >
             <NavigationBar
+              searchBoxData={data.searchBoxData}
               isSideDrawerOpen={isSideDrawerOpen}
               onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
-              navigationContent={navigationContent}
-              siteLogo={siteLogo}
+              navigationContent={data.navCategories}
+              siteLogo={data.siteLogo}
             />
             <Filtered
               isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
+import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 
 const SearchIconSVG = styled.svg`
   fill: ${props => props.theme.colors.white};
