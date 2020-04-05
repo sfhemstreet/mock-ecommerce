@@ -1,24 +1,20 @@
 import styled from "styled-components";
 import { GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
-import { Column } from "../components/Column";
 import { Padded } from "../components/Padded";
-import { Category, getNavigationCategories } from "../queries/getCategories";
-import { getTop5Products, ProductPreview } from "../queries/getProducts";
+import { getTop4Products, ProductPreview } from "../queries/getProducts";
 import {
   getHomePageContent,
   HomePageContent
 } from "../queries/getHomePageContent";
-import { Contained } from "../components/Contained";
 import { mediaDevices } from "../components/DisplayAtMedia";
-import { Positioned } from "../components/Positioned";
 import { Centered } from "../components/Centered";
 import { Txt } from "../components/Txt";
-import { ProductPreviewCard } from "../components/ProductPreviewCard/ProductPreviewCard";
-import { FlexBox } from "../components/FlexBox";
-import { getSiteLogo, SiteLogo } from "../queries/getSiteLogo";
-import { getSearchBoxData, SearchBoxData } from "../queries/getSearchBoxData";
-import { getNavigationBarSideDrawerData, NavigationBarSideDrawerData } from "../queries/getNavigationBarSideDrawerData";
+import {
+  getNavigationBarSideDrawerData,
+  NavigationBarSideDrawerData
+} from "../queries/getNavigationBarSideDrawerData";
+import { ProductPreviewCardsList } from "../components/ProductPreviewCard/ProductPreviewCardsList";
 
 type CoverImgProps = {
   mobileSrc: string;
@@ -33,6 +29,7 @@ const CoverImg = styled.div<CoverImgProps>`
   background-image: ${props => `url(${props.mobileSrc})`};
   background-repeat: no-repeat;
   background-position-x: center;
+  background-position-y: center top;
 
   @media ${mediaDevices.mobileL} {
     background-image: ${props => `url(${props.tabletSrc})`};
@@ -50,13 +47,13 @@ const CoverImg = styled.div<CoverImgProps>`
 type HomeProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
   homePageContent: HomePageContent;
-  topFiveProducts: ProductPreview[];
+  topFourProducts: ProductPreview[];
 };
 
 const Home = ({
   navigationBarSideDrawerData,
   homePageContent,
-  topFiveProducts
+  topFourProducts
 }: HomeProps): JSX.Element => {
   return (
     <NavigationBarSideDrawerLayout
@@ -78,13 +75,9 @@ const Home = ({
         <Txt alignCenter padding={"0px 0px 8px 0px"}>
           {homePageContent.content}
         </Txt>
-        <FlexBox justifyCenter>
-          {topFiveProducts.map(productInfo => (
-            <Padded padding={"3px"} key={productInfo.id}>
-              <ProductPreviewCard productInfo={productInfo} />
-            </Padded>
-          ))}
-        </FlexBox>
+        <Centered>
+          <ProductPreviewCardsList products={topFourProducts} />
+        </Centered>
       </Padded>
     </NavigationBarSideDrawerLayout>
   );
@@ -92,14 +85,14 @@ const Home = ({
 
 export const getStaticProps: GetStaticProps = async context => {
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
-  const topFiveProducts = await getTop5Products();
+  const topFourProducts = await getTop4Products();
   const homePageContent = await getHomePageContent();
 
   return {
     props: {
       navigationBarSideDrawerData,
-      topFiveProducts,
-      homePageContent,
+      topFourProducts,
+      homePageContent
     }
   };
 };

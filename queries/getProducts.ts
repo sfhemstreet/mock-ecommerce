@@ -25,15 +25,15 @@ async function getProductsBaseQuery(query: string) {
   //console.log('Product Query returned', products);
 
   if (!products) {
-    throw new Error('Error getting top 5 products');
+    throw new Error('Error getting products');
   }
 
   return products;
 }
 
-const GET_TOP_5_PRODUCTS = `
+const GET_TOP_4_PRODUCTS = `
   {
-    products(sort: "Ranking:desc", where: {IsAvailable: true, Ranking_gte: 4}, limit: 5) {
+    products(sort: "Ranking:desc", where: {IsAvailable: true, Ranking_gte: 4}, limit: 4) {
       id
       Name
       Price
@@ -51,8 +51,8 @@ const GET_TOP_5_PRODUCTS = `
   }
 `;
 
-export async function getTop5Products() {
-  const products: ProductPreview[] = await getProductsBaseQuery(GET_TOP_5_PRODUCTS);
+export async function getTop4Products() {
+  const products: ProductPreview[] = await getProductsBaseQuery(GET_TOP_4_PRODUCTS);
   return products;
 }
 

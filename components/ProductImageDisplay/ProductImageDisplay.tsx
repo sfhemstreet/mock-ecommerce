@@ -21,6 +21,7 @@ const ProductImageDisplayContainer = styled.div`
 
   @media ${mediaDevices.tablet} {
     flex-direction: row-reverse;
+    width: 700px;
   }
 `;
 
@@ -56,8 +57,12 @@ const ThumbnailContainer = styled.div<{ highlight: boolean }>`
 `;
 
 const SelectedProductImg = styled.img`
-  width: 100%;
+  width: 300px;
   height: auto;
+
+  @media ${mediaDevices.tablet} {
+    width: 600px;
+  }
 `;
 
 type ProductImageDisplayProps = {
