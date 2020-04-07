@@ -41,6 +41,12 @@ const PictureAndPurchaseOptionsContainer = styled.div`
   }
 `;
 
+const ProductDescriptionContainer = styled.div`
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+`;
+
 const ProductOptionsContainer = styled.div`
   padding: 20px;
 `;
@@ -77,10 +83,10 @@ export default function SingleProductPage({
                 <Centered padding={"10px"}>
                   <Row justifyCenter>
                     <Column>
-                      <Txt small alignCenter>
+                      <Txt alignCenter>
                         {product.Brand.Name}
                       </Txt>
-                      <Txt bold alignCenter>
+                      <Txt big bold alignCenter>
                         {product.Name}
                       </Txt>
                     </Column>
@@ -97,6 +103,11 @@ export default function SingleProductPage({
             </ProductOptionsContainer>
           </Padded>
         </PictureAndPurchaseOptionsContainer>
+        <Centered>
+          <ProductDescriptionContainer>
+            <Txt padding={"20px 55px 40px 50px"}>{product.Description}</Txt>
+          </ProductDescriptionContainer>
+        </Centered>
       </ProductPageContainer>
     </NavigationBarSideDrawerLayout>
   );
