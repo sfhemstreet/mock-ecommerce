@@ -19,7 +19,7 @@ const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   transition: all 0.5s ease-in-out;
 
   width: auto;
-  height: ${props => (props.state === "entered" ? "170px" : "1px")};
+  height: ${props => (props.state === "entered" ? "70px" : "1px")};
 
   padding: ${props => (props.state === "entered" ? "20px" : "0px")};
 

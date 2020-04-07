@@ -2,6 +2,7 @@ import React, { useState, useEffect, FunctionComponent } from "react";
 import styled from "styled-components";
 import { MenuIcon } from "../MenuIcon";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
+import { Transition } from "react-transition-group";
 
 type SideDrawerContainerProps = {
   drawerHeight: string;
@@ -87,33 +88,33 @@ export type SideDrawerProps = {
 /**
  * SideDrawer that extends from left side of screen, from minWidth (closed) to maxWidth (open).
  * The border can be click/touch dragged to open or close the drawer.
- * 
+ *
  * @param {(boolean) => void} setOpen Function to call that will either open or close the drawer
- * 
+ *
  * @param {boolean} open Boolean, drawer position is open (true) or closed (false). Default value: `false`
- * 
+ *
  * @param {boolean} showDrawerButton Choose to display an open and close button.
  * When true, minWidth will be adjusted to allow the button to stay on screen,
  * and draggableWidth will be set to false. Default value: `false`
- * 
+ *
  * @param {boolean} draggableWidth When true, SideDrawer is draggable between minWidth and maxWidth.
  * When false the SideDrawer can either be fully open at maxWidth or closed at minWidth. Default value: `false`
- * 
+ *
  * @param {boolean} permanentlyOpen sets SideDrawer to always be open. Removes drawer button. Default value: `false`
- * 
- * @param {number} minWidth Minimum width SideDrawer takes up on screen, in px. 
+ *
+ * @param {number} minWidth Minimum width SideDrawer takes up on screen, in px.
  * Can be negative to insure it is not visible while closed. Default value: `0`
- * 
- * @param {number} maxWidth Maximum width SideDrawer takes up on screen, in px. 
+ *
+ * @param {number} maxWidth Maximum width SideDrawer takes up on screen, in px.
  * Will be adjusted if the screen is too small and a warning will be put on the console. Default value: `370`
- * 
+ *
  * @param {string} drawerHeight Height of SideDrawer. Default value: `"100vh"`
- * 
+ *
  * @param {number} zIndex zIndex for SideDrawer. Default value: `5`
- * 
+ *
  * @param {number} borderWidth Width of SideDrawer border in px. Default value: `10`
- * 
- * @param {number} drawerButtonWidth Width of DrawerButton, in px. 
+ *
+ * @param {number} drawerButtonWidth Width of DrawerButton, in px.
  * Used to calculate proper postion for button. Default value: `33`
  */
 export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
@@ -130,15 +131,15 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   drawerButtonWidth = 33,
   children
 }): JSX.Element => {
-  // Screen width is used to calculate right position of the SideDrawer 
+  // Screen width is used to calculate right position of the SideDrawer
   const [screenWidth, setScreenWidth] = useState(INIT_SCREEN_WIDTH);
 
-  // The current right border position of the SideDrawer 
+  // The current right border position of the SideDrawer
   const [sideDrawerPosition, setSideDrawerPosition] = useState(
     SIDEDRAWER_OFF_SCREEN
   );
 
-  // Used to remove SideDrawer when screen is resized. Fixes resizing bug. 
+  // Used to remove SideDrawer when screen is resized. Fixes resizing bug.
   const [isVisible, setIsVisible] = useState(true);
 
   const handleScreenResize = (): void => {
@@ -149,7 +150,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     const { width } = getWindowDimensions();
     setScreenWidth(width);
 
-    // Set the drawer position and display it again. 
+    // Set the drawer position and display it again.
     const initSideDrawerPosition = open ? width - maxWidth : width - minWidth;
     setSideDrawerPosition(initSideDrawerPosition);
     setIsVisible(true);
@@ -164,10 +165,9 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     };
   }, [open]);
 
-
-  // Check for valid borderWidth 
+  // Check for valid borderWidth
   try {
-    if (process.env.NODE_ENV === 'development' && borderWidth < 0) {
+    if (process.env.NODE_ENV === "development" && borderWidth < 0) {
       throw new Error("borderWidth must be greater than or equal to 0");
     }
   } catch (err) {
@@ -178,7 +178,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   // Check if maxWidth is bigger than the screen width.
   // Adjust maxWidth if invalid.
   try {
-    if (process.env.NODE_ENV === 'development' && maxWidth > screenWidth) {
+    if (process.env.NODE_ENV === "development" && maxWidth > screenWidth) {
       throw new Error("maxWidth is greater than width of display");
     }
   } catch (err) {
@@ -313,7 +313,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   return (
     <>
       {/*  This will always be true unless the screen is being resized. 
-      When the screen is resized do not display the sidedrawer, this fixes weird size changes. */}
+      When the screen is resized do not display the sidedrawer, this fixes weird side effects. */}
       {isVisible && (
         <>
           <SideDrawerContainer
@@ -327,9 +327,24 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
           - drawer is open and draggableWidth is false
           - draggableWidth is true but its not really close to closed position
             */}
-            {showDrawerButton && !draggableWidth
-              ? open && children
-              : sideDrawerPosition + 10 <= screenWidth - minWidth && children}
+            {
+              <Transition
+                in={
+                  showDrawerButton && !draggableWidth
+                    ? open
+                    : sideDrawerPosition + 10 <= screenWidth - minWidth
+                }
+                timeout={{
+                  appear: 0,
+                  enter: 0,
+                  exit: 500
+                }}
+                mountOnEnter
+                unmountOnExit
+              >
+                {children}
+              </Transition>
+            }
           </SideDrawerContainer>
           <SideDrawerBorder
             style={{ right: sideDrawerPosition - borderWidth / 2 }}

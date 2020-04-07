@@ -88,7 +88,7 @@ export function NavigationBar({
     <Positioned zIndex={4} >
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
-          <DisplayAtMedia mobile tablet>
+          <DisplayAtMedia mobile tablet laptop>
             <Padded padding={"0px 20px"}>
               <MenuIcon onClick={onClickSideDrawer} isOpen={isSideDrawerOpen} />
             </Padded>
@@ -99,7 +99,7 @@ export function NavigationBar({
           </Padded>
 
           {!isSideDrawerOpen && (
-            <DisplayAtMedia laptop desktop>
+            <DisplayAtMedia desktop>
               <Positioned left={"60px"}>
                 <Row justifyCenter>
                   {navigationContent.map(item => (
@@ -140,7 +140,7 @@ export function NavigationBar({
 
           <Padded padding={"0px 20px"}>
             <Row alignCenter justifyCenter>
-              <DisplayAtMedia laptop desktop>
+              <DisplayAtMedia desktop>
                 <Padded padRight={"10px"}>
                   <SearchBox
                     data={searchBoxData}

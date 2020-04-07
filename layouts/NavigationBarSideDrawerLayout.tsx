@@ -68,7 +68,7 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
             />
             <Filtered
               isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
-              filter={"blur(1px) grayscale(100%)"}
+              filter={"grayscale(100%)"}
               transition={AppTheme.transitions.sideDrawer}
             >
               {children}

@@ -15,9 +15,35 @@ import { Padded } from "../../components/Padded";
 import { Centered } from "../../components/Centered";
 import { Contained } from "../../components/Contained";
 import { ProductImageDisplay } from "../../components/ProductImageDisplay/ProductImageDisplay";
-import { getNavigationBarSideDrawerData, NavigationBarSideDrawerData } from "../../queries/getNavigationBarSideDrawerData";
+import {
+  getNavigationBarSideDrawerData,
+  NavigationBarSideDrawerData
+} from "../../queries/getNavigationBarSideDrawerData";
+import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
+import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
 
 // <BrandLogo src={process.env.BACKEND_URL + product.Brand.Logo.url} />
+const ProductPageContainer = styled.div`
+  background: white;
+  color: ${props => props.theme.colors.black};
+`;
+
+const PictureAndPurchaseOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  @media ${mediaDevices.tablet} {
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-start;
+  }
+`;
+
+const ProductOptionsContainer = styled.div`
+  padding: 20px;
+`;
 
 type ProductPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
@@ -33,23 +59,45 @@ export default function SingleProductPage({
       data={navigationBarSideDrawerData}
       filterChildrenWhenSideDrawerOpen
     >
-      <CategoryLinkBox
-        mainCategory={product.Category}
-        subCategory={product.Subcategory}
-      />
-      <Centered>
-        <Contained width={"300px"}> 
-          <Row justifyBetween alignCenter>
-            <Column>
-              <Txt small>{product.Brand.Name}</Txt>
-              <Txt bold>{product.Name}</Txt>
-            </Column>
-          </Row>
-        </Contained>
-      </Centered>
-      <Centered padding={'5px'}>
-        <ProductImageDisplay photos={product.Pictures} thumbnails={product.Thumbnails}  />
-      </Centered>
+      <ProductPageContainer>
+        <CategoryLinkBox
+          mainCategory={product.Category}
+          subCategory={product.Subcategory}
+        />
+        <PictureAndPurchaseOptionsContainer>
+          <Padded padding={"3px"}>
+            <ProductImageDisplay
+              photos={product.Pictures}
+              thumbnails={product.Thumbnails}
+            />
+          </Padded>
+          <Padded padding={"3px"}>
+            <ProductOptionsContainer>
+              <Column>
+                <Centered padding={"10px"}>
+                  <Row justifyCenter>
+                    <Column>
+                      <Txt small alignCenter>
+                        {product.Brand.Name}
+                      </Txt>
+                      <Txt bold alignCenter>
+                        {product.Name}
+                      </Txt>
+                    </Column>
+                    <Padded padLeft={"20px"}>
+                      <BrandLogo
+                        src={process.env.BACKEND_URL + product.Brand.Logo.url}
+                        alt={`${product.Brand.Name} Logo`}
+                      />
+                    </Padded>
+                  </Row>
+                </Centered>
+                <ProductPurchaseOptions product={product} />
+              </Column>
+            </ProductOptionsContainer>
+          </Padded>
+        </PictureAndPurchaseOptionsContainer>
+      </ProductPageContainer>
     </NavigationBarSideDrawerLayout>
   );
 }
