@@ -26,6 +26,10 @@ const AddToCartContainer = styled.button`
     width: 192px;
   }
 
+  @media ${mediaDevices.laptopL} {
+    width: 302px;
+  }
+
   :hover {
     color: ${props => props.theme.colors.green};
   }

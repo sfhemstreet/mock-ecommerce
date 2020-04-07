@@ -58,9 +58,13 @@ const OptionsContainer = styled.div<{state: TransitionStatus}>`
 
   border: solid 1px ${props => props.theme.colors.black};
 
-  z-index: 3;
+  z-index: ${props => props.theme.zIndexes.productOptionSelecter};
 
   transition: all 0.3s ease-in-out;
+
+  @media ${mediaDevices.laptopL} {
+    width: 290px;
+  }
 `;
 
 const ProductSelectBoxContainer = styled.div`
@@ -80,16 +84,23 @@ const ProductSelectBoxContainer = styled.div`
   @media ${mediaDevices.tablet} {
     width: 180px;
   }
+
+  @media ${mediaDevices.laptopL} {
+    width: 290px;
+  }
 `;
 
 const ProductSelectBoxModalBackground = styled.div`
   position: fixed;
   top: 0px;
   left: 0px;
+
   width: 100%;
   height: 100%;
+
   backdrop-filter: blur(1px) grayscale(100%);
-  z-index: 6;
+  
+  z-index: ${props => props.theme.zIndexes.modal};
 
   transition: backdrop-filter 0.3s ease-in-out;
 `;
@@ -149,12 +160,11 @@ export const ProductOptionSelectBox = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectorRef = useRef<HTMLDivElement>(null);
-  const optionsRef =  useRef<HTMLDivElement>(null);
 
-  const handleSelection = (index: number) => {
+  function handleSelection(index: number) {
     setIsActive(false);
     setSelectedIndex(index);
-    onChange(options[selectedIndex].text);
+    onChange(options[index].text);
   };
 
   function handleOutsideClick(evt: globalThis.MouseEvent) {
@@ -163,7 +173,7 @@ export const ProductOptionSelectBox = ({
     }
   }
 
-  const handleOutsideEnterKeyPress = (evt: KeyboardEvent) => {
+  function handleOutsideEnterKeyPress(evt: KeyboardEvent) {
     if (evt.key === 'Enter' && selectorRef.current && !(selectorRef.current! as any).contains(evt.target)){
       setIsActive(false);
     }
@@ -221,7 +231,6 @@ export const ProductOptionSelectBox = ({
             {state => (
               <DisplayAtMedia tablet laptop desktop>
                 <OptionsContainer
-                  ref={optionsRef}
                   state={state}
                 >
                   {options.map((option, index) => (

@@ -13,6 +13,7 @@ import { FlexBox } from "../FlexBox";
 import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
+import { Txt } from "../Txt";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -52,8 +53,8 @@ export const ProductPurchaseOptions = ({
   );
 
   const quantityOptions = new Array<SelectBoxOption>();
-  for (let i = 1; i <= product.UnitsInStock; i++) {
-    quantityOptions.push({ text: `${i}` });
+  for (let i = 0; i < product.UnitsInStock; i++) {
+    quantityOptions.push({ text: `${(i + 1)}` });
   }
 
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0].text);
@@ -61,49 +62,71 @@ export const ProductPurchaseOptions = ({
   const [selectedQuantity, setSelectedQuantity] = useState(
     quantityOptions[0].text
   );
+  const [calculatedCost, setCalculatedCost] = useState(
+    product.Price * parseInt(quantityOptions[0].text, 10) -
+    product.Discount * parseInt(quantityOptions[0].text, 10)
+  );
+
+  function handleQuantityChange(option: string) {
+    const quant = parseInt(option);
+    setSelectedQuantity(option);
+    setCalculatedCost(product.Price * quant - product.Discount * quant);
+  };
 
   return (
     <ProductPurchaseOptionsContainer>
-        <Column>
-          <Padded padding={"3px"}>
-            <ProductOptionLabel>
-              Select a Size:
-              <ProductOptionSelectBox
-                label={"Size"}
-                onChange={(option: string) => setSelectedSize(option)}
-                options={sizeOptions}
-              />
-            </ProductOptionLabel>
-          </Padded>
-          <Padded padding={"3px"}>
-            <ProductOptionLabel>
-              Select a Color:
-              <ProductOptionSelectBox
-                label={"Color"}
-                onChange={(option: string) => setSelectedColor(option)}
-                options={colorOptions}
-              />
-            </ProductOptionLabel>
-          </Padded>
-          <Padded padding={"3px"}>
-            <ProductOptionLabel>
-              Quantity:
-              <ProductOptionSelectBox
-                label={"Quantity"}
-                onChange={(option: string) => setSelectedQuantity(option)}
-                options={quantityOptions}
-              />
-            </ProductOptionLabel>
-          </Padded>
-          <Padded padding={"20px 3px 3px 3px"}>
-            <AddToCartButton onClick={() => {}} />
-          </Padded>
-          <Padded padding={"20px 3px 3px 3px"}>
-            <AddToWishListButton onClick={() => {}} />
-          </Padded>
-        </Column>
-        
-      
+      <Column>
+        <Padded padding={"3px"}>
+          <ProductOptionLabel>
+            Select a Size:
+            <ProductOptionSelectBox
+              label={"Size"}
+              onChange={(option: string) => setSelectedSize(option)}
+              options={sizeOptions}
+            />
+          </ProductOptionLabel>
+        </Padded>
+        <Padded padding={"3px"}>
+          <ProductOptionLabel>
+            Select a Color:
+            <ProductOptionSelectBox
+              label={"Color"}
+              onChange={(option: string) => setSelectedColor(option)}
+              options={colorOptions}
+            />
+          </ProductOptionLabel>
+        </Padded>
+        <Padded padding={"3px"}>
+          <ProductOptionLabel>
+            Quantity:
+            <ProductOptionSelectBox
+              label={"Quantity"}
+              onChange={(option: string) => handleQuantityChange(option)}
+              options={quantityOptions}
+            />
+          </ProductOptionLabel>
+        </Padded>
+        {product.Discount > 0 ? (
+          <>
+            <Txt big bold linethru padding={"20px 3px 3px 3px"}>
+              ${(product.Price * parseInt(selectedQuantity, 10))}
+            </Txt>
+            <Txt big bold padding={"3px 3px 10px 3px"}>
+              Discount! ${calculatedCost}
+            </Txt>
+          </>
+        ) : (
+          <Txt big bold padding={"20px 3px 10px 3px"}>
+            ${calculatedCost}
+          </Txt>
+        )}
+        <Padded padding={"10px 3px 3px 3px"}>
+          <AddToCartButton onClick={() => {}} />
+        </Padded>
+        <Padded padding={"20px 3px 3px 3px"}>
+          <AddToWishListButton isOnWishList={false} onClick={() => {}} />
+        </Padded>
+      </Column>
     </ProductPurchaseOptionsContainer>
   );
 };

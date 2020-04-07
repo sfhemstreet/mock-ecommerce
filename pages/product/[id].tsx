@@ -41,14 +41,20 @@ const PictureAndPurchaseOptionsContainer = styled.div`
   }
 `;
 
-const ProductDescriptionContainer = styled.div`
+const SmallScreenDescriptionContainer = styled.div`
   max-width: 700px;
   display: flex;
   justify-content: center;
 `;
 
+const LargeScreenDescriptionContainer = styled.div`
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+`;
+
 const ProductOptionsContainer = styled.div`
-  padding: 20px;
+  padding: 0px;
 `;
 
 type ProductPageProps = {
@@ -77,15 +83,13 @@ export default function SingleProductPage({
               thumbnails={product.Thumbnails}
             />
           </Padded>
-          <Padded padding={"3px"}>
+          <Padded padding={"0px"}>
             <ProductOptionsContainer>
               <Column>
                 <Centered padding={"10px"}>
                   <Row justifyCenter>
                     <Column>
-                      <Txt alignCenter>
-                        {product.Brand.Name}
-                      </Txt>
+                      <Txt alignCenter>{product.Brand.Name}</Txt>
                       <Txt big bold alignCenter>
                         {product.Name}
                       </Txt>
@@ -99,15 +103,22 @@ export default function SingleProductPage({
                   </Row>
                 </Centered>
                 <ProductPurchaseOptions product={product} />
+                <DisplayAtMedia desktop>
+                  <LargeScreenDescriptionContainer>
+                    <Txt padding={"20px 0px"}>{product.Description}</Txt>
+                  </LargeScreenDescriptionContainer>
+                </DisplayAtMedia>
               </Column>
             </ProductOptionsContainer>
           </Padded>
         </PictureAndPurchaseOptionsContainer>
-        <Centered>
-          <ProductDescriptionContainer>
-            <Txt padding={"20px 55px 40px 50px"}>{product.Description}</Txt>
-          </ProductDescriptionContainer>
-        </Centered>
+        <DisplayAtMedia mobile tablet laptop>
+          <Centered>
+            <SmallScreenDescriptionContainer>
+              <Txt padding={"20px 20px 40px 20px"}>{product.Description}</Txt>
+            </SmallScreenDescriptionContainer>
+          </Centered>
+        </DisplayAtMedia>
       </ProductPageContainer>
     </NavigationBarSideDrawerLayout>
   );

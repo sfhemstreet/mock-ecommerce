@@ -42,6 +42,7 @@ const ProductImageDisplayContainer = styled.div`
 const SelectedProductImg = styled.img`
   width: 300px;
   height: auto;
+  cursor: zoom-in;
 
   @media ${mediaDevices.mobileM} {
     width: 340px;
@@ -111,6 +112,38 @@ const ThumbnailContainer = styled.div<{ highlight: boolean }>`
     props.highlight ? props.theme.colors.rose : "transparent"};
 `;
 
+const PhotoZoomedModalBackground = styled.div`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  background-color: ${props => props.theme.colors.transparentBlack};
+
+  z-index: ${props => props.theme.zIndexes.modal};
+
+  overflow: scroll;
+
+  @media ${mediaDevices.tablet} {
+    justify-content: center;
+  }
+`;
+
+const PhotoZoomedModal = styled.img`
+  width: 100%;
+  height: auto;
+  max-width: 1000px;
+
+  padding: 20px;
+  margin: 0 auto;
+`;
+
 type ProductImageDisplayProps = {
   photos: {
     url: string;
@@ -127,12 +160,14 @@ export function ProductImageDisplay({
   thumbnails
 }: ProductImageDisplayProps): JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   return (
     <ProductImageDisplayContainer>
       <SelectedProductImg
         src={process.env.BACKEND_URL + photos[selectedIndex].url}
         alt={"Product Photo"}
+        onClick={() => setIsZoomed(true)}
       />
       {thumbnails.length > 1 && (
         <AllThumbnails>
@@ -149,6 +184,14 @@ export function ProductImageDisplay({
             </ThumbnailContainer>
           ))}
         </AllThumbnails>
+      )}
+      {isZoomed && (
+        <PhotoZoomedModalBackground onClick={() => setIsZoomed(false)}>
+          <PhotoZoomedModal
+            src={process.env.BACKEND_URL + photos[selectedIndex].url}
+            alt={"Full Size Product Image"}
+          />
+        </PhotoZoomedModalBackground>
       )}
     </ProductImageDisplayContainer>
   );

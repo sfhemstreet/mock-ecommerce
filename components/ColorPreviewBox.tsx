@@ -10,4 +10,5 @@ export const ColorPreviewBox = styled.div<ColorPreviewBoxProps>`
 
   border-radius: 2px;
   background-color: ${props => props.color};
+  
 `;

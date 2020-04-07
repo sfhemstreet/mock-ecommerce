@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MenuIcon } from "../MenuIcon";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { Transition } from "react-transition-group";
+import { AppTheme } from "../../themes/AppTheme";
 
 type SideDrawerContainerProps = {
   drawerHeight: string;
@@ -126,7 +127,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   minWidth = 0,
   maxWidth = 370,
   drawerHeight = "100vh",
-  zIndex = 5,
+  zIndex = 20,
   borderWidth = 10,
   drawerButtonWidth = 33,
   children
