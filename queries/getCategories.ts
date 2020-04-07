@@ -30,34 +30,57 @@ export async function getNavigationCategories() {
     throw new Error("Categories not fetched.");
   }
 
-  // We want to organize the content into more SubCategories. 
-  // Anything with 'Clothing' is put into Clothing and same with 'Equipment' 
-  const myCategories = new Array<Category>();
+  const cats: Category[] = categories;
 
-  const clothingCategory = {
-    Name: "Clothing",
-    SubCategories: new Array<Category>()
-  };
+  cats.sort((a, b) => {
+    // sort by first letter of last word
+    const one = (a.Name.lastIndexOf(" ") >= 0 && a.Name.lastIndexOf(" ") + 1 < a.Name.length) 
+      ? a.Name.charCodeAt(a.Name.lastIndexOf(" ") + 1) 
+      : a.Name.charCodeAt(0);
 
-  const equipmentCategory = {
-    Name: "Equipment",
-    SubCategories: new Array<Category>()
-  };
+    const two = (b.Name.lastIndexOf(" ") >= 0 && b.Name.lastIndexOf(" ") + 1 < b.Name.length) 
+      ? b.Name.charCodeAt(b.Name.lastIndexOf(" ") + 1) 
+      : b.Name.charCodeAt(0);
 
-  categories.forEach((category: Category) => {
-    if (category.Name.includes("Clothing")) {
-      clothingCategory.SubCategories.push(category);
-    } else if (category.Name.includes("Equipment")) {
-      equipmentCategory.SubCategories.push(category);
-    } else {
-      myCategories.push(category);
-    }
+    console.log(a,b)
+    console.log(one, two);
+
+    return one - two;
   });
 
-  myCategories.push(clothingCategory);
-  myCategories.push(equipmentCategory);
+  return cats;
 
-  return myCategories;
+  // We want to organize the content into more SubCategories. 
+  // Anything with 'Clothing' is put into Clothing and same with 'Equipment' 
+
+  // const myCategories = new Array<Category>();
+
+  // const clothingCategory = {
+  //   Name: "Clothing",
+  //   SubCategories: new Array<Category>()
+  // };
+
+  // const equipmentCategory = {
+  //   Name: "Equipment",
+  //   SubCategories: new Array<Category>()
+  // };
+
+  // categories.forEach((category: Category) => {
+  //   if (category.Name.includes("Clothing")) {
+  //     clothingCategory.SubCategories.push(category);
+  //   } else if (category.Name.includes("Equipment")) {
+  //     equipmentCategory.SubCategories.push(category);
+  //   } else {
+  //     myCategories.push(category);
+  //   }
+  // });
+
+  // myCategories.push(clothingCategory);
+  // myCategories.push(equipmentCategory);
+
+  // return myCategories;
+
+
 }
 
 
@@ -100,7 +123,7 @@ export type CategoryWithProducts = {
             url
           }
       }
-  	}  
+  	}
   }
-} 
+}
 */

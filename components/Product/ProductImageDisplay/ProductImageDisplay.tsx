@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Column } from "../Column";
-import { Row } from "../Row";
+import { Column } from "../../Column";
+import { Row } from "../../Row";
 import { useState } from "react";
-import { mediaDevices } from "../DisplayAtMedia";
+import { mediaDevices } from "../../DisplayAtMedia";
 
 /* 
 TODO:
@@ -35,7 +35,7 @@ const ProductImageDisplayContainer = styled.div`
 
   @media ${mediaDevices.laptopL} {
     flex-direction: row-reverse;
-    width: 690px;
+    width: 590px;
   }
 `;
 
@@ -56,7 +56,7 @@ const SelectedProductImg = styled.img`
   }
 
   @media ${mediaDevices.laptopL} {
-    width: 580px;
+    width: 480px;
   }
 `;
 
@@ -86,7 +86,7 @@ const AllThumbnails = styled.div`
   @media ${mediaDevices.laptopL} {
     flex-direction: column;
     width: 100px;
-    height: 580px;
+    height: 480px;
     padding-right: 8px;
     padding-top: 0px;
   }

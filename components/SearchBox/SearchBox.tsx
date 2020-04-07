@@ -10,7 +10,7 @@ import { SearchBoxResults } from "./SearchBoxResults";
 
 const SearchBoxContainer = styled.div`
   height: 30px;
-  width: 164px;
+  width: 184px;
 
   padding: 10px;
 
@@ -30,7 +30,7 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
   color: ${props => props.theme.colors.white};
   font-size: ${props => props.theme.typography.fontSize};
 
-  width: ${props => (props.isActive ? "130px" : "0px")};
+  width: ${props => (props.isActive ? "160px" : "0px")};
   transition: all 0.5s ease-out;
 
   pointer-events:  ${props => (props.isActive ? "auto" : "none")};
