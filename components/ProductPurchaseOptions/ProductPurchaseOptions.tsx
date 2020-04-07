@@ -12,6 +12,7 @@ import {
 import { FlexBox } from "../FlexBox";
 import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
+import { AddToWishListButton } from "./AddToWishList";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -63,7 +64,6 @@ export const ProductPurchaseOptions = ({
 
   return (
     <ProductPurchaseOptionsContainer>
-      <FlexBox>
         <Column>
           <Padded padding={"3px"}>
             <ProductOptionLabel>
@@ -95,9 +95,15 @@ export const ProductPurchaseOptions = ({
               />
             </ProductOptionLabel>
           </Padded>
+          <Padded padding={"20px 3px 3px 3px"}>
+            <AddToCartButton onClick={() => {}} />
+          </Padded>
+          <Padded padding={"20px 3px 3px 3px"}>
+            <AddToWishListButton onClick={() => {}} />
+          </Padded>
         </Column>
-        <AddToCartButton onClick={() => {}} />
-      </FlexBox>
+        
+      
     </ProductPurchaseOptionsContainer>
   );
 };

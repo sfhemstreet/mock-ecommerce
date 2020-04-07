@@ -1,5 +1,5 @@
 import styled, { WithThemeFnInterface } from "styled-components";
-import { useState } from "react";
+import { useState, useRef, useEffect, MouseEvent } from "react";
 import { Transition } from "react-transition-group";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
@@ -49,7 +49,7 @@ const OptionsContainer = styled.div<{state: TransitionStatus}>`
   left: -1px;
 
   width: 180px;
-  max-height: ${props => (props.state === ENTERED ? "185px" : "0px")};
+  max-height: ${props => (props.state === ENTERED ? "180px" : "0px")};
 
   overflow-y: scroll;
 
@@ -64,7 +64,7 @@ const OptionsContainer = styled.div<{state: TransitionStatus}>`
 `;
 
 const ProductSelectBoxContainer = styled.div`
-  width: 300px;
+  width: 290px;
   height: 30px;
 
   padding: 5px;
@@ -103,6 +103,7 @@ const ProductSelectBoxModal = styled.div<{ state: TransitionStatus }>`
 
   width: 100%;
   max-height: 300px;
+  height: auto;
 
   border-top: solid 1px ${props => props.theme.colors.black};
   border-bottom: solid 1px ${props => props.theme.colors.black};
@@ -112,7 +113,7 @@ const ProductSelectBoxModal = styled.div<{ state: TransitionStatus }>`
 
 const ModalScrollArea = styled.div`
   width: 100%;
-  height: 200px;
+  max-height: 250px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -147,21 +148,47 @@ export const ProductOptionSelectBox = ({
   const [isActive, setIsActive] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const selectorRef = useRef<HTMLDivElement>(null);
+  const optionsRef =  useRef<HTMLDivElement>(null);
+
   const handleSelection = (index: number) => {
     setIsActive(false);
     setSelectedIndex(index);
     onChange(options[selectedIndex].text);
   };
 
+  function handleOutsideClick(evt: globalThis.MouseEvent) {
+    if (selectorRef.current && !(selectorRef.current! as any).contains(evt.target)){
+      setIsActive(false);
+    }
+  }
+
+  const handleOutsideEnterKeyPress = (evt: KeyboardEvent) => {
+    if (evt.key === 'Enter' && selectorRef.current && !(selectorRef.current! as any).contains(evt.target)){
+      setIsActive(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutsideClick, false);
+    document.addEventListener('keypress', handleOutsideEnterKeyPress, false);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick, false);
+      document.removeEventListener('keypress', handleOutsideEnterKeyPress, false);
+    }
+  });
+
   return (
     <>
-      <ProductSelectBoxContainer>
+      <ProductSelectBoxContainer
+        onClick={() => setIsActive(!isActive)}
+        onKeyPress={accessibleEnterKeyPress(() => setIsActive(!isActive))}
+        tabIndex={0}
+        ref={selectorRef}
+      >
         <Row
           justifyBetween
           alignCenter
-          onClick={() => setIsActive(!isActive)}
-          onKeyPress={accessibleEnterKeyPress(() => setIsActive(!isActive))}
-          tabIndex={0}
         >
           <Contained>
             <Row alignCenter>
@@ -185,7 +212,7 @@ export const ProductOptionSelectBox = ({
           <Transition
             in={isActive}
             timeout={{
-              enter: 50,
+              enter: 0,
               exit: 300
             }}
             mountOnEnter
@@ -193,7 +220,10 @@ export const ProductOptionSelectBox = ({
           >
             {state => (
               <DisplayAtMedia tablet laptop desktop>
-                <OptionsContainer state={state}>
+                <OptionsContainer
+                  ref={optionsRef}
+                  state={state}
+                >
                   {options.map((option, index) => (
                     <Option
                       onClick={() => handleSelection(index)}
@@ -201,6 +231,7 @@ export const ProductOptionSelectBox = ({
                         handleSelection(index)
                       )}
                       tabIndex={0}
+                      key={`dropDownOption${option.text}${index}`}
                     >
                       {option.visual && (
                         <Padded padLeft={"10px"}>{option.visual}</Padded>
@@ -244,6 +275,7 @@ export const ProductOptionSelectBox = ({
                           handleSelection(index)
                         )}
                         tabIndex={0}
+                        key={`modalDropDownOption${option.text}${index}`}
                       >
                         <Row justifyAround alignCenter>
                           {option.visual && (
