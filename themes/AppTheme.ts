@@ -33,6 +33,13 @@ enum Transitions {
   filtered = "0.4s ease-in",
 }
 
+enum ZIndexes {
+  productOptionSelecter = '10',
+  sideDrawer = '20',
+  searchBoxResults = '30',
+  modal = '40',
+}
+
 export const AppTheme = {
   name: "AppTheme",
   primaryColor: Colors.green,
@@ -40,4 +47,5 @@ export const AppTheme = {
   gradients: Gradients,
   typography: Typography,
   transitions: Transitions,
+  zIndexes: ZIndexes,
 }

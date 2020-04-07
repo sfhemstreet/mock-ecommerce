@@ -8,6 +8,7 @@ import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
 import { NavigationBarSideDrawerData } from "../queries/getNavigationBarSideDrawerData";
+import { Footer } from "../components/Footer";
 
 type NavigationBarSideDrawerLayoutProps = {
   data: NavigationBarSideDrawerData;
@@ -73,6 +74,7 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
             >
               {children}
             </Filtered>
+            <Footer />
           </Transformed>
         </div>
       </BackgroundBlackGradient>

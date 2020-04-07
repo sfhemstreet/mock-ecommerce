@@ -25,7 +25,7 @@ const SearchBoxResultsContainer = styled.div`
   border-bottom-width: 1px;
   border-bottom-color: ${props => props.theme.colors.white};
 
-  z-index: 10;
+  z-index: ${props => props.theme.zIndexes.searchBoxResults};
 `;
 
 const SearchResultItem = styled.div`
@@ -67,8 +67,8 @@ export function SearchBoxResults({ data, text }: SearchBoxResultsProps) {
 
   if (typeof window !== "undefined" && window && window.localStorage) {
     const past = localStorage.getItem(SEARCH_BOX_HISTORY);
-
     if (past) {
+      
     }
   }
 
