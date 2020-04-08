@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styled from "styled-components";
 import { Row } from "./Row";
 import { Txt } from "./Txt";
@@ -28,7 +29,7 @@ export const Footer = () => {
       <Row justifyEvenly alignCenter>
         <Column>
           <Txt big bold underline padding={"5px 0px"}>Resources</Txt>
-          <Txt><FooterLink>Returns</FooterLink></Txt>
+          <Txt><Link href={"/returns"}><FooterLink>Returns</FooterLink></Link></Txt>
           <Txt><FooterLink>Order Status</FooterLink></Txt>
           <Txt><FooterLink>Privacy Policy</FooterLink></Txt>
           <Txt><FooterLink>Terms of Use</FooterLink></Txt>

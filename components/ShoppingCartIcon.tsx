@@ -1,10 +1,23 @@
-import styled from "styled-components";
-import { Centered } from "./Centered";
+import styled, { css } from "styled-components";
 import { FadeIn } from "../keyframes/FadeIn";
 import { ScaleSmallToBig } from "../keyframes/ScaleSmallToBig";
+import { ShakeNWait } from "../keyframes/ShakeNWait";
 
-const ShoppingCartContainer = styled(Centered)`
+const ShakeAnimationMixin = css `
+  animation: ${ShakeNWait} 15s linear infinite;
+  animation-delay: 3s;
+`;
+
+const ShoppingCartContainer = styled.div<{ willShake: boolean }>`
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  ${props =>
+    props.willShake && ShakeAnimationMixin
+  };
 `;
 
 const ShoppingCartSVG = styled.svg`
@@ -23,10 +36,13 @@ const ShoppingCartCircle = styled.div`
   position: absolute;
   top: -15px;
   left: 10px;
-  border-radius: 50%;
+
   background-color: ${props => props.theme.colors.green};
+
   width: 23px;
   height: 23px;
+
+  border-radius: 50%;
 
   display: flex;
   justify-content: center;
@@ -83,10 +99,10 @@ type ShoppingCartIconProps = {
 };
 
 /**
- * Displays a Material Icons shopping cart icon with a 
+ * Displays a Material Icons shopping cart icon with a
  * little green bubble showing the number of items in the cart (if there are items).
  * Every time numberOfItems changes a ripple effect happens around the green bubble.
- * 
+ *
  * @param {number} numberOfItems Number of items in the shopping cart.
  */
 export const ShoppingCartIcon = ({
@@ -97,7 +113,7 @@ export const ShoppingCartIcon = ({
   ));
 
   return (
-    <ShoppingCartContainer tabIndex={0}>
+    <ShoppingCartContainer tabIndex={0} willShake={numberOfItems > 0}>
       <ShoppingCartSVG
         xmlns="http://www.w3.org/2000/svg"
         height="24"

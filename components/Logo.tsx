@@ -1,5 +1,6 @@
-import styled from 'styled-components';
-import { SiteLogo } from '../queries/getSiteLogo';
+import styled from "styled-components";
+import { SiteLogo } from "../queries/getSiteLogo";
+import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
 const MyLogo = styled.img`
   width: 100%;
@@ -21,20 +22,28 @@ const MyLogoContainerSmall = styled(MyLogoContainer)`
 
 type SiteLogoProps = {
   siteLogo: SiteLogo;
-}
+};
 
-export const Logo = ({siteLogo}: SiteLogoProps): JSX.Element => {
+export const Logo = ({ siteLogo }: SiteLogoProps): JSX.Element => {
   return (
-    <MyLogoContainer>
-      <MyLogo src={process.env.BACKEND_URL + siteLogo.NormalLogo.url} alt="Site Logo" />
+    <MyLogoContainer
+      tabIndex={0}
+    >
+      <MyLogo
+        src={process.env.BACKEND_URL + siteLogo.NormalLogo.url}
+        alt="Site Logo"
+      />
     </MyLogoContainer>
   );
-}
+};
 
-export const LogoSmall = ({siteLogo}: SiteLogoProps): JSX.Element => {
+export const LogoSmall = ({ siteLogo }: SiteLogoProps): JSX.Element => {
   return (
     <MyLogoContainerSmall>
-      <MyLogo src={process.env.BACKEND_URL + siteLogo.SmallLogo.url} alt="Site Logo Small" />
+      <MyLogo
+        src={process.env.BACKEND_URL + siteLogo.SmallLogo.url}
+        alt="Site Logo Small"
+      />
     </MyLogoContainerSmall>
   );
-}
+};
