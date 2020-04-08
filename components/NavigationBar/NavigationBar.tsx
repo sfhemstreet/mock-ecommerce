@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useState } from "react";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
@@ -14,6 +15,7 @@ import { Positioned } from "../Positioned";
 import { Category } from "../../queries/getCategories";
 import { SiteLogo } from "../../queries/getSiteLogo";
 import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { WishListIcon } from "../WishListIcon";
 
 
 export const NAV_HEIGHT = "85px";
@@ -95,7 +97,11 @@ export function NavigationBar({
           </DisplayAtMedia>
 
           <Padded padding={"20px"}>
-            <Logo siteLogo={siteLogo}/>
+            <Link href={"/"}>
+              <a>
+                <Logo siteLogo={siteLogo}/>
+              </a>
+            </Link>
           </Padded>
 
           {!isSideDrawerOpen && (
@@ -149,6 +155,9 @@ export function NavigationBar({
                   />
                 </Padded>
               </DisplayAtMedia>
+              <Padded padRight={"10px"}>
+                <WishListIcon />  
+              </Padded>
               <ShoppingCartIcon numberOfItems={1} />
             </Row>
           </Padded>
