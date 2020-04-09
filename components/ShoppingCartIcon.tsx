@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 import { FadeIn } from "../keyframes/FadeIn";
 import { ScaleSmallToBig } from "../keyframes/ScaleSmallToBig";
 import { ShakeNWait } from "../keyframes/ShakeNWait";
+import { useContext } from "react";
+import { ShoppingCartWishListContext } from "../context/ShoppingCartWishListContext";
 
 const ShakeAnimationMixin = css `
   animation: ${ShakeNWait} 15s linear infinite;
@@ -105,9 +107,14 @@ type ShoppingCartIconProps = {
  *
  * @param {number} numberOfItems Number of items in the shopping cart.
  */
-export const ShoppingCartIcon = ({
-  numberOfItems = 0
-}: ShoppingCartIconProps): JSX.Element => {
+export const ShoppingCartIcon = (): JSX.Element => {
+
+  const cartData = useContext(ShoppingCartWishListContext);
+
+  console.log('cartDtata',cartData);
+
+  const numberOfItems = 1;
+
   const ripples = [0, 0.2, 0.5, 0.7].map(sec => (
     <AddToCartRipple key={`ripple${sec}`} delay={`${sec}s`} />
   ));

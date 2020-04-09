@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SiteLogo } from "../queries/getSiteLogo";
+import { SiteLogo } from "../queries/navigationBarSideDrawerLayout/getSiteLogo";
 import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
 const MyLogo = styled.img`

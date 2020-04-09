@@ -9,9 +9,9 @@ import { SideDrawerMenuItem } from "./SideDrawerMenuItem";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
-import { Category } from "../../queries/getCategories";
-import { SiteLogo } from "../../queries/getSiteLogo";
-import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
+import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
+import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;

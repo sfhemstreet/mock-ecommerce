@@ -1,4 +1,13 @@
-import { fetchQuery } from "../util/fetchQuery";
+import { fetchQuery } from "../../util/fetchQuery";
+
+export type SiteLogo = {
+  NormalLogo: {
+    url: string;
+  }
+  SmallLogo: {
+    url: string;
+  }
+}
 
 const GET_LOGO = `
   {
@@ -12,15 +21,6 @@ const GET_LOGO = `
     }
   }
 `;
-
-export type SiteLogo = {
-  NormalLogo: {
-    url: string;
-  }
-  SmallLogo: {
-    url: string;
-  }
-}
 
 export async function getSiteLogo() {
   const res = await fetchQuery(GET_LOGO);

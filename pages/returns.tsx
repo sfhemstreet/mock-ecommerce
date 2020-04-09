@@ -3,7 +3,7 @@ import { GetStaticProps } from "next";
 import {
   getNavigationBarSideDrawerData,
   NavigationBarSideDrawerData
-} from "../queries/getNavigationBarSideDrawerData";
+} from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Txt } from "../components/Txt";
 import { Column } from "../components/Column";
