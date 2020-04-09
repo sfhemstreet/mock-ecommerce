@@ -1,10 +1,5 @@
 import styled from "styled-components";
 import { GetStaticPaths, GetStaticProps } from "next";
-import {
-  getProductById,
-  ProductInfo,
-  getAllProductsIds
-} from "../../queries/getProducts";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
 import { Row } from "../../components/Row";
@@ -13,16 +8,16 @@ import { Column } from "../../components/Column";
 import { Txt } from "../../components/Txt";
 import { Padded } from "../../components/Padded";
 import { Centered } from "../../components/Centered";
-import { Contained } from "../../components/Contained";
 import { ProductImageDisplay } from "../../components/ProductImageDisplay/ProductImageDisplay";
 import {
   getNavigationBarSideDrawerData,
   NavigationBarSideDrawerData
-} from "../../queries/getNavigationBarSideDrawerData";
+} from "../../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
 import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
+import { getAllProductsIds } from "../../queries/product/getAllProductsIds";
+import { ProductInfo, getProductById } from "../../queries/product/getProductById";
 
-// <BrandLogo src={process.env.BACKEND_URL + product.Brand.Logo.url} />
 const ProductPageContainer = styled.div`
   background: white;
   color: ${props => props.theme.colors.black};
@@ -66,6 +61,7 @@ export default function SingleProductPage({
   navigationBarSideDrawerData,
   product
 }: ProductPageProps) {
+
   return (
     <NavigationBarSideDrawerLayout
       data={navigationBarSideDrawerData}
@@ -125,6 +121,9 @@ export default function SingleProductPage({
 }
 
 export const getStaticProps: GetStaticProps = async context => {
+
+  console.log('context',context);
+
   const id = context.params?.id;
 
   if (typeof id !== "string") {

@@ -1,4 +1,4 @@
-import { fetchQuery } from '../util/fetchQuery';
+import { fetchQuery } from '../../util/fetchQuery';
 
 export type SearchBoxData = {
   data: {

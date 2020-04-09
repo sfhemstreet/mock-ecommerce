@@ -2,19 +2,20 @@ import styled from "styled-components";
 import { GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Padded } from "../components/Padded";
-import { getTop4Products, ProductPreview } from "../queries/getProducts";
+
 import {
   getHomePageContent,
   HomePageContent
-} from "../queries/getHomePageContent";
+} from "../queries/page/getHomePageContent";
 import { mediaDevices } from "../components/DisplayAtMedia";
 import { Centered } from "../components/Centered";
 import { Txt } from "../components/Txt";
 import {
   getNavigationBarSideDrawerData,
   NavigationBarSideDrawerData
-} from "../queries/getNavigationBarSideDrawerData";
+} from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
 import { ProductPreviewCardsList } from "../components/ProductPreviewCard/ProductPreviewCardsList";
+import { getTop4Products, ProductPreview } from "../queries/product/getTop4Products";
 
 type CoverImgProps = {
   mobileSrc: string;

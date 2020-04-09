@@ -4,7 +4,7 @@ import { Row } from "../Row";
 import { SearchIcon } from "./SearchIcon";
 import { Padded } from "../Padded";
 import { Centered } from "../Centered";
-import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 import { SearchBoxResults } from "./SearchBoxResults";
 
 

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { ProductPreview } from "../../queries/getProducts";
+
 import { Contained } from "../Contained";
 import { mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Txt } from "../Txt";
@@ -10,6 +10,7 @@ import { Column } from "../Column";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { useEffect } from "react";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
+import { ProductPreview } from "../../queries/product/getTop4Products";
 
 // ratio used for width height: 1.4375
 

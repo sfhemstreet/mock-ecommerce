@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { ProductPreview } from "../../queries/getProducts";
+
 import { ProductPreviewCard } from "./ProductPreviewCard";
 import { Padded } from "../Padded";
 import { mediaDevices } from "../DisplayAtMedia";
+import { ProductPreview } from "../../queries/product/getTop4Products";
 
 const PPCCContainer = styled.div`
   max-width: 1050px;

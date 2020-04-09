@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 
 const SearchBoxResultsContainer = styled.div`
   width: 138px;

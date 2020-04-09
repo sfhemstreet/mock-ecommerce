@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import Cookie from 'js-cookie';
 import { mediaDevices } from "../DisplayAtMedia";
-import { ProductInfo } from "../../queries/getProducts";
+
 import { Padded } from "../Padded";
 import { ColorPreviewBox } from "../ColorPreviewBox";
 import { Positioned } from "../Positioned";
@@ -14,6 +15,8 @@ import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
+import { ProductInfo } from "../../queries/product/getProductById";
+import { strict } from "assert";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -67,11 +70,44 @@ export const ProductPurchaseOptions = ({
     product.Discount * parseInt(quantityOptions[0].text, 10)
   );
 
+  function getWishListCookie() {
+    if (typeof document !== 'undefined' && document) {
+      const cookieInfo = Cookie.getJSON(`product${product.id}`);
+      console.log(cookieInfo);
+    }
+  }
+
+  function addToWishListCookie() {
+    if (typeof document !== 'undefined' && document) {
+      const cookieName = `product${product.id}`;
+      const cookieInfo = {
+        productId: product.id,
+        productSize: selectedSize,
+        productColor: selectedColor,
+        quantity: selectedQuantity,
+        timeStamp: Date.now()
+      };
+
+      Cookie.set(cookieName, cookieInfo, { sameSite: 'strict', expires: 365 });
+    }
+  }
+
+
   function handleQuantityChange(option: string) {
     const quant = parseInt(option);
     setSelectedQuantity(option);
     setCalculatedCost(product.Price * quant - product.Discount * quant);
   };
+
+  function handleAddToCart() {
+
+  }
+
+  function handleAddToWishList() {
+    addToWishListCookie();
+  }
+
+  getWishListCookie();
 
   return (
     <ProductPurchaseOptionsContainer>
@@ -121,10 +157,10 @@ export const ProductPurchaseOptions = ({
           </Txt>
         )}
         <Padded padding={"10px 3px 3px 3px"}>
-          <AddToCartButton onClick={() => {}} />
+          <AddToCartButton onClick={handleAddToCart} />
         </Padded>
         <Padded padding={"20px 3px 3px 3px"}>
-          <AddToWishListButton isOnWishList={false} onClick={() => {}} />
+          <AddToWishListButton isOnWishList={false} onClick={handleAddToWishList} />
         </Padded>
       </Column>
     </ProductPurchaseOptionsContainer>

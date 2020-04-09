@@ -12,9 +12,9 @@ import { MenuIcon } from "../MenuIcon";
 import { ShoppingCartIcon } from "../ShoppingCartIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
-import { Category } from "../../queries/getCategories";
-import { SiteLogo } from "../../queries/getSiteLogo";
-import { SearchBoxData } from "../../queries/getSearchBoxData";
+import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
+import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
+import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 import { WishListIcon } from "../WishListIcon";
 
 
@@ -158,7 +158,7 @@ export function NavigationBar({
               <Padded padRight={"10px"}>
                 <WishListIcon />  
               </Padded>
-              <ShoppingCartIcon numberOfItems={1} />
+              <ShoppingCartIcon />
             </Row>
           </Padded>
         </Row>

@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from "react";
+import { ShoppingCartWishListContext, getShoppingCartWishListCookies } from "../context/ShoppingCartWishListContext";
 import { BackgroundBlackGradient } from "../components/Background";
 import { NavigationBar } from "../components/NavigationBar/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
@@ -7,7 +8,7 @@ import { Transformed } from "../components/Transformed";
 import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
-import { NavigationBarSideDrawerData } from "../queries/getNavigationBarSideDrawerData";
+import { NavigationBarSideDrawerData } from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
 import { Footer } from "../components/Footer";
 
 type NavigationBarSideDrawerLayoutProps = {
@@ -38,46 +39,52 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
 
   return (
-    <FullPageContainer>
-      <BackgroundBlackGradient>
-        <SideDrawer
-          open={isSideDrawerOpen}
-          setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
-          minWidth={sideDrawerClosedWidth}
-          maxWidth={sideDrawerOpenWidth}
-          borderWidth={sideDrawerBorderWidth}
-        >
-          <SideDrawerMenu 
-            searchBoxData={data.searchBoxData}
-            siteLogo={data.siteLogo}
-            sideDrawerWidth={sideDrawerOpenWidth}
-            navigationContent={data.navCategories}
-          />
-        </SideDrawer>
-        <div onClick={() => {if (isSideDrawerOpen) setSideDrawerOpen(false)}}>
-          <Transformed
-            isTransformed={isSideDrawerOpen}
-            transform={`translateX(${sideDrawerOpenWidth}px)`}
-            transition={AppTheme.transitions.sideDrawer}
+    <ShoppingCartWishListContext.Provider value={getShoppingCartWishListCookies()}>
+      <FullPageContainer>
+        <BackgroundBlackGradient>
+          <SideDrawer
+            open={isSideDrawerOpen}
+            setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
+            minWidth={sideDrawerClosedWidth}
+            maxWidth={sideDrawerOpenWidth}
+            borderWidth={sideDrawerBorderWidth}
           >
-            <NavigationBar
+            <SideDrawerMenu
               searchBoxData={data.searchBoxData}
-              isSideDrawerOpen={isSideDrawerOpen}
-              onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
-              navigationContent={data.navCategories}
               siteLogo={data.siteLogo}
+              sideDrawerWidth={sideDrawerOpenWidth}
+              navigationContent={data.navCategories}
             />
-            <Filtered
-              isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
-              filter={"grayscale(100%)"}
+          </SideDrawer>
+          <div
+            onClick={() => {
+              if (isSideDrawerOpen) setSideDrawerOpen(false);
+            }}
+          >
+            <Transformed
+              isTransformed={isSideDrawerOpen}
+              transform={`translateX(${sideDrawerOpenWidth}px)`}
               transition={AppTheme.transitions.sideDrawer}
             >
-              {children}
-            </Filtered>
-            <Footer />
-          </Transformed>
-        </div>
-      </BackgroundBlackGradient>
-    </FullPageContainer>
+              <NavigationBar
+                searchBoxData={data.searchBoxData}
+                isSideDrawerOpen={isSideDrawerOpen}
+                onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
+                navigationContent={data.navCategories}
+                siteLogo={data.siteLogo}
+              />
+              <Filtered
+                isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
+                filter={"grayscale(100%)"}
+                transition={AppTheme.transitions.sideDrawer}
+              >
+                {children}
+              </Filtered>
+              <Footer />
+            </Transformed>
+          </div>
+        </BackgroundBlackGradient>
+      </FullPageContainer>
+    </ShoppingCartWishListContext.Provider>
   );
 };
