@@ -1,5 +1,6 @@
-import React, { FunctionComponent, useState, useEffect } from "react";
-import { ShoppingCartWishListContext, getShoppingCartWishListCookies } from "../context/ShoppingCartWishListContext";
+import React, { FunctionComponent, useState } from "react";
+import { Provider } from "react-redux";
+import { getOrCreateStore, setLocalStorageState } from "../redux/store";
 import { BackgroundBlackGradient } from "../components/Background";
 import { NavigationBar } from "../components/NavigationBar/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
@@ -38,8 +39,9 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
 }): JSX.Element => {
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
 
+ 
+
   return (
-    <ShoppingCartWishListContext.Provider value={getShoppingCartWishListCookies()}>
       <FullPageContainer>
         <BackgroundBlackGradient>
           <SideDrawer
@@ -85,6 +87,5 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
           </div>
         </BackgroundBlackGradient>
       </FullPageContainer>
-    </ShoppingCartWishListContext.Provider>
   );
 };

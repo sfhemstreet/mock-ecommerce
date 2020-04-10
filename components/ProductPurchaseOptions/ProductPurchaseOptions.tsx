@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import Cookie from 'js-cookie';
+import { connect } from 'react-redux';
+import { addItemToWishList } from '../../redux/wishListActions';
 import { mediaDevices } from "../DisplayAtMedia";
 
 import { Padded } from "../Padded";
@@ -16,7 +17,8 @@ import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
 import { ProductInfo } from "../../queries/product/getProductById";
-import { strict } from "assert";
+import { WishListItem, WishListActionTypes } from "../../redux/wishListTypes";
+
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -34,10 +36,12 @@ const ProductOptionLabel = styled.label`
 
 type ProductPurchaseOptionsProps = {
   product: ProductInfo;
+  addItemToWishList: (item: WishListItem) => WishListActionTypes
 };
 
-export const ProductPurchaseOptions = ({
-  product
+const ProductPurchaseOptionsComponent = ({
+  product,
+  addItemToWishList
 }: ProductPurchaseOptionsProps) => {
   // Create SelectBoxOption objects for all options.
   // This alllows us to display a visual along with the text.
@@ -70,27 +74,9 @@ export const ProductPurchaseOptions = ({
     product.Discount * parseInt(quantityOptions[0].text, 10)
   );
 
-  function getWishListCookie() {
-    if (typeof document !== 'undefined' && document) {
-      const cookieInfo = Cookie.getJSON(`product${product.id}`);
-      console.log(cookieInfo);
-    }
-  }
+ 
 
-  function addToWishListCookie() {
-    if (typeof document !== 'undefined' && document) {
-      const cookieName = `product${product.id}`;
-      const cookieInfo = {
-        productId: product.id,
-        productSize: selectedSize,
-        productColor: selectedColor,
-        quantity: selectedQuantity,
-        timeStamp: Date.now()
-      };
 
-      Cookie.set(cookieName, cookieInfo, { sameSite: 'strict', expires: 365 });
-    }
-  }
 
 
   function handleQuantityChange(option: string) {
@@ -104,10 +90,16 @@ export const ProductPurchaseOptions = ({
   }
 
   function handleAddToWishList() {
-    addToWishListCookie();
+    const item: WishListItem = {
+      productId: product.id,
+      productName: product.Name,
+      productSize: selectedSize,
+      productColor: selectedColor,
+      quantity: parseInt(selectedQuantity, 10)
+    }
+    addItemToWishList(item);
   }
 
-  getWishListCookie();
 
   return (
     <ProductPurchaseOptionsContainer>
@@ -166,3 +158,5 @@ export const ProductPurchaseOptions = ({
     </ProductPurchaseOptionsContainer>
   );
 };
+
+export const ProductPurchaseOptions = connect(null, { addItemToWishList })(ProductPurchaseOptionsComponent);

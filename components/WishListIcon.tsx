@@ -1,5 +1,9 @@
+import { connect } from 'react-redux';
 import styled, { css } from "styled-components";
 import { UpDownWait } from "../keyframes/UpDownWait";
+import { RootState } from '../redux/rootReducer';
+import { WishListItem } from '../redux/wishListTypes';
+import { useEffect } from 'react';
 
 const ShakeAnimationMixin = css `
   animation: ${UpDownWait} 15s linear infinite;
@@ -43,7 +47,7 @@ const WishListFilledSVG = styled.svg`
 
 
 type WishListIconProps = {
-  numberOfItems?: number;
+  items: WishListItem[];
 };
 
 /**
@@ -51,13 +55,14 @@ type WishListIconProps = {
  *
  * @param {number} numberOfItems Number of items in the shopping cart.
  */
-export const WishListIcon = ({
-  numberOfItems = 1
+const WishListIconComponent = ({
+  items
 }: WishListIconProps): JSX.Element => {
 
+
   return (
-    <WishListContainer tabIndex={0} willShake={numberOfItems > 0}>
-      {numberOfItems > 0 ? (
+    <WishListContainer tabIndex={0} willShake={items.length > 0}>
+      {items.length > 0 ? (
         <WishListFilledSVG
           xmlns="http://www.w3.org/2000/svg"
           height="24"
@@ -81,3 +86,12 @@ export const WishListIcon = ({
     </WishListContainer>
   );
 };
+
+const mapStateToProps = (state: RootState) => {
+  const items = state.wishList.products;
+  return {
+    items: items
+  }
+}
+
+export const WishListIcon = connect(mapStateToProps)(WishListIconComponent);
