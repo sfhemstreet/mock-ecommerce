@@ -6,6 +6,7 @@ const shoppingCartInitState: ShoppingCartState = {
 }
 
 export const shoppingCartReducer = (state = shoppingCartInitState, action: ShoppingCartActionTypes): ShoppingCartState => {
+  console.log('in shopping cart reducer')
   switch (action.type) {
     case ADD_ITEM_TO_SHOPPING_CART:
       return {
@@ -13,7 +14,7 @@ export const shoppingCartReducer = (state = shoppingCartInitState, action: Shopp
       }
     case ADD_ALL_ITEMS_TO_SHOPPING_CART:
       return {
-        products: [...state.products, ...action.payload.items]
+        products: [...action.payload.items]
       }
     case REMOVE_ITEM_FROM_SHOPPING_CART:
       return {

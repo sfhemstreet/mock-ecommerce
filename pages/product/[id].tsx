@@ -122,8 +122,6 @@ export default function SingleProductPage({
 
 export const getStaticProps: GetStaticProps = async context => {
 
-  console.log('context',context);
-
   const id = context.params?.id;
 
   if (typeof id !== "string") {
