@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
+import useSWR from "swr";
 
 const SearchBoxResultsContainer = styled.div`
   width: 138px;
@@ -48,11 +48,10 @@ type SearchResult = {
 };
 
 type SearchBoxResultsProps = {
-  data: SearchBoxData;
   text: string;
 };
 
-export function SearchBoxResults({ data, text }: SearchBoxResultsProps) {
+export function SearchBoxResults({ text }: SearchBoxResultsProps) {
   // check for local storage
   // show past history if text is ""
   // show relevant history if matches text

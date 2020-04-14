@@ -1,18 +1,17 @@
 import { getProductsBaseQuery } from "./getProducts";
 
-
 export type ProductPreview = {
-  id: number;
+  id: string;
   Name: string;
-  Price: string;
+  Price: number;
   Brand: {
+    id: string;
     Name: string;
     Logo: {
       url: string;
     }
   }
   Preview: {
-    name: string;
     url: string;
   }
 }
@@ -24,13 +23,13 @@ const GET_TOP_4_PRODUCTS = `
       Name
       Price
       Brand {
+        id
         Name
         Logo {
           url
         }
       }
       Preview {
-        name
         url
       }
     }

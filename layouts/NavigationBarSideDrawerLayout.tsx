@@ -1,6 +1,4 @@
 import React, { FunctionComponent, useState } from "react";
-import { Provider } from "react-redux";
-import { getOrCreateStore, setLocalStorageState } from "../redux/store";
 import { BackgroundBlackGradient } from "../components/Background";
 import { NavigationBar } from "../components/NavigationBar/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
@@ -39,8 +37,6 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
 }): JSX.Element => {
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
 
- 
-
   return (
       <FullPageContainer>
         <BackgroundBlackGradient>
@@ -52,7 +48,6 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
             borderWidth={sideDrawerBorderWidth}
           >
             <SideDrawerMenu
-              searchBoxData={data.searchBoxData}
               siteLogo={data.siteLogo}
               sideDrawerWidth={sideDrawerOpenWidth}
               navigationContent={data.navCategories}
@@ -69,7 +64,6 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
               transition={AppTheme.transitions.sideDrawer}
             >
               <NavigationBar
-                searchBoxData={data.searchBoxData}
                 isSideDrawerOpen={isSideDrawerOpen}
                 onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
                 navigationContent={data.navCategories}

@@ -1,7 +1,7 @@
 import { fetchQuery } from "../../util/fetchQuery";
 
 export type Category = {
-  id?: number;
+  id?: string;
   Name: string;
   SubCategories?: Category[];
 };

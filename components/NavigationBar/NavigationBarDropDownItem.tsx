@@ -1,4 +1,3 @@
-import styled from "styled-components";
 import { Contained } from "../Contained";
 import { Row } from "../Row";
 import { Txt } from "../Txt";

@@ -113,12 +113,12 @@ const ThumbnailContainer = styled.div<{ highlight: boolean }>`
 `;
 
 const PhotoZoomedModalBackground = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
 
   width: 100%;
-  height: 100%;
+  height: 100vh;
 
   display: flex;
   align-items: flex-start;
@@ -128,17 +128,17 @@ const PhotoZoomedModalBackground = styled.div`
 
   z-index: ${props => props.theme.zIndexes.modal};
 
-  overflow: scroll;
-
   @media ${mediaDevices.tablet} {
     justify-content: center;
   }
 `;
 
 const PhotoZoomedModal = styled.img`
-  width: 100%;
+  width: auto;
   height: auto;
-  max-width: 1000px;
+  max-height: 100%;
+  max-width: 100%;
+  
 
   padding: 20px;
   margin: 0 auto;

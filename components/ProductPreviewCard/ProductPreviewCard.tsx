@@ -1,14 +1,11 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
-import { Contained } from "../Contained";
 import { mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Txt } from "../Txt";
-import { Row } from "../Row";
 import { Padded } from "../Padded";
 import { Column } from "../Column";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
-import { useEffect } from "react";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { ProductPreview } from "../../queries/product/getTop4Products";
 

@@ -9,14 +9,12 @@ import { SearchBox } from "../SearchBox/SearchBox";
 import { Padded } from "../Padded";
 import { DisplayAtMedia } from "../DisplayAtMedia";
 import { MenuIcon } from "../MenuIcon";
-import { ShoppingCartIcon } from "../ShoppingCartIcon";
+import { ShoppingCartNavigationIcon } from "../ShoppingCart/ShoppingCartNavigationIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
 import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
 import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
-import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
-import { WishListIcon } from "../WishListIcon";
-
+import { WishListNavigationIcon } from "../WishList/WishListNavigationIcon";
 
 export const NAV_HEIGHT = "85px";
 
@@ -51,7 +49,6 @@ const initNavigationBarState = {
 };
 
 type NavigationBarProps = {
-  searchBoxData: SearchBoxData,
   siteLogo: SiteLogo;
   navigationContent: Category[];
   isSideDrawerOpen: boolean;
@@ -59,7 +56,6 @@ type NavigationBarProps = {
 };
 
 export function NavigationBar({
-  searchBoxData,
   siteLogo,
   navigationContent,
   isSideDrawerOpen,
@@ -149,16 +145,15 @@ export function NavigationBar({
               <DisplayAtMedia desktop>
                 <Padded padRight={"10px"}>
                   <SearchBox
-                    data={searchBoxData}
                     isActive={state.searchBoxActive}
                     onActiveClick={handleSearchOpenClose}
                   />
                 </Padded>
               </DisplayAtMedia>
               <Padded padRight={"10px"}>
-                <WishListIcon />  
+                <WishListNavigationIcon /> 
               </Padded>
-              <ShoppingCartIcon />
+              <ShoppingCartNavigationIcon /> 
             </Row>
           </Padded>
         </Row>
