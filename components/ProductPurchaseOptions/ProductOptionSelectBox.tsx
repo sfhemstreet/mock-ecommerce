@@ -90,7 +90,7 @@ const ProductSelectBoxContainer = styled.div`
   }
 `;
 
-const ProductSelectBoxModalBackground = styled.div`
+const ProductSelectBoxModalBackground = styled.div<{ state: TransitionStatus }>`
   position: fixed;
   top: 0px;
   left: 0px;
@@ -98,11 +98,12 @@ const ProductSelectBoxModalBackground = styled.div`
   width: 100%;
   height: 100%;
 
-  backdrop-filter: blur(1px) grayscale(100%);
+  backdrop-filter: blur(1px) grayscale(100%) brightness(30%);
   
   z-index: ${props => props.theme.zIndexes.modal};
 
-  transition: backdrop-filter 0.3s ease-in-out;
+  transition: all 0.3s linear;
+  opacity: ${props => props.state === ENTERED ? 1 : 0};
 `;
 
 const ProductSelectBoxModal = styled.div<{ state: TransitionStatus }>`
@@ -139,9 +140,14 @@ const ProductSelectBoxModalItem = styled.div`
 
   display: flex;
   align-items: center;
+
+  color: ${props => props.theme.colors.black};
+  background: ${props => props.theme.colors.white};
 `;
 
 const ProductSelectBoxModalTitle = styled(ProductSelectBoxModalItem)`
+  color: ${props => props.theme.colors.white};
+  background: ${props => props.theme.colors.green};
   border-bottom: solid 1px ${props => props.theme.colors.black};
 `;
 
@@ -267,6 +273,7 @@ export const ProductOptionSelectBox = ({
           {state => (
             <DisplayAtMedia mobile>
               <ProductSelectBoxModalBackground
+                state={state}
                 onClick={() => setIsActive(!isActive)}
                 onKeyPress={accessibleEnterKeyPress(() =>
                   setIsActive(!isActive)

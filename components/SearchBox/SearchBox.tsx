@@ -1,10 +1,8 @@
 import styled from "styled-components";
-import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Row } from "../Row";
 import { SearchIcon } from "./SearchIcon";
-import { Padded } from "../Padded";
 import { Centered } from "../Centered";
-import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 import { SearchBoxResults } from "./SearchBoxResults";
 
 
@@ -37,14 +35,12 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
 `;
 
 type SearchBoxProps = {
-  data: SearchBoxData,
   isActive: boolean;
   onActiveClick: () => void;
   focusOnActive?: boolean;
 };
 
 export const SearchBox = ({
-  data,
   isActive,
   onActiveClick,
   focusOnActive = true,
@@ -61,8 +57,6 @@ export const SearchBox = ({
     }
   }, [isActive]);
 
-
-  
   return (
     <SearchBoxContainer>
       <Row alignCenter justifyEnd>
@@ -79,7 +73,7 @@ export const SearchBox = ({
         />
       </Row>
       {isActive && (
-        <SearchBoxResults data={data} text={searchText}/>
+        <SearchBoxResults text={searchText}/>
       )}
     </SearchBoxContainer>
   );

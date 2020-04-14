@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import useSWR from 'swr';
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
@@ -17,6 +18,7 @@ import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
 import { getAllProductsIds } from "../../queries/product/getAllProductsIds";
 import { ProductInfo, getProductById } from "../../queries/product/getProductById";
+import { WISHLIST, storage, SHOPPING_CART } from "../../storage/storage";
 
 const ProductPageContainer = styled.div`
   background: white;
@@ -120,6 +122,7 @@ export default function SingleProductPage({
   );
 }
 
+
 export const getStaticProps: GetStaticProps = async context => {
 
   const id = context.params?.id;
@@ -151,3 +154,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false
   };
 };
+
+
+

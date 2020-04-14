@@ -11,13 +11,11 @@ import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
 import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
 import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
-import { SearchBoxData } from "../../queries/navigationBarSideDrawerLayout/getSearchBoxData";
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;
 
 type SideDrawerMenuProps = {
-  searchBoxData: SearchBoxData,
   siteLogo: SiteLogo;
   navigationContent: Category[];
   sideDrawerWidth: number;
@@ -33,7 +31,6 @@ type SideDrawerMenuProps = {
  * @todo Add Link from next/link to headers and last subItems
  */
 export const SideDrawerMenu = ({
-  searchBoxData,
   siteLogo,
   navigationContent,
   sideDrawerWidth
@@ -106,7 +103,6 @@ export const SideDrawerMenu = ({
                 <Row alignCenter justifyEvenly>
                   <LogoSmall siteLogo={siteLogo}/>
                   <SearchBox
-                    data={searchBoxData}
                     isActive={isSearchBoxActive}
                     onActiveClick={handleSearchActive}
                   />

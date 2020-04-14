@@ -2,9 +2,9 @@ import { fetchQuery } from "../../util/fetchQuery";
 import { sortProductPhotos } from "../../util/sortProductPhotos";
 
 export type ProductInfo = {
-  id: number;
+  id: string;
   Brand: {
-    id: number;
+    id: string;
     Name: string;
     Logo: {
       url: string;
@@ -29,12 +29,15 @@ export type ProductInfo = {
   Ranking: number;
   UnitsInStock: number;
   Category: {
-    id: number;
+    id: string;
     Name: string;
   }
   Subcategory: {
-    id: number;
+    id: string;
     Name: string;
+  }
+  Preview: {
+    url: string;
   }
 }
 
@@ -58,6 +61,9 @@ export async function getProductById(id: string) {
         }
         Pictures {
           name
+          url
+        }
+        Preview {
           url
         }
         Price

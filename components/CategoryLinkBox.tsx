@@ -10,11 +10,11 @@ const CategoryLink = styled.a`
 
 type CategoryLinkBoxProps = {
   mainCategory: {
-    id: number;
+    id: string;
     Name: string;
   };
   subCategory: {
-    id: number;
+    id: string;
     Name: string;
   };
 };
