@@ -1,4 +1,4 @@
-import { StoredProductList, StoredProduct } from "./types";
+import { StoredProductList, StoredProduct, ModalsState } from "./types";
 import { SearchItemList, SearchItem } from "./searchHistory/searchHistoryTypes";
 
 export const storedProductListInitState: StoredProductList = {
@@ -8,3 +8,13 @@ export const storedProductListInitState: StoredProductList = {
 export const searchHistoryInitState: SearchItemList = {
   items: Array<SearchItem>()
 }
+
+export const modalsInitState: ModalsState = {
+  wishlist: {
+    isOpen: false
+  },
+  shoppingCart: {
+    isOpen: false
+  }
+}
+

@@ -8,6 +8,7 @@ export const shoppingCartReducer = (state = storedProductListInitState, action: 
     case ADD_ITEM_TO_SHOPPING_CART:
       // check if item is in shopping cart
       const indexOfProduct = state.products.findIndex(product => product.id === action.payload.item.id);
+    
       if (indexOfProduct !== -1) {
         const product = state.products[indexOfProduct];
         // check if item is exactly the same size and color as the one already in wishlist
@@ -35,7 +36,9 @@ export const shoppingCartReducer = (state = storedProductListInitState, action: 
     case REMOVE_ITEM_FROM_SHOPPING_CART:
       return { 
         ...state, 
-        products: [...state.products.filter(product => product.id !== action.payload.id)] 
+        products: [...state.products.filter(product => 
+          !(product.id === action.payload.id && product.timeAdded === action.payload.timeAdded)
+        )] 
       }
     case REMOVE_ALL_ITEMS_FROM_SHOPPING_CART:
       return { 

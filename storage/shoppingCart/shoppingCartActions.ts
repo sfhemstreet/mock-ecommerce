@@ -16,10 +16,10 @@ export function addAllItemsToShoppingCart(items: StoredProduct[]): ShoppingCartA
   }
 }
 
-export function removeItemFromShoppingCart(itemId: string): ShoppingCartActionTypes {
+export function removeItemFromShoppingCart(itemId: string, timeAdded: number): ShoppingCartActionTypes {
   return {
     type: REMOVE_ITEM_FROM_SHOPPING_CART,
-    payload: { id: itemId }
+    payload: { id: itemId, timeAdded }
   }
 }
 

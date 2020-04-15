@@ -23,7 +23,7 @@ export interface AddAllWishListItemsAction {
 
 export interface RemoveWishListItemAction {
   type: typeof REMOVE_ITEM_FROM_WISHLIST;
-  payload: { id: string };
+  payload: { id: string, timeAdded: number };
 }
 
 export interface RemoveAllWishListItemsAction {
