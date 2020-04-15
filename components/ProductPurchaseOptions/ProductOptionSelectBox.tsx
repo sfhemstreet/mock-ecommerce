@@ -1,5 +1,5 @@
-import styled, { WithThemeFnInterface } from "styled-components";
-import { useState, useRef, useEffect, MouseEvent } from "react";
+import styled from "styled-components";
+import { useState, useRef, useEffect } from "react";
 import { Transition } from "react-transition-group";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
@@ -8,6 +8,7 @@ import { Contained } from "../Contained";
 import { ENTERED, TransitionStatus } from "react-transition-group/Transition";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export type SelectBoxOption = {
   text: string;
@@ -43,7 +44,7 @@ const DropDownArrow = styled.div<{ shouldPointDown: boolean }>`
   transition: all 0.3s ease-in-out;
 `;
 
-const OptionsContainer = styled.div<{state: TransitionStatus}>`
+const OptionsContainer = styled.div<{ state: TransitionStatus }>`
   position: absolute;
   top: 40px;
   left: -1px;
@@ -99,16 +100,16 @@ const ProductSelectBoxModalBackground = styled.div<{ state: TransitionStatus }>`
   height: 100%;
 
   backdrop-filter: blur(1px) grayscale(100%) brightness(30%);
-  
+
   z-index: ${props => props.theme.zIndexes.modal};
 
   transition: all 0.3s linear;
-  opacity: ${props => props.state === ENTERED ? 1 : 0};
+  opacity: ${props => (props.state === ENTERED ? 1 : 0)};
 `;
 
 const ProductSelectBoxModal = styled.div<{ state: TransitionStatus }>`
   position: absolute;
-  bottom: ${props => props.state === ENTERED ? "50px" : "-300px"};
+  bottom: ${props => (props.state === ENTERED ? "50px" : "-300px")};
   left: 0px;
 
   transition: all 0.3s ease-in-out;
@@ -131,11 +132,18 @@ const ModalScrollArea = styled.div`
   overflow-x: hidden;
 `;
 
-const ProductSelectBoxModalItem = styled.div`
+const ProductSelectBoxModalItem = styled.div<{ isFiltered?: boolean }>`
   width: 100%;
   height: 40px;
 
-  border-bottom: solid 1px ${props => props.theme.colors.transparentBlack};
+  border-bottom: ${props =>
+    props.isFiltered
+      ? "none"
+      : `solid 1px ${props.theme.colors.transparentBlack}`};
+  border-top: ${props =>
+    props.isFiltered
+      ? "none"
+      : `solid 1px ${props.theme.colors.transparentBlack}`};
   padding: 5px;
 
   display: flex;
@@ -148,7 +156,7 @@ const ProductSelectBoxModalItem = styled.div`
 const ProductSelectBoxModalTitle = styled(ProductSelectBoxModalItem)`
   color: ${props => props.theme.colors.white};
   background: ${props => props.theme.colors.green};
-  border-bottom: solid 1px ${props => props.theme.colors.black};
+  border-bottom: none;
 `;
 
 type ProductSelectBoxProps = {
@@ -166,33 +174,13 @@ export const ProductOptionSelectBox = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectorRef = useRef<HTMLDivElement>(null);
+  useOutsideClick(selectorRef, () => setIsActive(false));
 
   function handleSelection(index: number) {
     setIsActive(false);
     setSelectedIndex(index);
     onChange(options[index].text);
-  };
-
-  function handleOutsideClick(evt: globalThis.MouseEvent) {
-    if (selectorRef.current && !(selectorRef.current! as any).contains(evt.target)){
-      setIsActive(false);
-    }
   }
-
-  function handleOutsideEnterKeyPress(evt: KeyboardEvent) {
-    if (evt.key === 'Enter' && selectorRef.current && !(selectorRef.current! as any).contains(evt.target)){
-      setIsActive(false);
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('click', handleOutsideClick, false);
-    document.addEventListener('keypress', handleOutsideEnterKeyPress, false);
-    return () => {
-      document.removeEventListener('click', handleOutsideClick, false);
-      document.removeEventListener('keypress', handleOutsideEnterKeyPress, false);
-    }
-  });
 
   return (
     <>
@@ -202,10 +190,7 @@ export const ProductOptionSelectBox = ({
         tabIndex={0}
         ref={selectorRef}
       >
-        <Row
-          justifyBetween
-          alignCenter
-        >
+        <Row justifyBetween alignCenter>
           <Contained>
             <Row alignCenter>
               {options[selectedIndex].visual && (
@@ -236,9 +221,7 @@ export const ProductOptionSelectBox = ({
           >
             {state => (
               <DisplayAtMedia tablet laptop desktop>
-                <OptionsContainer
-                  state={state}
-                >
+                <OptionsContainer state={state}>
                   {options.map((option, index) => (
                     <Option
                       onClick={() => handleSelection(index)}
@@ -281,7 +264,9 @@ export const ProductOptionSelectBox = ({
               >
                 <ProductSelectBoxModal state={state}>
                   <ProductSelectBoxModalTitle>
-                    <Txt bold padding={"0px 0px 0px 30px"}>{label}:</Txt>
+                    <Txt bold padding={"0px 0px 0px 30px"}>
+                      {label}:
+                    </Txt>
                   </ProductSelectBoxModalTitle>
                   <ModalScrollArea>
                     {options.map((option, index) => (
@@ -292,12 +277,18 @@ export const ProductOptionSelectBox = ({
                         )}
                         tabIndex={0}
                         key={`modalDropDownOption${option.text}${index}`}
+                        isFiltered={index !== selectedIndex}
                       >
                         <Row justifyAround alignCenter>
                           {option.visual && (
                             <Padded padLeft={"10px"}>{option.visual}</Padded>
                           )}
-                          <Txt padding={"0px 0px 0px 10px"}>{option.text}</Txt>
+                          <Txt
+                            bold={index === selectedIndex}
+                            padding={"0px 0px 0px 10px"}
+                          >
+                            {option.text}
+                          </Txt>
                         </Row>
                       </ProductSelectBoxModalItem>
                     ))}

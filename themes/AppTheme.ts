@@ -35,6 +35,8 @@ enum Transitions {
 
 enum ZIndexes {
   productOptionSelecter = '10',
+  modalBelowNavigationBar = '18',
+  navigationBar = '19',
   sideDrawer = '20',
   searchBoxResults = '30',
   modal = '40',

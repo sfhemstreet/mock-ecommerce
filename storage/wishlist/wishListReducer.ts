@@ -19,18 +19,35 @@ export const wishListReducer = (state = storedProductListInitState, action: Wish
           // since its the same exact item increase quantity by item quantity 
           const changedProduct: StoredProduct = { ...product };
           changedProduct.Quantity = changedProduct.Quantity + action.payload.item.Quantity;
+
           // Filter state to get rid of old product and insert chnagedProduct
-          return { ...state ,products: [...state.products.filter((_, index) => index !== indexOfProduct), changedProduct] }
+          return {
+            ...state,
+            products: [
+              ...state.products.filter(
+                (_, index) => index !== indexOfProduct), changedProduct
+            ]
+          }
         }
       }
+      
       // item is not already in wishlist, just add it to products
       return { ...state, products: [...state.products, action.payload.item] }
+
     case ADD_ALL_ITEMS_TO_WISHLIST:
       return { ...state, products: [...action.payload.items] }
+
     case REMOVE_ITEM_FROM_WISHLIST:
-      return { ...state, products: [...state.products.filter(product => product.id !== action.payload.id)] }
+      return {
+        ...state,
+        products: [...state.products.filter(product =>
+          !(product.id === action.payload.id && product.timeAdded === action.payload.timeAdded)
+        )]
+      }
+
     case REMOVE_ALL_ITEMS_FROM_WISHLIST:
       return { ...state, products: [] }
+
     default:
       return state;
   }

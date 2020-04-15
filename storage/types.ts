@@ -1,7 +1,10 @@
 export type StoredProduct = {
+  timeAdded: number;
   id: string;
   Name: string;
   Price: number;
+  Discount: number;
+  MSRP: number;
   Brand: {
     id: string;
     Name: string;
@@ -19,4 +22,13 @@ export type StoredProduct = {
 
 export type StoredProductList = {
   products: StoredProduct[]
+}
+
+export type ModalsState = {
+  wishlist: Modal,
+  shoppingCart: Modal
+}
+
+export type Modal = {
+  isOpen: boolean;
 }

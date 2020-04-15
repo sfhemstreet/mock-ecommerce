@@ -2,6 +2,16 @@ import styled from "styled-components";
 import useSWR, { mutate } from "swr";
 import { addItemToWishList } from "../../storage/wishlist/wishListActions";
 import { addItemToShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";
+import {
+  SHOPPING_CART,
+  WISHLIST,
+  updateShoppingCart,
+  updateWishList,
+  getShoppingCart,
+  getWishlist,
+  updateModalsState
+} from "../../storage/storage";
+
 import { mediaDevices } from "../DisplayAtMedia";
 import { Padded } from "../Padded";
 import { ColorPreviewBox } from "../ColorPreviewBox";
@@ -15,17 +25,10 @@ import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
 import { ProductInfo } from "../../queries/product/getProductById";
-import {
-  SHOPPING_CART,
-  storage,
-  WISHLIST,
-  updateShoppingCart,
-  updateWishList,
-  getShoppingCart,
-  getWishlist
-} from "../../storage/storage";
-import { StoredProduct, StoredProductList } from "../../storage/types";
-
+import { StoredProduct } from "../../storage/types";
+import { Row } from "../Row";
+import { BrandLogo } from "../BrandLogo";
+import { openWishListModal, openShoppingCartModal } from "../../storage/modals/modalActions";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -33,6 +36,10 @@ const ProductPurchaseOptionsContainer = styled.div`
 
   @media ${mediaDevices.tablet} {
     width: 200px;
+  }
+
+  @media ${mediaDevices.laptopL} {
+    width: 310px;
   }
 `;
 
@@ -94,36 +101,62 @@ export const ProductPurchaseOptions = ({
   }
 
   function handleAddToCart() {
+    const now = Date.now();
     const item: StoredProduct = {
+      timeAdded: now,
       id: product.id,
       Price: product.Price,
+      MSRP: product.MSRP,
+      Discount: product.Discount,
       Name: product.Name,
       Brand: product.Brand,
       Size: selectedSize,
       Color: selectedColor,
       Quantity: parseInt(selectedQuantity, 10),
-      Preview: product.Preview
+      Preview: { url: product.Thumbnails[0].url }
     };
-    updateShoppingCart(mutate, addItemToShoppingCart(item), shoppingCart.data);
+    updateShoppingCart(mutate, addItemToShoppingCart(item));
+    updateModalsState(mutate, openShoppingCartModal()); 
   }
 
   function handleAddToWishList() {
+    const now = Date.now();
     const item: StoredProduct = {
+      timeAdded: now,
       id: product.id,
       Price: product.Price,
+      MSRP: product.MSRP,
+      Discount: product.Discount,
       Name: product.Name,
       Brand: product.Brand,
       Size: selectedSize,
       Color: selectedColor,
       Quantity: parseInt(selectedQuantity, 10),
-      Preview: product.Preview
+      Preview: { url: product.Thumbnails[0].url }
     };
-    updateWishList(mutate, addItemToWishList(item), wishList.data);
+    updateWishList(mutate, addItemToWishList(item));
+    updateModalsState(mutate, openWishListModal()); 
   }
 
   return (
     <ProductPurchaseOptionsContainer>
-      <Column>
+      <Column alignCenter>
+        <Padded padding={"10px 0px"}>
+          <Row justifyEvenly alignCenter>
+            <Column>
+              <Txt alignCenter>{product.Brand.Name}</Txt>
+              <Txt big bold alignCenter>
+                {product.Name}
+              </Txt>
+            </Column>
+            <Padded padLeft={"20px"}>
+              <BrandLogo
+                src={process.env.BACKEND_URL + product.Brand.Logo.url}
+                alt={`${product.Brand.Name} Logo`}
+              />
+            </Padded>
+          </Row>
+        </Padded >
         <Padded padding={"3px"}>
           <ProductOptionLabel>
             Select a Size:

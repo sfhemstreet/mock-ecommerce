@@ -22,7 +22,7 @@ export interface AddAllShoppingCartItemsAction {
 
 export interface RemoveShoppingCartItemAction {
   type: typeof REMOVE_ITEM_FROM_SHOPPING_CART;
-  payload: { id: string }
+  payload: { id: string, timeAdded: number }
 }
 
 export interface RemoveAllShoppingCartItemsAction {

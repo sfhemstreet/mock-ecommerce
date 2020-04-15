@@ -15,6 +15,7 @@ import { Positioned } from "../Positioned";
 import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
 import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
 import { WishListNavigationIcon } from "../WishList/WishListNavigationIcon";
+import { AppTheme } from '../../themes/AppTheme';
 
 export const NAV_HEIGHT = "85px";
 
@@ -83,7 +84,7 @@ export function NavigationBar({
   };
 
   return (
-    <Positioned zIndex={4} >
+    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)} >
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
           <DisplayAtMedia mobile tablet laptop>

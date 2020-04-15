@@ -23,11 +23,11 @@ export function addAllItemsToWishList(items: StoredProduct[]): WishListActionTyp
   }
 }
 
-export function removeItemFromWishlist(itemId: string): WishListActionTypes {
+export function removeItemFromWishlist(itemId: string, timeAdded: number): WishListActionTypes {
   console.log("ACTION: removeItemFromWishList")
   return {
     type: REMOVE_ITEM_FROM_WISHLIST,
-    payload: { id: itemId }
+    payload: { id: itemId, timeAdded }
   }
 }
 

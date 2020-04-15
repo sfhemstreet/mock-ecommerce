@@ -1,10 +1,7 @@
 import styled from "styled-components";
-import useSWR from 'swr';
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
-import { Row } from "../../components/Row";
-import { BrandLogo } from "../../components/BrandLogo";
 import { Column } from "../../components/Column";
 import { Txt } from "../../components/Txt";
 import { Padded } from "../../components/Padded";
@@ -18,7 +15,6 @@ import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
 import { getAllProductsIds } from "../../queries/product/getAllProductsIds";
 import { ProductInfo, getProductById } from "../../queries/product/getProductById";
-import { WISHLIST, storage, SHOPPING_CART } from "../../storage/storage";
 
 const ProductPageContainer = styled.div`
   background: white;
@@ -45,7 +41,7 @@ const SmallScreenDescriptionContainer = styled.div`
 `;
 
 const LargeScreenDescriptionContainer = styled.div`
-  max-width: 500px;
+  max-width: 310px;
   display: flex;
   justify-content: center;
 `;
@@ -83,23 +79,7 @@ export default function SingleProductPage({
           </Padded>
           <Padded padding={"0px"}>
             <ProductOptionsContainer>
-              <Column>
-                <Centered padding={"10px"}>
-                  <Row justifyCenter>
-                    <Column>
-                      <Txt alignCenter>{product.Brand.Name}</Txt>
-                      <Txt big bold alignCenter>
-                        {product.Name}
-                      </Txt>
-                    </Column>
-                    <Padded padLeft={"20px"}>
-                      <BrandLogo
-                        src={process.env.BACKEND_URL + product.Brand.Logo.url}
-                        alt={`${product.Brand.Name} Logo`}
-                      />
-                    </Padded>
-                  </Row>
-                </Centered>
+              <Column alignCenter>
                 <ProductPurchaseOptions product={product} />
                 <DisplayAtMedia desktop>
                   <LargeScreenDescriptionContainer>

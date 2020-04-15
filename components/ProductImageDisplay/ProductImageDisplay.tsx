@@ -33,9 +33,19 @@ const ProductImageDisplayContainer = styled.div`
     width: 510px;
   }
 
+  @media ${mediaDevices.laptop} {
+    flex-direction: row-reverse;
+    width: 610px;
+  }
+
   @media ${mediaDevices.laptopL} {
     flex-direction: row-reverse;
-    width: 690px;
+    width: 790px;
+  }
+
+  @media ${mediaDevices.desktop} {
+    flex-direction: row-reverse;
+    width: 1000px;
   }
 `;
 
@@ -56,8 +66,16 @@ const SelectedProductImg = styled.img`
     width: 400px;
   }
 
+  @media ${mediaDevices.laptop} {
+    width: 500px;
+  }
+
   @media ${mediaDevices.laptopL} {
-    width: 580px;
+    width: 680px;
+  }
+
+  @media ${mediaDevices.desktop} {
+    width: 880px;
   }
 `;
 

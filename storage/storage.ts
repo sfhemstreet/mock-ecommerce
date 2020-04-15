@@ -1,14 +1,16 @@
 import { wishListReducer } from './wishlist/wishListReducer';
 import { WishListActionTypes } from './wishlist/wishListTypes';
 import { shoppingCartReducer } from './shoppingCart/shoppingCartReducer';
-import { StoredProductList } from './types';
-import { storedProductListInitState, searchHistoryInitState } from './constants';
+import { StoredProductList, ModalsState } from './types';
+import { storedProductListInitState, searchHistoryInitState, modalsInitState } from './constants';
 import { ShoppingCartActionTypes } from './shoppingCart/shoppingCartTypes';
 import { SearchItemList, SearchHistoryActionTypes } from './searchHistory/searchHistoryTypes';
 import { searchHistoryReducer } from './searchHistory/searchHistoryReducer';
+import { ModalActionTypes } from './modals/modalTypes';
+import { modalReducer } from './modals/modalReducer';
 
 /** Type of state stored in localStorage */ 
-type StorageStateType = StoredProductList | SearchItemList
+type StorageStateType = StoredProductList | SearchItemList | ModalsState;
 
 /** key for getting and updating WishList state */
 export const WISHLIST = "WISHLIST";
@@ -19,14 +21,22 @@ export const SHOPPING_CART = "SHOPPING_CART";
 /** key for getting and updating Search history */
 export const SEARCH_HISTORY = "SEARCH_HISTORY";
 
-type KeyType = typeof WISHLIST | typeof SHOPPING_CART | typeof SEARCH_HISTORY;
+/** key for opening and closing Modals */
+export const MODAL = "MODAL";
+
+type KeyType = 
+  typeof WISHLIST | 
+  typeof SHOPPING_CART | 
+  typeof SEARCH_HISTORY | 
+  typeof MODAL
 
 function getInitStateByKey(key: KeyType) {
   switch (key) {
     case WISHLIST: return storedProductListInitState;
     case SHOPPING_CART: return storedProductListInitState;
     case SEARCH_HISTORY: return searchHistoryInitState;
-    default: return storedProductListInitState;
+    case MODAL: return modalsInitState
+    default: return undefined;
   }
 }
 
@@ -43,7 +53,7 @@ function getLocalStorageState(key: KeyType) {
       return getInitStateByKey(key);
     }
   } else {
-    console.log("store.ts : Cannot get local storage");
+    console.log("storage.ts : Cannot get local storage");
     return getInitStateByKey(key);
   }
 }
@@ -58,7 +68,7 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
       console.log("ERROR: setLocalStorageState", err);
     }
   } else {
-    console.log("store.ts : Cannot set local stoage");
+    console.log("storage.ts : Cannot set local stoage");
   }
 }
 
@@ -67,7 +77,7 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
  * 
  * @param {KeyType} key Type of storage you want to get, use a key as defined by KeyType
 */
-export async function storage(key: KeyType): Promise<StorageStateType | undefined> {
+export async function localstorage(key: KeyType): Promise<StorageStateType | undefined> {
   const data = getLocalStorageState(key);
   return data;
 }
@@ -81,7 +91,7 @@ export async function storage(key: KeyType): Promise<StorageStateType | undefine
  */
 export async function updateWishList(mutateFn: any, action: WishListActionTypes, wishlist?: StoredProductList ) {
   if (!wishlist) 
-    wishlist = await storage(WISHLIST) as StoredProductList;
+    wishlist = await localstorage(WISHLIST) as StoredProductList;
 
   const updatedWishlist = wishListReducer(wishlist, action);
   setLocalStorageState(updatedWishlist, WISHLIST);
@@ -98,7 +108,7 @@ export async function updateWishList(mutateFn: any, action: WishListActionTypes,
  */
 export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActionTypes, shoppingCart?: StoredProductList) {
   if (!shoppingCart) 
-    shoppingCart = await storage(SHOPPING_CART) as StoredProductList;
+    shoppingCart = await localstorage(SHOPPING_CART) as StoredProductList;
 
   const updatedShoppingCart = shoppingCartReducer(shoppingCart, action);
   setLocalStorageState(updatedShoppingCart, SHOPPING_CART);
@@ -115,11 +125,27 @@ export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActi
  */
 export async function updateSearchHistory(mutateFn: any, action: SearchHistoryActionTypes, searchHistory?: SearchItemList) {
   if (!searchHistory) 
-    searchHistory = await storage(SEARCH_HISTORY) as SearchItemList;
+    searchHistory = await localstorage(SEARCH_HISTORY) as SearchItemList;
 
   const updatedSearchHistory = searchHistoryReducer(searchHistory, action);
   setLocalStorageState(updatedSearchHistory, SEARCH_HISTORY);
   return mutateFn(SEARCH_HISTORY, updatedSearchHistory);
+}
+
+/** 
+ * Updates Modal State in localStorage and in SWR cache. Supply the mutate function from "swr" package.
+ * 
+ * @param {mutateFn} mutateFn mutate function from "swr" package
+ * @param {ModalActionTypes} action action from modalActions.ts
+ * @param {ModalsState} modalsState if you have the current state of the modals supply it here
+ */
+export async function updateModalsState(mutateFn: any, action: ModalActionTypes, modalsState?: ModalsState) {
+  if (!modalsState) 
+    modalsState = await localstorage(MODAL) as ModalsState;
+
+  const updatedModalsState = modalReducer(modalsState, action);
+  setLocalStorageState(updatedModalsState, MODAL);
+  return mutateFn(MODAL, updatedModalsState);
 }
 
 /**
@@ -128,7 +154,7 @@ export async function updateSearchHistory(mutateFn: any, action: SearchHistoryAc
  * @param {WISHLIST} key "WISHLIST"
  */
 export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductList> {
-  return await storage(key) as StoredProductList;
+  return await localstorage(key) as StoredProductList;
 } 
 
 /**
@@ -137,7 +163,7 @@ export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductLi
  * @param {SHOPPING_CART} key "SHOPPING_CART"
  */
 export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<StoredProductList> {
-  return await storage(key) as StoredProductList;
+  return await localstorage(key) as StoredProductList;
 } 
 
 /**
@@ -146,5 +172,14 @@ export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<Stored
  * @param {SEARCH_HISTORY} key "SEARCH_HISTORY"
  */
 export async function getSearchHistory(key: typeof SEARCH_HISTORY): Promise<SearchItemList> {
-  return await storage(key) as SearchItemList;
+  return await localstorage(key) as SearchItemList;
 } 
+
+/** 
+ * Function to access Modals state saved in localStorage, supply to useSWR as second argument.
+ * 
+ * @param {MODAL} key "MODAL"
+ */
+export async function getModalsState(key: typeof MODAL): Promise<ModalsState> {
+  return await localstorage(key) as ModalsState;
+}
