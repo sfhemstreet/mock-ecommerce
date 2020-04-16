@@ -5,7 +5,11 @@ import {
   TOGGLE_SHOPPING_CART_MODAL, 
   CLOSE_WISHLIST_MODAL, 
   CLOSE_SHOPPING_CART_MODAL, 
-  CLOSE_SHOPPING_CART_AND_WISHLIST_MODALS
+  CLOSE_SHOPPING_CART_AND_WISHLIST_MODALS,
+  START_EDIT_WISHLIST_MODAL,
+  START_EDIT_SHOPPING_CART_MODAL,
+  STOP_EDIT_WISHLIST_MODAL,
+  STOP_EDIT_SHOPPING_CART_MODAL
 } from "./modalConstants";
 
 export interface OpenWishListModalAction {
@@ -36,6 +40,22 @@ export interface CloseShoppingCartAndWishListModalsAction {
   type: typeof CLOSE_SHOPPING_CART_AND_WISHLIST_MODALS
 }
 
+export interface StartEditWishListModalAction {
+  type: typeof START_EDIT_WISHLIST_MODAL
+}
+
+export interface StartEditShoppingCartModalAction {
+  type: typeof START_EDIT_SHOPPING_CART_MODAL
+}
+
+export interface StopEditWishListModalAction {
+  type: typeof STOP_EDIT_WISHLIST_MODAL
+}
+
+export interface StopEditShoppingCartModalAction {
+  type: typeof STOP_EDIT_SHOPPING_CART_MODAL
+}
+
 export type ModalActionTypes = 
   OpenShoppingCartModalAction | 
   OpenWishListModalAction | 
@@ -43,4 +63,8 @@ export type ModalActionTypes =
   ToggleWishListModalAction | 
   CloseShoppingCartModalAction | 
   CloseWishListModalAction |
-  CloseShoppingCartAndWishListModalsAction;
+  CloseShoppingCartAndWishListModalsAction |
+  StartEditWishListModalAction |
+  StartEditShoppingCartModalAction | 
+  StopEditWishListModalAction |
+  StopEditShoppingCartModalAction;

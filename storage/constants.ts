@@ -11,10 +11,12 @@ export const searchHistoryInitState: SearchItemList = {
 
 export const modalsInitState: ModalsState = {
   wishlist: {
-    isOpen: false
+    isOpen: false,
+    isEditting: false,
   },
   shoppingCart: {
-    isOpen: false
+    isOpen: false,
+    isEditting: false,
   }
 }
 

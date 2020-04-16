@@ -24,7 +24,7 @@ export const SEARCH_HISTORY = "SEARCH_HISTORY";
 /** key for opening and closing Modals */
 export const MODAL = "MODAL";
 
-type KeyType = 
+export type KeyType = 
   typeof WISHLIST | 
   typeof SHOPPING_CART | 
   typeof SEARCH_HISTORY | 
@@ -77,7 +77,7 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
  * 
  * @param {KeyType} key Type of storage you want to get, use a key as defined by KeyType
 */
-export async function localstorage(key: KeyType): Promise<StorageStateType | undefined> {
+export async function storage(key: KeyType): Promise<StorageStateType | undefined> {
   const data = getLocalStorageState(key);
   return data;
 }
@@ -91,7 +91,7 @@ export async function localstorage(key: KeyType): Promise<StorageStateType | und
  */
 export async function updateWishList(mutateFn: any, action: WishListActionTypes, wishlist?: StoredProductList ) {
   if (!wishlist) 
-    wishlist = await localstorage(WISHLIST) as StoredProductList;
+    wishlist = await storage(WISHLIST) as StoredProductList;
 
   const updatedWishlist = wishListReducer(wishlist, action);
   setLocalStorageState(updatedWishlist, WISHLIST);
@@ -108,7 +108,7 @@ export async function updateWishList(mutateFn: any, action: WishListActionTypes,
  */
 export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActionTypes, shoppingCart?: StoredProductList) {
   if (!shoppingCart) 
-    shoppingCart = await localstorage(SHOPPING_CART) as StoredProductList;
+    shoppingCart = await storage(SHOPPING_CART) as StoredProductList;
 
   const updatedShoppingCart = shoppingCartReducer(shoppingCart, action);
   setLocalStorageState(updatedShoppingCart, SHOPPING_CART);
@@ -125,7 +125,7 @@ export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActi
  */
 export async function updateSearchHistory(mutateFn: any, action: SearchHistoryActionTypes, searchHistory?: SearchItemList) {
   if (!searchHistory) 
-    searchHistory = await localstorage(SEARCH_HISTORY) as SearchItemList;
+    searchHistory = await storage(SEARCH_HISTORY) as SearchItemList;
 
   const updatedSearchHistory = searchHistoryReducer(searchHistory, action);
   setLocalStorageState(updatedSearchHistory, SEARCH_HISTORY);
@@ -141,7 +141,7 @@ export async function updateSearchHistory(mutateFn: any, action: SearchHistoryAc
  */
 export async function updateModalsState(mutateFn: any, action: ModalActionTypes, modalsState?: ModalsState) {
   if (!modalsState) 
-    modalsState = await localstorage(MODAL) as ModalsState;
+    modalsState = await storage(MODAL) as ModalsState;
 
   const updatedModalsState = modalReducer(modalsState, action);
   setLocalStorageState(updatedModalsState, MODAL);
@@ -154,7 +154,7 @@ export async function updateModalsState(mutateFn: any, action: ModalActionTypes,
  * @param {WISHLIST} key "WISHLIST"
  */
 export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductList> {
-  return await localstorage(key) as StoredProductList;
+  return await storage(key) as StoredProductList;
 } 
 
 /**
@@ -163,7 +163,7 @@ export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductLi
  * @param {SHOPPING_CART} key "SHOPPING_CART"
  */
 export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<StoredProductList> {
-  return await localstorage(key) as StoredProductList;
+  return await storage(key) as StoredProductList;
 } 
 
 /**
@@ -172,7 +172,7 @@ export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<Stored
  * @param {SEARCH_HISTORY} key "SEARCH_HISTORY"
  */
 export async function getSearchHistory(key: typeof SEARCH_HISTORY): Promise<SearchItemList> {
-  return await localstorage(key) as SearchItemList;
+  return await storage(key) as SearchItemList;
 } 
 
 /** 
@@ -181,5 +181,5 @@ export async function getSearchHistory(key: typeof SEARCH_HISTORY): Promise<Sear
  * @param {MODAL} key "MODAL"
  */
 export async function getModalsState(key: typeof MODAL): Promise<ModalsState> {
-  return await localstorage(key) as ModalsState;
+  return await storage(key) as ModalsState;
 }

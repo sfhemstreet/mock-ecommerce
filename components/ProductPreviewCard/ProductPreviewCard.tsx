@@ -145,11 +145,11 @@ export const ProductPreviewCard = ({
         />
         <Padded padding={"5px"}>
           <Column justifyBetween>
-            <Txt bold noWrap>
+            <Txt noWrap>
               {displayNames.brandName}
             </Txt>
-            <Txt noWrap>{displayNames.productName}</Txt>
-            <Txt padding={"4px 0px 0px 0px"} noWrap>
+            <Txt bold noWrap>{displayNames.productName}</Txt>
+            <Txt bold padding={"4px 0px 0px 0px"} noWrap>
               ${productInfo.Price}
             </Txt>
           </Column>
