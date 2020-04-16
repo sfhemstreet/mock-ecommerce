@@ -22,7 +22,7 @@ import { TopRightModal } from "../TopRightModal/TopRightModal";
 import { TopRightModalSkeleton } from "../TopRightModal/TopRightModalSkeleton";
 import { StoredProductListView } from "../TopRightModal/StoredProductListView";
 import { StoredProduct } from "../../storage/types";
-import { removeItemFromShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";
+import { removeItemFromShoppingCart, editShoppingCartItem } from "../../storage/shoppingCart/shoppingCartActions";
 
 const ShakeAnimationMixin = css `
   animation: ${ShakeNWait} 15s linear infinite;
@@ -135,7 +135,10 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
 
   if (!shoppingCart.data || !open.data) return <SpinningLoader />;
 
-  const handleItemEdit = (item: StoredProduct) => {};
+  const handleItemEdit = (item: StoredProduct) => {
+    console.log("new prod", item);
+    updateShoppingCart(mutate, editShoppingCartItem(item));
+  };
 
   const handleItemRemoval = (item: StoredProduct) => {
     updateShoppingCart(mutate, removeItemFromShoppingCart(item.id, item.timeAdded));
@@ -190,9 +193,13 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
           <TopRightModal onClose={handleCloseModal} state={state}>
             <TopRightModalSkeleton
               title={"Shopping Cart"}
+              type={SHOPPING_CART}
+              submitButtonText={"Checkout"}
+              hasData={shoppingCart.data !== undefined && shoppingCart.data.products.length > 0}
               onClose={handleCloseModal}
             >
               <StoredProductListView
+                type={SHOPPING_CART}
                 list={shoppingCart.data}
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}

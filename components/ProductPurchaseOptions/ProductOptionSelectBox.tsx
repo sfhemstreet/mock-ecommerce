@@ -163,15 +163,17 @@ type ProductSelectBoxProps = {
   label: string;
   options: SelectBoxOption[];
   onChange: (option: string) => void;
+  startIndex?: number;
 };
 
 export const ProductOptionSelectBox = ({
   label,
   options,
-  onChange
+  onChange,
+  startIndex = 0
 }: ProductSelectBoxProps) => {
   const [isActive, setIsActive] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(startIndex);
 
   const selectorRef = useRef<HTMLDivElement>(null);
   useOutsideClick(selectorRef, () => setIsActive(false));

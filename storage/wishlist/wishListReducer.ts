@@ -1,4 +1,4 @@
-import { ADD_ITEM_TO_WISHLIST, ADD_ALL_ITEMS_TO_WISHLIST, REMOVE_ITEM_FROM_WISHLIST, REMOVE_ALL_ITEMS_FROM_WISHLIST } from "./wishListConstants";
+import { ADD_ITEM_TO_WISHLIST, ADD_ALL_ITEMS_TO_WISHLIST, REMOVE_ITEM_FROM_WISHLIST, REMOVE_ALL_ITEMS_FROM_WISHLIST, EDIT_WISHLIST_ITEM } from "./wishListConstants";
 import { WishListActionTypes } from "./wishListTypes";
 import { StoredProductList, StoredProduct } from "../types";
 import { storedProductListInitState } from "../constants";
@@ -36,6 +36,17 @@ export const wishListReducer = (state = storedProductListInitState, action: Wish
 
     case ADD_ALL_ITEMS_TO_WISHLIST:
       return { ...state, products: [...action.payload.items] }
+
+    case EDIT_WISHLIST_ITEM: 
+      return {
+        ...state, 
+        products: [...state.products.map(product => {
+          if (product.id === action.payload.item.id && product.timeAdded === action.payload.item.timeAdded) 
+            return action.payload.item;
+          else
+            return product;
+        })]
+      }
 
     case REMOVE_ITEM_FROM_WISHLIST:
       return {

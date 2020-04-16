@@ -21,7 +21,7 @@ import {
 import { TopRightModalSkeleton } from "../TopRightModal/TopRightModalSkeleton";
 import { StoredProductListView } from "../TopRightModal/StoredProductListView";
 import { StoredProduct } from "../../storage/types";
-import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
+import { removeItemFromWishlist, editWishListItem } from "../../storage/wishlist/wishListActions";
 
 const ShakeAnimationMixin = css `
   animation: ${UpDownWait} 15s linear infinite;
@@ -55,12 +55,13 @@ export const WishListNavigationIcon = (): JSX.Element => {
     updateModalsState(mutate, toggleWishListModal());
   };
 
-  const handleItemEdit = (item: StoredProduct) => {};
+  const handleItemEdit = (item: StoredProduct) => {
+    updateWishList(mutate, editWishListItem(item));
+  };
 
   const handleItemRemoval = (item: StoredProduct) => {
     updateWishList(mutate, removeItemFromWishlist(item.id, item.timeAdded));
   };
-
 
   if (!wishList.data || !open.data) return <SpinningLoader reverse />;
 
@@ -107,8 +108,15 @@ export const WishListNavigationIcon = (): JSX.Element => {
       >
         {state => (
           <TopRightModal onClose={handleCloseModal} state={state}>
-            <TopRightModalSkeleton title="WishList" onClose={handleCloseModal}>
+            <TopRightModalSkeleton
+              title={"WishList"}
+              type={WISHLIST}
+              submitButtonText={"Add All to Shopping Cart"}
+              hasData={wishList.data !== undefined && wishList.data.products.length > 0}
+              onClose={handleCloseModal}
+            >
               <StoredProductListView
+                type={WISHLIST}
                 list={wishList.data}
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}

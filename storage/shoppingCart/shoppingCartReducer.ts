@@ -1,4 +1,4 @@
-import { ADD_ITEM_TO_SHOPPING_CART, ADD_ALL_ITEMS_TO_SHOPPING_CART, REMOVE_ITEM_FROM_SHOPPING_CART, REMOVE_ALL_ITEMS_FROM_SHOPPING_CART } from "./shoppingCartConstants"
+import { ADD_ITEM_TO_SHOPPING_CART, ADD_ALL_ITEMS_TO_SHOPPING_CART, REMOVE_ITEM_FROM_SHOPPING_CART, REMOVE_ALL_ITEMS_FROM_SHOPPING_CART, EDIT_SHOPPING_CART_ITEM } from "./shoppingCartConstants"
 import { StoredProductList, StoredProduct } from "../types";
 import { ShoppingCartActionTypes } from "./shoppingCartTypes";
 import { storedProductListInitState } from "../constants";
@@ -32,6 +32,16 @@ export const shoppingCartReducer = (state = storedProductListInitState, action: 
       return { 
         ...state, 
         products: [...action.payload.items] 
+      }
+    case EDIT_SHOPPING_CART_ITEM:
+      return {
+        ...state, 
+        products: [...state.products.map(product => {
+          if (product.id === action.payload.item.id && product.timeAdded === action.payload.item.timeAdded) 
+            return action.payload.item;
+          else
+            return product;
+        })]
       }
     case REMOVE_ITEM_FROM_SHOPPING_CART:
       return { 

@@ -31,4 +31,5 @@ export type ModalsState = {
 
 export type Modal = {
   isOpen: boolean;
+  isEditting: boolean;
 }
