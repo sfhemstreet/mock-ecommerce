@@ -3,7 +3,7 @@ import { Row } from "../Row";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
 import { Column } from "../Column";
-import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
+import { Category } from "../../queries/types";
 
 
 type NavigationBarDropDownItemProps = {

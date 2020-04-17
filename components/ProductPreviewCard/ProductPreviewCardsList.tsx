@@ -3,11 +3,13 @@ import styled from "styled-components";
 import { ProductPreviewCard } from "./ProductPreviewCard";
 import { Padded } from "../Padded";
 import { mediaDevices } from "../DisplayAtMedia";
-import { ProductPreview } from "../../queries/product/getTop4Products";
+import { ProductPreview } from "../../queries/types";
 
+//max-width: 1050px;
 const PPCCContainer = styled.div`
-  max-width: 1050px;
+  width: auto;
   height: auto;
+  max-width: 1200px;
 
   display: flex;
   flex-direction: row;

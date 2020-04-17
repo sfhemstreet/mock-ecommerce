@@ -1,13 +1,5 @@
 import { fetchQuery } from "../../util/fetchQuery";
-
-export type SiteLogo = {
-  NormalLogo: {
-    url: string;
-  }
-  SmallLogo: {
-    url: string;
-  }
-}
+import { SiteLogo } from "../types";
 
 const GET_LOGO = `
   {

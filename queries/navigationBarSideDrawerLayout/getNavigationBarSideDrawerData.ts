@@ -1,5 +1,6 @@
-import { getSiteLogo, SiteLogo } from "./getSiteLogo";
-import { getNavigationCategories, Category } from "./getCategories";
+import { getSiteLogo } from "./getSiteLogo";
+import { getNavigationCategories } from "./getNavigationCategories";
+import { Category, SiteLogo } from "../types";
 
 
 export type NavigationBarSideDrawerData = {

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { SiteLogo } from "../queries/navigationBarSideDrawerLayout/getSiteLogo";
 import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
+import { SiteLogo } from "../queries/types";
 
 const MyLogo = styled.img`
   width: 100%;

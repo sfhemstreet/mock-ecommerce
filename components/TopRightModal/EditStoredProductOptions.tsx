@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import { ProductInfo } from "../../queries/product/getProductById";
 import { StoredProduct } from "../../storage/types";
 import {
   SelectBoxOption,
@@ -13,6 +12,7 @@ import { Padded } from "../Padded";
 import { Column } from "../Column";
 import { Txt } from "../Txt";
 import { BrandLogo } from "../BrandLogo";
+import { ProductInfo } from "../../queries/types";
 
 const EditStoredProductContainer = styled.div`
   width: 100%;

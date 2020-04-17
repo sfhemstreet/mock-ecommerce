@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Padded } from "../Padded";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
+import { Category } from "../../queries/types";
 
 
 const SideDrawerMenuItemContainer = styled.div<{ hasBottomBorder: boolean, width: string }>`

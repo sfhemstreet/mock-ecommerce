@@ -14,7 +14,8 @@ import {
 import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
 import { getAllProductsIds } from "../../queries/product/getAllProductsIds";
-import { ProductInfo, getProductById } from "../../queries/product/getProductById";
+import { getProductById } from "../../queries/product/getProductById";
+import { ProductInfo } from "../../queries/types";
 
 const ProductPageContainer = styled.div`
   background: white;
