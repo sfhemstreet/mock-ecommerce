@@ -1,10 +1,5 @@
 import { fetchQuery } from "../../util/fetchQuery";
-
-export type Category = {
-  id?: string;
-  Name: string;
-  SubCategories?: Category[];
-};
+import { Category } from "../types";
 
 const GET_CATEGORIES = `
   {
@@ -51,7 +46,7 @@ export async function getNavigationCategories() {
   return cats;
 }
 
-
+/*
 export async function getCategories() {
   const res = await fetchQuery(GET_CATEGORIES);
 
@@ -70,3 +65,4 @@ export type CategoryWithProducts = {
   id: number
 }
 
+*/

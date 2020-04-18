@@ -7,7 +7,7 @@ import { Padded } from "../Padded";
 import { Column } from "../Column";
 import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import { ProductPreview } from "../../queries/product/getTop4Products";
+import { ProductPreview } from "../../queries/types";
 
 // ratio used for width height: 1.4375
 
@@ -65,7 +65,7 @@ const ProductCardThumbnailImg = styled.img`
 `;
 
 const ProductBrandLogo = styled.img`
-  width: 50px;
+  width: 30px;
   height: auto;
 
   position: absolute;
@@ -73,11 +73,11 @@ const ProductBrandLogo = styled.img`
   right: 5px;
 
   @media ${mediaDevices.mobileL} {
-    width: 60px;
+    width: 40px;
   }
 
   @media ${mediaDevices.tablet} {
-    width: 80px;
+    width: 60px;
   }
 `;
 

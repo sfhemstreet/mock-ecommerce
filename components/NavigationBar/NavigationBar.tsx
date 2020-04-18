@@ -12,10 +12,9 @@ import { MenuIcon } from "../MenuIcon";
 import { ShoppingCartNavigationIcon } from "../ShoppingCart/ShoppingCartNavigationIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
-import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
-import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
 import { WishListNavigationIcon } from "../WishList/WishListNavigationIcon";
 import { AppTheme } from '../../themes/AppTheme';
+import { Category, SiteLogo } from '../../queries/types';
 
 export const NAV_HEIGHT = "85px";
 
@@ -93,7 +92,7 @@ export function NavigationBar({
             </Padded>
           </DisplayAtMedia>
 
-          <Padded padding={"20px"}>
+          <Padded padding={"20px 20px 20px 50px"}>
             <Link href={"/"}>
               <a>
                 <Logo siteLogo={siteLogo}/>

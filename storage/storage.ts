@@ -82,6 +82,7 @@ export async function storage(key: KeyType): Promise<StorageStateType | undefine
   return data;
 }
 
+
 /** 
  * Updates WishList in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 

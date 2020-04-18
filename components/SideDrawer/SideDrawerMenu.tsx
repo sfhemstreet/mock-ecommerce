@@ -1,3 +1,5 @@
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
 import { useState } from "react";
 import { Contained } from "../Contained";
 import { Row } from "../Row";
@@ -9,8 +11,14 @@ import { SideDrawerMenuItem } from "./SideDrawerMenuItem";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
 import { BackArrowButton } from "../BackArrowButton";
-import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
-import { SiteLogo } from "../../queries/navigationBarSideDrawerLayout/getSiteLogo";
+import { Category, SiteLogo } from "../../queries/types";
+import { accessibleEnterKeyPress } from '../../util/accessibleEnterKeyPress';
+
+
+const LinkContainer = styled.a`
+  text-decoration: none;
+  cursor: pointer;
+`
 
 const TRANSITION_TIME = 300;
 const TRANSITION = `all ${TRANSITION_TIME}ms ease-in-out`;
@@ -35,6 +43,8 @@ export const SideDrawerMenu = ({
   navigationContent,
   sideDrawerWidth
 }: SideDrawerMenuProps): JSX.Element => {
+  const router = useRouter();
+
   // SearchBox active setter
   const [isSearchBoxActive, setSearchBoxActive] = useState(false);
 
@@ -68,6 +78,11 @@ export const SideDrawerMenu = ({
         setContentStackLength(stackLength);
       }
     }
+    else {
+      // No subItems, right now this has to be a subcategory
+      // Redirect to its products page
+      router.push(`/products/${item.id}`);
+    }
   };
 
   const handleBackButtonClick = () => {
@@ -84,6 +99,14 @@ export const SideDrawerMenu = ({
       setContentStack(stack);
     }, TRANSITION_TIME);
   };
+
+  /**
+   * Redirects to Category
+   */
+  const handleTitleLinkClick = () => {
+    const item = contentStack[contentStack.length - 1];
+    router.push(`/category/${item.id}`);
+  }
 
   return (
     <Contained width={`${sideDrawerWidth}px`} padding={"13px 0px"}>
@@ -110,9 +133,14 @@ export const SideDrawerMenu = ({
               </Contained>
               <BackArrowButton onClick={handleBackButtonClick} />
               {contentStack.length > 0 && (
-                <Txt padding={"0px 20px"} big>
-                  {contentStack[contentStack.length - 1].Name}
-                </Txt>
+                <LinkContainer 
+                  onClick={handleTitleLinkClick} 
+                  onKeyPress={accessibleEnterKeyPress(handleTitleLinkClick)}
+                >
+                  <Txt padding={"0px 20px"} big>
+                    {contentStack[contentStack.length - 1].Name}
+                  </Txt>
+                </LinkContainer>
               )}
             </Row>
           </Contained>

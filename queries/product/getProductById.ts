@@ -1,45 +1,8 @@
 import { fetchQuery } from "../../util/fetchQuery";
 import { sortProductPhotos } from "../../util/sortProductPhotos";
+import { ProductInfo } from "../types";
 
-export type ProductInfo = {
-  id: string;
-  Brand: {
-    id: string;
-    Name: string;
-    Logo: {
-      url: string;
-    }
-  }
-  Name: string;
-  Description: string;
-  Thumbnails: {
-    name: string;
-    url: string;
-  }[]
-  Pictures: {
-    name: string;
-    url: string;
-  }[]
-  Price: number;
-  MSRP: number;
-  Discount: number;
-  IsAvailable: boolean;
-  AvailableColors: string;
-  AvailableSizes: string;
-  Ranking: number;
-  UnitsInStock: number;
-  Category: {
-    id: string;
-    Name: string;
-  }
-  Subcategory: {
-    id: string;
-    Name: string;
-  }
-  Preview: {
-    url: string;
-  }
-}
+
 
 export async function getProductById(id: string) {
   const GET_PRODUCT_BY_ID = `

@@ -1,20 +1,5 @@
 import { getProductsBaseQuery } from "./getProducts";
-
-export type ProductPreview = {
-  id: string;
-  Name: string;
-  Price: number;
-  Brand: {
-    id: string;
-    Name: string;
-    Logo: {
-      url: string;
-    }
-  }
-  Preview: {
-    url: string;
-  }
-}
+import { ProductPreview } from "../types";
 
 const GET_TOP_4_PRODUCTS = `
   {

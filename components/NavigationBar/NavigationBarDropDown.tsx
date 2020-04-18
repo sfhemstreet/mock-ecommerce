@@ -1,7 +1,7 @@
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
-import { Category } from "../../queries/navigationBarSideDrawerLayout/getCategories";
+import { Category } from "../../queries/types";
 
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`

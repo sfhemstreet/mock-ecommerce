@@ -15,7 +15,8 @@ import {
   NavigationBarSideDrawerData
 } from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
 import { ProductPreviewCardsList } from "../components/ProductPreviewCard/ProductPreviewCardsList";
-import { getTop4Products, ProductPreview } from "../queries/product/getTop4Products";
+import { getTop4Products } from "../queries/product/getTop4Products";
+import { ProductPreview } from "../queries/types";
 
 type CoverImgProps = {
   mobileSrc: string;

@@ -3,6 +3,10 @@ import styled from 'styled-components';
 type ContainedProps = {
   width?: string;
   height?: string;
+  minWidth?: string;
+  minHeight?: string;
+  maxWidth?: string;
+  maxHeight?: string;
   padding?: string;
   margin?: string;
   transition?: string;
@@ -17,4 +21,9 @@ export const Contained = styled.div<ContainedProps>`
   transition: ${props => props.transition ?? 'none'};
   position: relative;
   overflow: ${props => props.hideOverflow ? 'hidden' : 'none'};
+
+  ${props => props.minHeight && `min-height: ${props.minHeight}`};
+  ${props => props.minWidth && `min-width: ${props.minWidth}`};
+  ${props => props.maxWidth && `max-width: ${props.maxWidth}`};
+  ${props => props.maxHeight && `max-height: ${props.maxHeight}`};
 `;

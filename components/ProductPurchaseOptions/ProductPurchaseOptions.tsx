@@ -24,11 +24,11 @@ import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
-import { ProductInfo } from "../../queries/product/getProductById";
 import { StoredProduct } from "../../storage/types";
 import { Row } from "../Row";
 import { BrandLogo } from "../BrandLogo";
 import { openWishListModal, openShoppingCartModal } from "../../storage/modals/modalActions";
+import { ProductInfo } from "../../queries/types";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
