@@ -4,6 +4,23 @@ import { OutlinedBox } from "./OutlinedBox";
 import { Txt } from "../Txt";
 import { PriceRangeSlider } from "./PriceRangeSlider";
 import { Padded } from "../Padded";
+import { Row } from "../Row";
+import { useState, useEffect } from "react";
+import { Column } from "../Column";
+
+const CheckBox = styled.input`
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+
+  background-color: ${props => props.theme.colors.white};
+
+  transition: all 0.3s ease-in-out;
+
+  :checked {
+    background-color: ${props => props.theme.colors.black};
+  }
+`;
 
 export type FilterOptionsObj = {
   Price: {
@@ -17,7 +34,7 @@ export type FilterOptionsObj = {
   subCategories?: Category[];
 };
 
-type FilterKeyObj = {
+export type FilterKeyObj = {
   [key: string]: boolean;
 };
 
@@ -66,8 +83,15 @@ export function createFilterOptions(
     brands[product.Brand.Name] = true;
   });
 
-  filterOptions.Price.Low = lowestPrice;
-  filterOptions.Price.High = highestPrice;
+  // Remove 10 from lowest price so that slider is easier to use
+  // But check first if you can, do 5 if you can't.
+  filterOptions.Price.Low =
+    lowestPrice - 10 >= 0
+      ? lowestPrice - 10
+      : lowestPrice - 5 >= 0
+      ? lowestPrice - 5
+      : lowestPrice;
+  filterOptions.Price.High = highestPrice + 10;
   filterOptions.Brand = Object.keys(brands);
   filterOptions.Color = Object.keys(colors);
   filterOptions.Size = Object.keys(sizes);
@@ -76,18 +100,115 @@ export function createFilterOptions(
 }
 
 type FilterBoxProps = {
-  onSelect: (filter: FilterOptionsObj) => void;
+  onChange: (filter: FilterOptionsObj) => void;
   filterOptions: FilterOptionsObj;
 };
 
-export const FilterBox = ({ onSelect, filterOptions }: FilterBoxProps) => {
-  console.log(filterOptions);
+export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   const keys = Object.keys(filterOptions);
-  console.log(keys);
+
+  const [filter, setFilter] = useState<FilterOptionsObj>({
+    Price: {
+      Low: filterOptions.Price.Low,
+      High: filterOptions.Price.High
+    },
+    Brand: Array<string>(),
+    Color: Array<string>(),
+    Size: Array<string>(),
+    Discount: filterOptions.Discount,
+    subCategories: !filterOptions.subCategories ? undefined : Array<Category>()
+  });
 
   const handlePriceChange = (low: number, high: number) => {
+    const maxLow = filterOptions.Price.Low;
+    const maxHigh = filterOptions.Price.High;
+    const ratio = (maxHigh - maxLow) / (100 - 0);
+    // Change 0 - 100 numbers into maxLow - maxHigh number.
+    const l = Math.floor(maxLow + low * ratio + ratio) - 5;
+    const h = Math.floor(maxLow + high * ratio + ratio) - 5;
 
-  }
+    setFilter({
+      ...filter,
+      Price: {
+        Low: l,
+        High: h
+      }
+    });
+    onChange({
+      ...filter,
+      Price: {
+        Low: l,
+        High: h
+      }
+    });
+  };
+
+  const handleBrandChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    brand: string
+  ) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Brand: evt.target.checked
+        ? [...filter.Brand, brand]
+        : [...filter.Brand.filter(b => b !== brand)]
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleSizeChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    size: string
+  ) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Size: evt.target.checked
+        ? [...filter.Size, size]
+        : [...filter.Size.filter(s => s !== size)]
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleColorChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    color: string
+  ) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Color: evt.target.checked
+        ? [...filter.Color, color]
+        : [...filter.Color.filter(c => c !== color)]
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleDiscountChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Discount: evt.target.checked
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleSubcategoryChange = (
+    evt: React.ChangeEvent<HTMLInputElement>,
+    category: Category
+  ) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      subCategories: !filter.subCategories
+        ? undefined
+        : evt.target.checked
+        ? [...filter.subCategories, category]
+        : [...filter.subCategories.filter(c => c.id !== category.id)]
+    };
+    setFilter(f);
+    onChange(f);
+  };
 
   return (
     <>
@@ -97,26 +218,117 @@ export const FilterBox = ({ onSelect, filterOptions }: FilterBoxProps) => {
           switch (key) {
             case "Price":
               return (
-                <>
-                  <Txt>Price: </Txt>
+                <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                  <Row>
+                    <Txt>Price: </Txt>
+                    <Txt padding={"0px 3px 0px 10px"}>${filter.Price.Low}</Txt>
+                    <Txt>-</Txt>
+                    <Txt padding={"0px 3px"}>${filter.Price.High}</Txt>
+                  </Row>
                   <Padded padLeft={"4px"}>
                     <PriceRangeSlider
-                      low={filterOptions.Price.Low}
-                      high={filterOptions.Price.High}
                       onChange={(l, h) => handlePriceChange(l, h)}
-                    />  
+                    />
                   </Padded>
-                </>
+                </Padded>
               );
             case "Brand":
-              return <Txt>Brand: </Txt>;
+              return (
+                <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                  <Column justifyEvenly>
+                    <Txt>Brand: </Txt>
+                    {filterOptions.Brand.map(brand => (
+                      <Padded
+                        padding={"0px 20px"}
+                        key={`filterOption${key}${brand}`}
+                      >
+                        <Row alignCenter justifyBetween>
+                          <Txt small>{brand}</Txt>
+                          <CheckBox
+                            type="checkbox"
+                            onChange={evt => handleBrandChange(evt, brand)}
+                          />
+                        </Row>
+                      </Padded>
+                    ))}
+                  </Column>
+                </Padded>
+              );
             case "Color":
-              return <Txt>Color: </Txt>;
+              return (
+                <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                  <Column justifyEvenly>
+                    <Txt>Color: </Txt>
+                    {filterOptions.Color.map(color => (
+                      <Padded
+                        padding={"0px 20px"}
+                        key={`filterOption${key}${color}`}
+                      >
+                        <Row alignCenter justifyBetween>
+                          <Txt small>{color}</Txt>
+                          <CheckBox
+                            type="checkbox"
+                            onChange={evt => handleColorChange(evt, color)}
+                          />
+                        </Row>
+                      </Padded>
+                    ))}
+                  </Column>
+                </Padded>
+              );
             case "Size":
-              return <Txt>Size: </Txt>;
+              return (
+                <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                  <Column justifyEvenly>
+                    <Txt>Size: </Txt>
+                    {filterOptions.Size.map(size => (
+                      <Padded
+                        padding={"0px 20px"}
+                        key={`filterOption${key}${size}`}
+                      >
+                        <Row alignCenter justifyBetween>
+                          <Txt small>{size}</Txt>
+                          <CheckBox
+                            type="checkbox"
+                            onChange={evt => handleSizeChange(evt, size)}
+                          />
+                        </Row>
+                      </Padded>
+                    ))}
+                  </Column>
+                </Padded>
+              );
             case "Discount":
-              return <Txt>Discount: </Txt>;
+              return filterOptions.Discount === undefined ? null : (
+                <Padded
+                  padding={"10px 20px 0px 5px"}
+                  key={`filterOption${key}`}
+                >
+                  <Row alignCenter justifyBetween>
+                    <Txt>Discount: </Txt>
+                    <CheckBox type="checkbox" onChange={handleDiscountChange} />
+                  </Row>
+                </Padded>
+              );
             case "subCategory":
+              return !filterOptions.subCategories ? null : (
+                <Column justifyEvenly key={`filterOption${key}`}>
+                  {filterOptions.subCategories.map(cat => (
+                    <Padded
+                      padding={"0px 20px"}
+                      key={`filterOption${key}${cat.Name}`}
+                    >
+                      <Row alignCenter justifyBetween>
+                        <Txt small>{cat.Name}</Txt>
+                        <CheckBox
+                          type="checkbox"
+                          onChange={evt => handleSubcategoryChange(evt, cat)}
+                        />
+                      </Row>
+                    </Padded>
+                  ))}
+                </Column>
+              );
             default:
               return;
           }
