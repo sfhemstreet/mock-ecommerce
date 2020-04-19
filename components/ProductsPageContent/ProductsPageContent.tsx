@@ -10,7 +10,12 @@ import { Contained } from "../Contained";
 import { ProductPreviewCardsList } from "../ProductPreviewCard/ProductPreviewCardsList";
 import { ProductPreview, Category } from "../../queries/types";
 import { Column } from "../Column";
-import { FilterOptionsObj, FilterBox, createFilterOptions } from "./FilterBox";
+import {
+  FilterOptionsObj,
+  FilterBox,
+  createFilterOptions,
+  FilterKeyObj
+} from "./FilterBox";
 import { SortBox } from "./SortBox";
 
 export const SORT_NONE = "None";
@@ -60,54 +65,69 @@ export const ProductsPageContent = ({
   const [isSortModal, setIsSortModal] = useState(false);
   const [isFilterModal, setIsFilterModal] = useState(false);
 
-
-  // MAKE THIS WORK
-  // Maybe change Object to hold keys to do this much more effecient
+  // This can be more effecient.
   const handleFilter = (filter: FilterOptionsObj) => {
-    console.log(filter);
-
-    const p = filteredProducts.filter(product => {
+    // Go thru all products and remove products
+    // that don't meet have properties of filter.
+    const p = products.filter(product => {
       for (const key in filter) {
-        switch (key) {
-          case "Size":
-            if (filter.Size.length === 0) return false;
-
-            const sizes = product.AvailableSizes.split(",");
-            for(const size in sizes) {
-              if (filter.Size.includes(size)) return false;
+        if (key === "Size") {
+          // Check if its active. Zero length is inactive.
+          if (filter.Size.length === 0) continue;
+          // See if product is offered in size dictated by filter.
+          const sizesMap = {} as FilterKeyObj;
+          for (const s of filter.Size) {
+            sizesMap[s] = true;
+          }
+          let pass = false;
+          const sizes = product.AvailableSizes.split(",");
+          for (let i = 0; i < sizes.length; i++) {
+            if (sizesMap[sizes[i]]) {
+              // As soon as we have a match the product passes.
+              pass = true;
+              break;
             }
-            return true;
-          case "Color":
-            if (filter.Color.length === 0) return false;
+          }
+          if (pass) continue;
+          else return false;
+        } else if (key === "Color") {
+          if (filter.Color.length === 0) continue;
 
-            const colors = product.AvailableSizes.split(",");
-            for (const color in colors) {
-              if (filter.Color.includes(color)) return false;
+          const colorsMap = {} as FilterKeyObj;
+          for (const c of filter.Color) {
+            colorsMap[c] = true;
+          }
+          let pass = false;
+          const colors = product.AvailableColors.split(",");
+          for (let i = 0; i < colors.length; i++) {
+            if (colorsMap[colors[i]]) {
+              pass = true;
+              break;
             }
-            return true;
-          case "Brand":
-            if (filter.Brand.length === 0) return false;
-            return !filter.Brand.includes(product.Brand.Name);
-          case "Price":
-            return !(
-              product.Price > filter.Price.Low &&
-              product.Price < filter.Price.High
-            );
-          case "Discount":
-            return filter.Discount === undefined
-              ? false
-              : filter.Discount
-              ? product.Discount > 0
-                ? false
-                : true
-              : false;
-          case "subCategories":
-            if (!filter.subCategories) return false;
-            return false;
-          default:
-            return false;
+          }
+          if (pass) continue;
+          else return false;
+        } else if (key === "Brand") {
+          if (filter.Brand.length === 0) continue;
+          if (filter.Brand.includes(product.Brand.Name)) continue;
+          else return false;
+        } else if (key === "Price") {
+          if (
+            product.Price > filter.Price.Low &&
+            product.Price < filter.Price.High
+          )
+            continue;
+          else return false;
+        } else if (key === "Discount") {
+          if (filter.Discount === undefined) continue;
+
+          if (!filter.Discount) continue;
+
+          if (product.Discount > 0) continue;
+          else return false;
         }
       }
+      return true;
     });
 
     setFilteredProducts(p);
