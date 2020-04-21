@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   NavigationBarSideDrawerData,
   getNavigationBarSideDrawerData
-} from "../../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+} from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { getCategoryById } from "../../queries/categories/getCategoryById";
@@ -10,6 +10,7 @@ import { getTopProductsByCategoryId } from "../../queries/product/getTopProducts
 import { Category, ProductPreview } from "../../queries/types";
 import { getAllCategoryIds } from "../../queries/categories/getAllCategoryIds";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
+import { BackgroundWhite, BackgroundBlack } from "../../components/Background";
 
 type CategoryPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
@@ -27,11 +28,14 @@ export default function CategoryPage({
       data={navigationBarSideDrawerData}
       filterChildrenWhenSideDrawerOpen
     >
+      
       <ProductsPageContent
         title={category.Name}
         subcategories={category.SubCategories}
         products={products}
-      />
+      />  
+     
+      
     </NavigationBarSideDrawerLayout>
   );
 }

@@ -15,6 +15,7 @@ const PPCCContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: flex-start;
 `;
 
 const DummyProduct = styled.div`

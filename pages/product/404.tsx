@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { GetStaticProps } from "next";
-import { NavigationBarSideDrawerData, getNavigationBarSideDrawerData } from "../../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+import { NavigationBarSideDrawerData, getNavigationBarSideDrawerData } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { Centered } from "../../components/Centered";
 import { Column } from "../../components/Column";

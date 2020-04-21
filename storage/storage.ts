@@ -49,11 +49,11 @@ function getLocalStorageState(key: KeyType) {
       }
       return JSON.parse(serializedState) as StoredProductList;
     } catch (err) {
-      console.log('ERROR: getLocalStorageState', err);
+      //console.log('ERROR: getLocalStorageState', err);
       return getInitStateByKey(key);
     }
   } else {
-    console.log("storage.ts : Cannot get local storage");
+    //console.log("storage.ts : Cannot get local storage");
     return getInitStateByKey(key);
   }
 }
@@ -62,13 +62,12 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
   if (typeof window !== 'undefined' && window) {
     try {
       const serializedState = JSON.stringify(state);
-      console.log('Saving state in localStorage', serializedState);
       localStorage.setItem(key, serializedState)
     } catch (err) {
-      console.log("ERROR: setLocalStorageState", err);
+      //console.log("ERROR: setLocalStorageState", err);
     }
   } else {
-    console.log("storage.ts : Cannot set local stoage");
+    //console.log("storage.ts : Cannot set local stoage");
   }
 }
 

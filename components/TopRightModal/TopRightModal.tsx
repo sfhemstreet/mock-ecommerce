@@ -1,8 +1,8 @@
-import styled from 'styled-components';
-import { TransitionStatus, ENTERED } from 'react-transition-group/Transition';
-import { mediaDevices } from '../DisplayAtMedia';
-import { FunctionComponent, useRef } from 'react';
-import { useOutsideClick } from '../../hooks/useOutsideClick';
+import styled from "styled-components";
+import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
+import { mediaDevices } from "../DisplayAtMedia";
+import { FunctionComponent, useRef } from "react";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 const TopRightModalContainer = styled.div<{ state: TransitionStatus }>`
   position: fixed;
@@ -14,14 +14,22 @@ const TopRightModalContainer = styled.div<{ state: TransitionStatus }>`
   width: 100%;
   height: 100%;
 
-  backdrop-filter: blur(1px) grayscale(100%) brightness(10%);
-
   z-index: ${props => props.theme.zIndexes.modal};
+
+  background-color: rgba(0, 0, 0, 0.87);
+
+  @supports (
+    (-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))
+  ) {
+    background-color: rgba(255, 255, 255, 0);
+    -webkit-backdrop-filter: blur(1px) grayscale(100%) brightness(10%);
+    backdrop-filter: blur(1px) grayscale(100%) brightness(10%);
+  }
 
   @media ${mediaDevices.tablet} {
     position: absolute;
     top: 71px;
-    right: ${props => props.state === ENTERED ? "0px" : "-415px"};
+    right: ${props => (props.state === ENTERED ? "0px" : "-415px")};
 
     width: 410px;
     height: 500px;
@@ -33,10 +41,13 @@ const TopRightModalContainer = styled.div<{ state: TransitionStatus }>`
 type TopRightModalProps = {
   state: TransitionStatus;
   onClose: () => void;
-}
+};
 
-export const TopRightModal: FunctionComponent<TopRightModalProps> = ({state, onClose, children}) => {
-
+export const TopRightModal: FunctionComponent<TopRightModalProps> = ({
+  state,
+  onClose,
+  children
+}) => {
   const modalRef = useRef<HTMLDivElement>(null);
   useOutsideClick(modalRef, () => onClose());
 
@@ -44,5 +55,5 @@ export const TopRightModal: FunctionComponent<TopRightModalProps> = ({state, onC
     <TopRightModalContainer ref={modalRef} state={state}>
       {children}
     </TopRightModalContainer>
-  )
-}
+  );
+};

@@ -111,13 +111,12 @@ export const WishListNavigationIcon = (): JSX.Element => {
             <TopRightModalSkeleton
               title={"WishList"}
               type={WISHLIST}
-              submitButtonText={"Add All to Shopping Cart"}
-              hasData={wishList.data !== undefined && wishList.data.products.length > 0}
               onClose={handleCloseModal}
             >
               <StoredProductListView
                 type={WISHLIST}
                 list={wishList.data}
+                submitButtonText={"Add All to Shopping Cart"}
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}
               />
