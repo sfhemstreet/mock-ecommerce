@@ -18,6 +18,8 @@ enum Colors {
 enum Gradients {
   blackToWhite = "linear-gradient(0deg, rgba(25,24,26,1) 0%, rgba(238,238,238,0.2) 100%)",
   blackToYellow = "linear-gradient(0deg, rgba(25,24,26,1) 0%, rgba(206,188,129,0.64) 100%)",
+  crazy= "linear-gradient(345deg, rgba(25,24,26,1) 0%, rgba(120,83,98,0.8) 74%, rgba(111,101,101,0.8) 84%, rgba(108,98,68,0.8) 94%, rgba(34,70,46,0.8) 100%)",
+  crazyLite="linear-gradient(340deg, rgba(25,24,26,1) 0%, rgba(161,110,131,0.9640231092436975) 64%, rgba(177,159,158,0.6) 78%, rgba(206,196,129,0.5) 91%, rgba(71,151,97,0.08883928571428571) 100%)",
 }
 
 enum Typography {

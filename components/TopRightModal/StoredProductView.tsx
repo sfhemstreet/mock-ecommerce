@@ -41,6 +41,13 @@ type StoredProductViewProps = {
   onRemove: (item: StoredProduct) => void;
 };
 
+/**
+ * Displays a single StoredProduct, for use in StoredProductListView
+ * 
+ * @param item
+ * @param onRemove
+ * @param onEdit
+ */
 export const StoredProductView = ({
   item,
   onEdit,

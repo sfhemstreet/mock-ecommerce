@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   NavigationBarSideDrawerData,
   getNavigationBarSideDrawerData
-} from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+} from "../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import {

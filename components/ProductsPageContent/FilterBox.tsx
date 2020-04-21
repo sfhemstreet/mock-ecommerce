@@ -5,7 +5,7 @@ import { Txt } from "../Txt";
 import { PriceRangeSlider } from "./PriceRangeSlider";
 import { Padded } from "../Padded";
 import { Row } from "../Row";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Column } from "../Column";
 
 const CheckBox = styled.input`
@@ -60,8 +60,8 @@ export function createFilterOptions(
   };
 
   // Track highest and lowest price of products.
-  let lowestPrice = products[0].Price;
-  let highestPrice = products[0].Price;
+  let lowestPrice = Math.floor(products[0].Price);
+  let highestPrice = Math.floor(products[0].Price);
 
   // Track colors, sizes, brands of products without duplicates.
   const colors: FilterKeyObj = {};
@@ -73,13 +73,13 @@ export function createFilterOptions(
     // have a discount and is left as undefined.
     if (product.Discount > 0) filterOptions.Discount = false;
 
-    if (product.Price < lowestPrice) lowestPrice = product.Price;
+    if (product.Price < lowestPrice) lowestPrice = Math.floor(product.Price);
 
-    if (product.Price > highestPrice) highestPrice = product.Price;
+    if (product.Price > highestPrice) highestPrice = Math.floor(product.Price);
 
-    // We need all the colors, sizes and brands.
-    product.AvailableColors.split(",").forEach(color => (colors[color] = true));
-    product.AvailableSizes.split(",").forEach(size => (sizes[size] = true));
+    // We need all the colors, sizes and brands without duplicates.
+    product.AvailableColors.split(",").forEach(color => (colors[color.trim()] = true));
+    product.AvailableSizes.split(",").forEach(size => (sizes[size.trim()] = true));
     brands[product.Brand.Name] = true;
   });
 
@@ -94,7 +94,23 @@ export function createFilterOptions(
   filterOptions.Price.High = highestPrice + 10;
   filterOptions.Brand = Object.keys(brands);
   filterOptions.Color = Object.keys(colors);
-  filterOptions.Size = Object.keys(sizes);
+
+  // Sort letter sizes 
+  const letterSizes = Array<string>();
+  const sequentialPotentialSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
+  for(const size of sequentialPotentialSizes) {
+    if (sizes[size]) {
+      letterSizes.push(size);
+      delete sizes[size];
+    }
+  }
+
+  // Sort number sizes
+  const numSizes = Object.keys(sizes);
+  numSizes.sort((a,b) => (parseFloat(a) - parseFloat(b)));
+
+  // Join sizes
+  filterOptions.Size = [...letterSizes, ...numSizes];
 
   return filterOptions;
 }
@@ -104,6 +120,11 @@ type FilterBoxProps = {
   filterOptions: FilterOptionsObj;
 };
 
+/**
+ * Displays a box of all possible filter options and checkboxes to select them.
+ * @param onChange
+ * @param filterOptions
+ */
 export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   const keys = Object.keys(filterOptions);
 
@@ -310,16 +331,16 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                   </Row>
                 </Padded>
               );
-            case "subCategory":
+            case "subCategories":
               return !filterOptions.subCategories ? null : (
                 <Column justifyEvenly key={`filterOption${key}`}>
                   {filterOptions.subCategories.map(cat => (
                     <Padded
-                      padding={"0px 20px"}
+                      padding={"10px 20px 0px 5px"}
                       key={`filterOption${key}${cat.Name}`}
                     >
                       <Row alignCenter justifyBetween>
-                        <Txt small>{cat.Name}</Txt>
+                        <Txt >{cat.Name}</Txt>
                         <CheckBox
                           type="checkbox"
                           onChange={evt => handleSubcategoryChange(evt, cat)}

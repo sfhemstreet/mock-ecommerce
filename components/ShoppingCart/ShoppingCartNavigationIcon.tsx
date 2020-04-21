@@ -125,8 +125,7 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
   const open = useSWR(MODAL, getModalsState);
 
   const handleCloseModal = () => {
-    if (open.data)
-      updateModalsState(mutate, closeShoppingCartModal(), open.data);
+    updateModalsState(mutate, closeShoppingCartModal());
   };
 
   const handleClickIcon = () => {
@@ -194,12 +193,11 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
             <TopRightModalSkeleton
               title={"Shopping Cart"}
               type={SHOPPING_CART}
-              submitButtonText={"Checkout"}
-              hasData={shoppingCart.data !== undefined && shoppingCart.data.products.length > 0}
               onClose={handleCloseModal}
             >
               <StoredProductListView
                 type={SHOPPING_CART}
+                submitButtonText={"Checkout"}
                 list={shoppingCart.data}
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}

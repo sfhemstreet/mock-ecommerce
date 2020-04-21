@@ -7,7 +7,7 @@ import { Transformed } from "../components/Transformed";
 import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
 import { SideDrawerMenu } from "../components/SideDrawer/SideDrawerMenu";
-import { NavigationBarSideDrawerData } from "../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+import { NavigationBarSideDrawerData } from "../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { Footer } from "../components/Footer";
 
 type NavigationBarSideDrawerLayoutProps = {

@@ -13,30 +13,34 @@ import { Column } from "../Column";
 import { Txt } from "../Txt";
 import { BrandLogo } from "../BrandLogo";
 import { ProductInfo } from "../../queries/types";
+import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
+import { Positioned } from "../Positioned";
+import { Contained } from "../Contained";
+import { EditButton } from "./EditButton";
 
 const EditStoredProductContainer = styled.div`
   width: 100%;
-  max-height: 100%;
+  height: 100%;
 
-  position: fixed;
+  position: absolute;
   z-index: 100;
+
+  @media ${mediaDevices.tablet} {
+    width: 400px;
+    height: 500px;
+  }
 `;
 
-const OptionsArea = styled.div`
+const OptionsArea = styled.div<{width: string, height: string}>`
   color: ${props => props.theme.colors.black};
   background-color: white;
-`;
+  width: 100%;
+  height: ${props => props.height};
 
-const EditButton = styled.button<{ isSubmit?: boolean }>`
-  border: solid 1px ${props => props.theme.colors.transparentWhite};
-  background: ${props =>
-    props.isSubmit ? props.theme.colors.green : "transparent"};
-  color: ${props => props.theme.colors.white};
-
-  font-size: ${props => props.theme.typography.fontSize};
-
-  width: 100px;
-  height: 40px;
+  @media ${mediaDevices.tablet} {
+    width: 400px;
+    height: 400px;
+  }
 `;
 
 const StoredProductOptionLabel = styled.label`
@@ -44,24 +48,52 @@ const StoredProductOptionLabel = styled.label`
   flex-direction: column;
 `;
 
+const EditPhoto = styled.img`
+  height: 0px;
+  width: auto;
+  padding-right: 3px;
+
+  @media ${mediaDevices.mobileM} {
+    height: 80px;
+  }
+`;
+
 type EditStoredProductOptionsProps = {
   onEdit: (item: StoredProduct) => void;
   originalItem: StoredProduct;
   product: ProductInfo;
   onCancel: () => void;
+  width: number;
+  height: number;
 };
 
+/**
+ * Displays all options for product in dropdown menus, 
+ * that all start at the originalItems selection.
+ * 
+ * @param product
+ * @param originalItem
+ * @param onEdit
+ * @param onCancel
+ * @param width
+ * @param height
+ */
 export const EditStoredProductOptions = ({
   product,
   originalItem,
   onEdit,
-  onCancel
+  onCancel,
+  width,
+  height
 }: EditStoredProductOptionsProps) => {
+  // Takes product color data and creates an array of color options,
+  // and makes starting index the originalItems selected color. 
   let colorStartIndex = 0;
   const colorOptions: SelectBoxOption[] = product.AvailableColors.split(
     ","
   ).map((color, index) => {
-    if (color.toUpperCase() === originalItem.Color.toUpperCase()) colorStartIndex = index;
+    if (color.toUpperCase() === originalItem.Color.toUpperCase())
+      colorStartIndex = index;
 
     return {
       text: color,
@@ -69,10 +101,13 @@ export const EditStoredProductOptions = ({
     };
   });
 
+  // Takes product size data and creates an array of size options,
+  // and makes starting index the originalItems selected size.
   let sizeOptionStartIndex = 0;
   const sizeOptions: SelectBoxOption[] = product.AvailableSizes.split(",").map(
     (size, index) => {
-      if (size.toUpperCase() === originalItem.Size.toUpperCase()) sizeOptionStartIndex = index;
+      if (size.toUpperCase() === originalItem.Size.toUpperCase())
+        sizeOptionStartIndex = index;
 
       return {
         text: size
@@ -80,6 +115,8 @@ export const EditStoredProductOptions = ({
     }
   );
 
+  // Takes product quantity data and creates an array of quantity options,
+  // and makes starting index the originalItems selcted quantity.
   let quantityStartIndex = 0;
   const quantityOptions = new Array<SelectBoxOption>();
   for (let i = 0; i < product.UnitsInStock; i++) {
@@ -88,15 +125,19 @@ export const EditStoredProductOptions = ({
     quantityOptions.push({ text: `${i + 1}` });
   }
 
+  // Keeps track of selected Size
   const [selectedSize, setSelectedSize] = useState(
     sizeOptions[sizeOptionStartIndex].text
   );
+  // Keeps track of selected Color
   const [selectedColor, setSelectedColor] = useState(
     colorOptions[colorStartIndex].text
   );
+  // Keeps track of selected Quantity
   const [selectedQuantity, setSelectedQuantity] = useState(
     quantityOptions[quantityStartIndex].text
   );
+  // Calcutate cost when quantity, color, size change.
   const [calculatedCost, setCalculatedCost] = useState(
     product.Price * parseInt(quantityOptions[0].text, 10) -
       product.Discount * parseInt(quantityOptions[0].text, 10)
@@ -132,10 +173,20 @@ export const EditStoredProductOptions = ({
 
   return (
     <EditStoredProductContainer>
-      <OptionsArea>
+      {/* Gives dimensions to container for mobile screens */}
+      <OptionsArea
+        width={`${(width - 4)}px`}
+        height={`${(height - 245)}px`}
+      >
         <Column justifyEvenly alignCenter>
+
+          {/* Picture, Name, Brand */}
           <Padded padding={"10px 0px"}>
             <Row justifyEvenly alignCenter>
+              <EditPhoto
+                src={process.env.BACKEND_URL + product.Preview.url}
+                alt={`${product.Name} editting photo`}
+              />
               <Column>
                 <Txt alignCenter>{product.Brand.Name}</Txt>
                 <Txt big bold alignCenter>
@@ -150,6 +201,8 @@ export const EditStoredProductOptions = ({
               </Padded>
             </Row>
           </Padded>
+
+          {/* Options */}
           <Padded padding={"3px"}>
             <StoredProductOptionLabel>
               Select a Size:
@@ -183,6 +236,8 @@ export const EditStoredProductOptions = ({
               />
             </StoredProductOptionLabel>
           </Padded>
+
+          {/* Price: If product is discounted, show that it is discounted. */}
           {product.Discount > 0 ? (
             <>
               <Txt big bold linethru padding={"20px 3px 3px 3px"}>
@@ -199,23 +254,56 @@ export const EditStoredProductOptions = ({
           )}
         </Column>
       </OptionsArea>
-      <Padded padding={"10px"}>
-        <Row justifyEvenly>
-          <EditButton
-            onClick={onCancel}
-            onKeyPress={accessibleEnterKeyPress(onCancel)}
-          >
-            Cancel
-          </EditButton>
-          <EditButton
-            isSubmit
-            onClick={handleSubmitEdit}
-            onKeyPress={accessibleEnterKeyPress(handleSubmitEdit)}
-          >
-            Change
-          </EditButton>
-        </Row>
-      </Padded>
+
+      {/* Mobile Buttons, positions in bottom middle above close button. */}
+      <DisplayAtMedia mobile>
+        <Positioned
+          absolute
+          top={`${height - 235}px`}
+          left={`${(width - 307) / 2}px`}
+        >
+          <Contained width={"300px"}>
+            <Row justifyBetween>
+              <EditButton
+                onClick={onCancel}
+                onKeyPress={accessibleEnterKeyPress(onCancel)}
+              >
+                Cancel
+              </EditButton>
+              <EditButton
+                isSubmit
+                onClick={handleSubmitEdit}
+                onKeyPress={accessibleEnterKeyPress(handleSubmitEdit)}
+              >
+                Change
+              </EditButton>
+            </Row>
+          </Contained>
+        </Positioned>
+      </DisplayAtMedia>
+
+      {/* Buttons, positions in bottom middle above close button. */}
+      <DisplayAtMedia tablet laptop desktop>
+        <Positioned relative bottom={`3px`} >
+          <Padded padding={"10px"}>
+            <Row justifyEvenly>
+              <EditButton
+                onClick={onCancel}
+                onKeyPress={accessibleEnterKeyPress(onCancel)}
+              >
+                Cancel
+              </EditButton>
+              <EditButton
+                isSubmit
+                onClick={handleSubmitEdit}
+                onKeyPress={accessibleEnterKeyPress(handleSubmitEdit)}
+              >
+                Change
+              </EditButton>
+            </Row>
+          </Padded>
+        </Positioned>
+      </DisplayAtMedia>
     </EditStoredProductContainer>
   );
 };

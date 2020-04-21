@@ -81,3 +81,11 @@ export type SiteLogo = {
     url: string;
   }
 }
+
+export type Brand = {
+  id: string;
+  Name: string;
+  Logo: {
+    url: string;
+  }
+}

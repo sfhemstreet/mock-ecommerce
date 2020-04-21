@@ -10,7 +10,7 @@ import { ProductImageDisplay } from "../../components/ProductImageDisplay/Produc
 import {
   getNavigationBarSideDrawerData,
   NavigationBarSideDrawerData
-} from "../../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+} from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
 import { getAllProductsIds } from "../../queries/product/getAllProductsIds";

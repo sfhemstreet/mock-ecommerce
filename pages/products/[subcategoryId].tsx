@@ -1,7 +1,7 @@
 import {
   NavigationBarSideDrawerData,
   getNavigationBarSideDrawerData
-} from "../../queries/navigationBarSideDrawerLayout/getNavigationBarSideDrawerData";
+} from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { SubCategory, ProductPreview } from "../../queries/types";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";

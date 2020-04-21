@@ -99,12 +99,20 @@ const ProductSelectBoxModalBackground = styled.div<{ state: TransitionStatus }>`
   width: 100%;
   height: 100%;
 
-  backdrop-filter: blur(1px) grayscale(100%) brightness(30%);
-
   z-index: ${props => props.theme.zIndexes.modal};
 
   transition: all 0.3s linear;
   opacity: ${props => (props.state === ENTERED ? 1 : 0)};
+
+  background-color: rgba(0, 0, 0, 0.8);
+
+  @supports (
+    (-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))
+  ) {
+    background-color: rgba(255, 255, 255, 0);
+    -webkit-backdrop-filter: blur(1px) grayscale(100%) brightness(30%);
+    backdrop-filter: blur(1px) grayscale(100%) brightness(30%);
+  }
 `;
 
 const ProductSelectBoxModal = styled.div<{ state: TransitionStatus }>`
