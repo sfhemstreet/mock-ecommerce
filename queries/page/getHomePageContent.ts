@@ -4,6 +4,9 @@ export type HomePageContent = {
   title: string;
   subtitle: string;
   content: string;
+  hugeCover: {
+    url: string;
+  }
   desktopCover: {
     url: string;
   }
@@ -24,6 +27,9 @@ const GET_HOMEPAGE_CONTENT = `
       title
       subtitle
       content
+      hugeCover {
+        url
+      }
       desktopCover {
         url
       }

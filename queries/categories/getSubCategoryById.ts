@@ -9,6 +9,7 @@ export const getSubCategoryById = async (id: string) => {
     {
       subcategory(id: ${id}) {
         id
+        slug
         Name
         ParentCategory {
           id

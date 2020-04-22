@@ -4,10 +4,10 @@ import { ProductInfo } from "../types";
 
 
 
-export async function getProductById(id: string) {
-  const GET_PRODUCT_BY_ID = `
+export async function getProductBySlug(slug: string) {
+  const GET_PRODUCT_BY_SLUG = `
     {
-      product(id: ${id}) {
+      products(where: {slug: "${slug}"}) {
         id
         slug
         Brand {
@@ -40,24 +40,26 @@ export async function getProductById(id: string) {
         UnitsInStock
         Category {
           id
+          slug
           Name
         }
         Subcategory {
           id
+          slug
           Name
         }
       }
     }
   `;
 
-  const res = await fetchQuery(GET_PRODUCT_BY_ID);
-  const { data: { product } } = await res.json();
+  const res = await fetchQuery(GET_PRODUCT_BY_SLUG);
+  const { data: { products } } = await res.json();
 
-  if (!product) {
+  if (!products) {
     throw new Error("Fetch product by id error");
   }
 
-  const prod: ProductInfo = product;
+  const prod: ProductInfo = products[0];
 
   // Organize thumbnails and photos by number in photo name
   const photos = sortProductPhotos(prod.Pictures); 

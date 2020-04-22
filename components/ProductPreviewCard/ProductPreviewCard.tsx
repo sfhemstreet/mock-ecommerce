@@ -91,7 +91,7 @@ export const ProductPreviewCard = ({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/product/${productInfo.id}`);
+    router.push(`/product/${productInfo.slug}`);
   };
 
   const displayNames = {
@@ -102,7 +102,7 @@ export const ProductPreviewCard = ({
   const checkTextLength = () => {
     if (typeof window !== "undefined" && window) {
       const { width } = getWindowDimensions();
-      let maxLength = 30;
+      let maxLength = 28;
 
       if (width <= mediaSizes.mobileM) {
         maxLength = 14;
@@ -111,7 +111,7 @@ export const ProductPreviewCard = ({
       } else if (width <= mediaSizes.tablet) {
         maxLength = 22;
       } else if (width <= mediaSizes.laptop) {
-        maxLength = 26;
+        maxLength = 24;
       }
 
       if (productInfo.Name.length > maxLength) {
@@ -142,6 +142,7 @@ export const ProductPreviewCard = ({
         />
         <ProductBrandLogo
           src={process.env.BACKEND_URL + productInfo.Brand.Logo.url}
+          alt={`${productInfo.Brand.Name} logo`}
         />
         <Padded padding={"5px"}>
           <Column justifyBetween>

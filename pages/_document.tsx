@@ -38,8 +38,8 @@ export default class MyDocument extends Document<any> {
 
   
   render() {
-    return (
-      <Html>
+    return (  
+      <Html lang="en">
         <Head>
           <link
             href="https://fonts.googleapis.com/css?family=Rubik:400,500&display=swap"

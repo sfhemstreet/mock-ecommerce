@@ -5,9 +5,11 @@ const GET_CATEGORIES = `
   {
     categories {
       id
+      slug
       Name
       SubCategories {
         id
+        slug
         Name
       }
     }
@@ -37,32 +39,9 @@ export async function getNavigationCategories() {
       ? b.Name.charCodeAt(b.Name.lastIndexOf(" ") + 1) 
       : b.Name.charCodeAt(0);
 
-    //console.log(a,b)
-    //console.log(one, two);
-
     return one - two;
   });
 
   return cats;
 }
 
-/*
-export async function getCategories() {
-  const res = await fetchQuery(GET_CATEGORIES);
-
-  const {
-    data: { categories }
-  } = await res.json();
-
-  if (!categories) {
-    throw new Error("Categories not fetched.");
-  }
-
-  return categories;
-}
-
-export type CategoryWithProducts = {
-  id: number
-}
-
-*/

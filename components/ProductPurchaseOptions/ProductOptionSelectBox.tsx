@@ -163,7 +163,7 @@ const ProductSelectBoxModalItem = styled.div<{ isFiltered?: boolean }>`
 
 const ProductSelectBoxModalTitle = styled(ProductSelectBoxModalItem)`
   color: ${props => props.theme.colors.white};
-  background: ${props => props.theme.colors.green};
+  background: ${props => props.theme.colors.black};
   border-bottom: none;
 `;
 

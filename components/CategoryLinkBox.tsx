@@ -18,10 +18,12 @@ const CategoryLink = styled.a`
 type CategoryLinkBoxProps = {
   mainCategory: {
     id: string;
+    slug: string;
     Name: string;
   };
   subCategory: {
     id: string;
+    slug: string;
     Name: string;
   };
 };
@@ -36,11 +38,11 @@ export const CategoryLinkBox = ({
     <Contained width={"370px"} padding={"5px"}>
       <Row>
         <Txt small>
-          <CategoryLink onClick={() => router.push(`/category/${mainCategory.id}`)}>{mainCategory.Name}</CategoryLink>
+          <CategoryLink onClick={() => router.push(`/category/${mainCategory.slug}`)}>{mainCategory.Name}</CategoryLink>
         </Txt>
         &nbsp;<small>></small>&nbsp;
         <Txt small>
-          <CategoryLink onClick={() => router.push(`/products/${subCategory.id}`)}>{subCategory.Name}</CategoryLink>
+          <CategoryLink onClick={() => router.push(`/products/${subCategory.slug}`)}>{subCategory.Name}</CategoryLink>
         </Txt>
       </Row>
     </Contained>

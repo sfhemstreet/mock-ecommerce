@@ -8,6 +8,7 @@ export const getCategoryById = async (id: string) => {
     {
       category(id: ${id}) {
         id
+        slug
         Name
         Name
         SubCategories {

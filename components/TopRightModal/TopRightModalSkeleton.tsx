@@ -68,7 +68,7 @@ export const TopRightModalSkeleton: FunctionComponent<TopRightModalSkeletonProps
       {/* Mobile Close Button */}
       <DisplayAtMedia mobile>
         <Positioned
-          fixed
+          absolute
           top={`${height - 100}px`}
           left={`${(width - 300) / 2}px`}
           zIndex={30}

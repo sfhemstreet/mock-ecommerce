@@ -25,37 +25,58 @@ type CoverImgProps = {
   tabletSrc: string;
   laptopSrc: string;
   desktopSrc: string;
+  hugeSrc: string;
 };
 
 const CoverImg = styled.div<CoverImgProps>`
   width: 100%;
-  height: 200px;
+  height: 146px;
   background-image: ${props => `url(${props.mobileSrc})`};
-  background-attachment: fixed;
+  background-attachment: local;
   background-repeat: no-repeat;
   background-position-x: center;
-  background-position-y: center top;
-  background-size: fit;
+  background-size: cover;
 
   @media ${mediaDevices.mobileL} {
     background-image: ${props => `url(${props.tabletSrc})`};
-    background-attachment: fixed;
-    background-position-x: center;
-    background-position-y: center top;
+    background-attachment: local;
+    
+    height: 250px;
   }
 
   @media ${mediaDevices.tablet} {
+    background-image: ${props => `url(${props.tabletSrc})`};
+    background-attachment: local;
+    
+    
+    height: 250px;
+  }
+
+  @media ${mediaDevices.laptop} {
     background-image: ${props => `url(${props.laptopSrc})`};
     background-attachment: fixed;
     background-position-x: center;
-    background-position-y: center bottom;
+    background-position-y: top;
+    background-size: contain;
+    height: 250px;
   }
 
   @media ${mediaDevices.laptopL} {
     background-image: ${props => `url(${props.desktopSrc})`};
     background-attachment: fixed;
     background-position-x: center;
-    background-position-y: center top;
+    background-position-y: -80px;
+    background-size: contain;
+    height: 250px;
+  }
+
+  @media ${mediaDevices.desktop} {
+    background-image: ${props => `url(${props.hugeSrc})`};
+    background-attachment: fixed;
+    background-position-x: center;
+    background-position-y: -180px;
+    background-size: contain;
+    height: 550px;
   }
 `;
 
@@ -82,9 +103,10 @@ const Home = ({
         tabletSrc={process.env.BACKEND_URL + homePageContent.tabletCover.url}
         laptopSrc={process.env.BACKEND_URL + homePageContent.laptopCover.url}
         desktopSrc={process.env.BACKEND_URL + homePageContent.desktopCover.url}
+        hugeSrc={process.env.BACKEND_URL + homePageContent.hugeCover.url}
       />
       <Padded padding={"10px"}>
-        <Txt alignCenter underline padding={"5px"}>
+        <Txt alignCenter big bold padding={"5px"}>
           {homePageContent.subtitle}
         </Txt>
       </Padded>

@@ -13,9 +13,9 @@ import {
 } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { mediaDevices, DisplayAtMedia } from "../../components/DisplayAtMedia";
 import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/ProductPurchaseOptions";
-import { getAllProductsIds } from "../../queries/product/getAllProductsIds";
-import { getProductById } from "../../queries/product/getProductById";
+import { getAllProductsIdsSlugs } from "../../queries/product/getAllProductsIdsSlugs";
 import { ProductInfo } from "../../queries/types";
+import { getProductBySlug } from "../../queries/product/getProductBySlug";
 
 const ProductPageContainer = styled.div`
   background: white;
@@ -56,6 +56,11 @@ type ProductPageProps = {
   product: ProductInfo;
 };
 
+/**
+ * Displays product of given productSlug
+ * @param navigationBarSideDrawerData
+ * @param product
+ */
 export default function SingleProductPage({
   navigationBarSideDrawerData,
   product
@@ -106,14 +111,14 @@ export default function SingleProductPage({
 
 export const getStaticProps: GetStaticProps = async context => {
 
-  const id = context.params?.id;
+  const slug = context.params?.productSlug;
 
-  if (typeof id !== "string") {
+  if (typeof slug !== "string") {
     console.log("id from params was not a string, which is bad.");
     return { props: {} };
   }
 
-  const product = await getProductById(id);
+  const product = await getProductBySlug(slug);
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
 
   return {
@@ -125,9 +130,9 @@ export const getStaticProps: GetStaticProps = async context => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await getAllProductsIds();
+  const ids = await getAllProductsIdsSlugs();
   const paths = ids.map(id => ({
-    params: { id }
+    params: { productSlug: id.slug }
   }));
 
   return {

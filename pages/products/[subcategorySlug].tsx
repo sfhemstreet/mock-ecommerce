@@ -3,13 +3,12 @@ import {
   getNavigationBarSideDrawerData
 } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { SubCategory, ProductPreview } from "../../queries/types";
+import { getSubCategoryBySlug } from "../../queries/categories/getSubCategoryBySlug";
+import { getTopProductsBySubCategorySlug } from "../../queries/product/getTopProductsBySubCategorySlug";
+import { getAllSubCategoryIdsSlugs } from '../../queries/categories/getAllSubCategoryIdsSlugs';
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
-import { getSubCategoryById } from "../../queries/categories/getSubCategoryById";
-import { getTopProductsBySubCategoryId } from "../../queries/product/getTopProductsBySubCategoryId";
-import { getAllSubCategoryIds } from "../../queries/categories/getAllSubCategoryIds";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
-import { useState } from "react";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
 
 type SubCategoryPageProps = {
@@ -18,6 +17,13 @@ type SubCategoryPageProps = {
   products: ProductPreview[];
 };
 
+
+/**
+ * Displays products of given subcategorySlug
+ * @param products
+ * @param subcategory
+ * @param navigationBarSideDrawerData
+ */
 export default function CategoryPage({
   products,
   subcategory,
@@ -30,7 +36,7 @@ export default function CategoryPage({
     >
       <CategoryLinkBox
         mainCategory={subcategory.ParentCategory}
-        subCategory={{ id: subcategory.id, Name: subcategory.Name }}
+        subCategory={{ id: subcategory.id, Name: subcategory.Name, slug: subcategory.slug }}
       />
       <ProductsPageContent title={subcategory.Name} products={products} />
     </NavigationBarSideDrawerLayout>
@@ -38,16 +44,16 @@ export default function CategoryPage({
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const id = context.params?.subcategoryId;
+  const slug = context.params?.subcategorySlug;
 
-  if (typeof id !== "string") {
-    console.log("id from params was not a string, which is bad.");
+  if (typeof slug !== "string") {
+    console.log("slug from params was not a string, which is bad.");
     return { props: {} };
   }
 
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
-  const subcategory = await getSubCategoryById(id);
-  const products = await getTopProductsBySubCategoryId(id);
+  const subcategory = await getSubCategoryBySlug(slug);
+  const products = await getTopProductsBySubCategorySlug(slug);
 
   return {
     props: {
@@ -59,9 +65,9 @@ export const getStaticProps: GetStaticProps = async context => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const subids = await getAllSubCategoryIds();
+  const subids = await getAllSubCategoryIdsSlugs();
   const paths = subids.map(id => ({
-    params: { subcategoryId: id }
+    params: { subcategorySlug: id.slug }
   }));
 
   return {

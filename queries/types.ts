@@ -1,5 +1,6 @@
 export type ProductPreview = {
   id: string;
+  slug: string;
   Name: string;
   Price: number;
   Discount: number;
@@ -20,6 +21,7 @@ export type ProductPreview = {
 
 export type ProductInfo = {
   id: string;
+  slug: string;
   Brand: {
     id: string;
     Name: string;
@@ -47,10 +49,12 @@ export type ProductInfo = {
   UnitsInStock: number;
   Category: {
     id: string;
+    slug: string;
     Name: string;
   }
   Subcategory: {
     id: string;
+    slug: string;
     Name: string;
   }
   Preview: {
@@ -60,15 +64,18 @@ export type ProductInfo = {
 
 export type Category = {
   id: string;
+  slug: string;
   Name: string;
   SubCategories?: Category[];
 };
 
 export type SubCategory = {
   id: string;
+  slug: string;
   Name: string;
   ParentCategory: {
     id: string;
+    slug: string;
     Name: string;
   }
 }
@@ -84,6 +91,7 @@ export type SiteLogo = {
 
 export type Brand = {
   id: string;
+  slug: string;
   Name: string;
   Logo: {
     url: string;

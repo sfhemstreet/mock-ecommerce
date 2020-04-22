@@ -8,6 +8,7 @@ export const getTopProductsByCategoryId = async (id: string) => {
     {	
       products(where: { Category: {id: ${id}} }, sort: "Ranking:asc") {
         id
+        slug
         Name
         Price
         Discount

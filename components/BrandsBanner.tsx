@@ -17,9 +17,13 @@ const BannerAreaContainer = styled.div`
   height: 80px;
   background: ${props => props.theme.gradients.crazyLite};
   overflow: hidden;
+
+  :hover {
+    overflow: scroll;
+  }
 `;
 
-const Banner = styled.div<{ width: string; moveLeft: string, pause: boolean }>`
+const Banner = styled.div<{ width: string; moveLeft: string}>`
   height: 100%;
   width: ${props => props.width};
   display: flex;
@@ -27,7 +31,11 @@ const Banner = styled.div<{ width: string; moveLeft: string, pause: boolean }>`
   align-items: center;
 
   animation: ${props => MoveLeft(props.moveLeft)} 20s linear infinite;
-  animation-play-state: ${props => props.pause ? "paused" : "running"};
+  animation-play-state: running;
+
+  :hover {
+    animation-play-state: paused;
+  }
 `;
 
 const BrandImg = styled.img<{ pad: string }>`
@@ -55,7 +63,7 @@ export const BrandsBanner = ({
   onSelection
 }: BrandsBannerProps): JSX.Element => {
   const [width] = useWindowDimensions();
-  const [isPaused, setIsPaused] = useState(false);
+  
   const widthOfImg = 80;
 
   const displayedBrands = [...brands, ...brands];
@@ -69,18 +77,15 @@ export const BrandsBanner = ({
       ? 300
       : 500;
 
-  console.log(pad, width - brands.length * widthOfImg);
 
+  // updates pad when width changes
   useEffect(() => {
-   
   }, [width])
 
   return (
     <BannerAreaContainer>
       <Banner
-        pause={isPaused}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+       
         width={`${displayedBrands.length * widthOfImg +
           pad * displayedBrands.length}px`}
         moveLeft={`${brands.length * widthOfImg + pad * brands.length}px`}

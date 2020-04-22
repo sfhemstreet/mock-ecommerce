@@ -9,25 +9,25 @@ import { RemoveIcon } from "../RemoveIcon";
 import { mediaDevices } from "../DisplayAtMedia";
 
 const StoredProductIMG = styled.img`
-  height: 100px;
-  width: auto;
+  height: auto;
+  width: 100px;
 `;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 0.7fr 0.3fr;
+  grid-template-columns: 100px 1fr 0.7fr 0.3fr;
   grid-template-rows: 1fr;
   gap: 3px 3px;
   grid-template-areas: "image name qualities edit";
 
   width: 100%;
-  height: 120px;
+  min-height: 100px;
 
   background-color: white;
   color: ${props => props.theme.colors.black};
 
   @media ${mediaDevices.mobileM} {
-    height: 100px;
+    min-height: 100px;
   }
 `;
 
@@ -64,7 +64,7 @@ export const StoredProductView = ({
   };
 
   const calculateedPrice =
-    item.Price * item.Quantity - item.Discount * item.Quantity;
+    (item.Price * item.Quantity - item.Discount * item.Quantity).toFixed(2);
 
   return (
     <GridContainer>

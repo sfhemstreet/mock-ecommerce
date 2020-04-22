@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import { useState } from "react";
 import { Row } from "../Row";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
@@ -18,6 +18,8 @@ import {
 } from "./FilterBox";
 import { SortBox } from "./SortBox";
 import { Centered } from "../Centered";
+import Link from "next/link";
+import { FlexBox } from "../FlexBox";
 
 export const SORT_NONE = "None";
 export const SORT_PRICE_LO_HI = "Price: Low to High";
@@ -48,11 +50,29 @@ const ProductsAndFilterContainer = styled.div`
   max-width: 1400px;
   min-height: 800px;
   width: 100%;
-  
+
   @media ${mediaDevices.laptop} {
     justify-content: flex-start;
   }
-`; 
+`;
+
+const LinkA = styled.a`
+  text-decoration: none;
+  font-size: ${props => props.theme.typography.fontSize};
+
+  transition: color 0.3s ease-in;
+
+  padding: 10px 10px 20px 10px;
+  text-align: center;
+
+  width: 100px;
+
+  cursor: pointer;
+
+  :hover {
+    color: ${props => props.theme.colors.green};
+  }
+`;
 
 type ProductsPageContentProps = {
   title: string;
@@ -73,37 +93,30 @@ export const ProductsPageContent = ({
   products,
   subcategories
 }: ProductsPageContentProps) => {
-  const filterOptions = createFilterOptions(products, subcategories);
+  const filterOptions = createFilterOptions(products);
 
   const [filteredProducts, setFilteredProducts] = useState([...products]);
-  const [sortOption, setSortOption] = useState<SortOptionTypes>(SORT_NONE)
+  const [sortOption, setSortOption] = useState<SortOptionTypes>(SORT_NONE);
   const [isSortModal, setIsSortModal] = useState(false);
   const [isFilterModal, setIsFilterModal] = useState(false);
 
-  
   const handleSort = (option: SortOptionTypes, products: ProductPreview[]) => {
     switch (option) {
       case SORT_MOST_RECENT:
         return [
           ...products.sort(
             (a, b) =>
-            // Well this is what we will do for now
-            b.Ranking - a.Ranking
+              // Well this is what we will do for now
+              b.Ranking - a.Ranking
           )
         ];
-        
+
       case SORT_RANKING_HI_LO:
-        return [
-          ...products.sort((a, b) => a.Ranking - b.Ranking)
-        ];
+        return [...products.sort((a, b) => a.Ranking - b.Ranking)];
       case SORT_PRICE_LO_HI:
-        return [
-          ...products.sort((a, b) => a.Price - b.Price)
-        ];
+        return [...products.sort((a, b) => a.Price - b.Price)];
       case SORT_PRICE_HI_LO:
-        return [
-          ...products.sort((a, b) => b.Price - a.Price)
-        ];
+        return [...products.sort((a, b) => b.Price - a.Price)];
       default:
         return products;
     }
@@ -192,72 +205,86 @@ export const ProductsPageContent = ({
     const p = handleSort(option, filteredProducts);
     setFilteredProducts(p);
     setSortOption(option);
-  }
+  };
 
   return (
     <Centered>
-
-    
-    <Contained maxWidth={"1400px"} width={"100%"}>
-      <Column justifyCenter alignCenter>
-        <Row justifyEvenly alignCenter>
-          {/* Mobile Filter Icon */}
-          <DisplayAtMedia mobile tablet>
-            <Padded padding="10px">
-              <FilterIcon
-                onClick={() => {
-                  setIsSortModal(false);
-                  setIsFilterModal(true);
-                }}
-              />
-            </Padded>
-          </DisplayAtMedia>
-
-          {/* Title of Page */}
-          <Txt alignCenter big bold padding={"10px 5px"}>
-            {title}
-          </Txt>
-
-          {/* Mobile Sort Icon */}
-          <DisplayAtMedia mobile tablet>
-            <Padded padding="10px">
-              <SortIcon
-                onClick={() => {
-                  setIsFilterModal(false);
-                  setIsSortModal(true);
-                }}
-              />
-            </Padded>
-          </DisplayAtMedia>
-        </Row>
-
-       
-        <Contained maxWidth={"1400px"} width={"100%"} minHeight={"800px"}>
-          <ProductsAndFilterContainer>
-            {/* Displays SortBox and FilterBox on left side of products */}
-            <DisplayAtMedia laptop desktop>
-              <Padded padding={"0px 30px 10px 40px"}>
-                <Column>
-                  <SortBox
-                    options={sortOptions}
-                    onSelect={option => handleSortChange(option as SortOptionTypes)}
-                  />
-                  <Padded padTop={"40px"}>
-                    <FilterBox
-                      filterOptions={filterOptions}
-                      onChange={(f: FilterOptionsObj) => handleFilter(f)}
-                    />
-                  </Padded>
-                </Column>
+      <Contained maxWidth={"1400px"} width={"100%"}>
+        <Column justifyCenter alignCenter>
+          <Row justifyEvenly alignCenter>
+            {/* Mobile Filter Icon */}
+            <DisplayAtMedia mobile tablet>
+              <Padded padding="10px">
+                <FilterIcon
+                  onClick={() => {
+                    setIsSortModal(false);
+                    setIsFilterModal(true);
+                  }}
+                />
               </Padded>
             </DisplayAtMedia>
 
-            {/* Displays Filtered Products */}
-            <ProductPreviewCardsList products={filteredProducts} />
-          </ProductsAndFilterContainer>
-        </Contained>
-      </Column>
-    </Contained>
+            {/* Title of Page */}
+            <Txt alignCenter big bold padding={"20px 5px"}>
+              {title}
+            </Txt>
+
+            {/* Mobile Sort Icon */}
+            <DisplayAtMedia mobile tablet>
+              <Padded padding="10px">
+                <SortIcon
+                  onClick={() => {
+                    setIsFilterModal(false);
+                    setIsSortModal(true);
+                  }}
+                />
+              </Padded>
+            </DisplayAtMedia>
+          </Row>
+
+          {subcategories ? (
+            <FlexBox justifyCenter alignCenter>
+              {subcategories.map(category => (
+                <Link
+                  href={`/products/${category.slug}`}
+                  key={`subcategoryLink${category.id}`}
+                >
+                  <LinkA>{category.Name}</LinkA>
+                </Link>
+              ))}
+            </FlexBox>
+          ) : (
+            <Padded padTop={"20px"} />
+          )}
+
+          <Contained maxWidth={"1400px"} width={"100%"} minHeight={"800px"}>
+            <ProductsAndFilterContainer>
+              {/* Displays SortBox and FilterBox on left side of products */}
+              <DisplayAtMedia laptop desktop>
+                <Padded padding={"0px 30px 10px 40px"}>
+                  <Column>
+                    <SortBox
+                      options={sortOptions}
+                      onSelect={option =>
+                        handleSortChange(option as SortOptionTypes)
+                      }
+                    />
+                    <Padded padTop={"40px"}>
+                      <FilterBox
+                        filterOptions={filterOptions}
+                        onChange={(f: FilterOptionsObj) => handleFilter(f)}
+                      />
+                    </Padded>
+                  </Column>
+                </Padded>
+              </DisplayAtMedia>
+
+              {/* Displays Filtered Products */}
+              <ProductPreviewCardsList products={filteredProducts} />
+            </ProductsAndFilterContainer>
+          </Contained>
+        </Column>
+      </Contained>
     </Centered>
   );
 };

@@ -5,6 +5,7 @@ const GET_TOP_4_PRODUCTS = `
   {
     products(sort: "Ranking:desc", where: {IsAvailable: true, Ranking_gte: 4}, limit: 4) {
       id
+      slug
       Name
       Price
       Brand {

@@ -12,10 +12,13 @@ const PPCCContainer = styled.div`
   max-width: 1200px;
 
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-content: flex-start;
+
+  @media ${mediaDevices.laptop} {
+    justify-content: flex-start;
+  }
 `;
 
 const DummyProduct = styled.div`

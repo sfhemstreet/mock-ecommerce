@@ -1,16 +1,14 @@
-import styled from "styled-components";
 import {
   NavigationBarSideDrawerData,
   getNavigationBarSideDrawerData
 } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
-import { getCategoryById } from "../../queries/categories/getCategoryById";
-import { getTopProductsByCategoryId } from "../../queries/product/getTopProductsByCategoryId";
 import { Category, ProductPreview } from "../../queries/types";
-import { getAllCategoryIds } from "../../queries/categories/getAllCategoryIds";
+import { getAllCategoryIdsSlugs } from "../../queries/categories/getAllCategoryIdsSlugs";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
-import { BackgroundWhite, BackgroundBlack } from "../../components/Background";
+import { getCategoryBySlug } from "../../queries/categories/getCategoryBySlug";
+import { getTopProductsByCategorySlug } from "../../queries/product/getTopProductsByCategorySlug";
 
 type CategoryPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
@@ -41,16 +39,16 @@ export default function CategoryPage({
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const id = context.params?.categoryId;
+  const slug = context.params?.categorySlug;
 
-  if (typeof id !== "string") {
-    console.log("id from params was not a string, which is bad.");
+  if (typeof slug !== "string") {
+    console.log("slug from params was not a string, which is bad.");
     return { props: {} };
   }
 
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
-  const category = await getCategoryById(id);
-  const products = await getTopProductsByCategoryId(id);
+  const category = await getCategoryBySlug(slug);
+  const products = await getTopProductsByCategorySlug(slug);
 
   return {
     props: {
@@ -62,9 +60,9 @@ export const getStaticProps: GetStaticProps = async context => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await getAllCategoryIds();
+  const ids = await getAllCategoryIdsSlugs();
   const paths = ids.map(id => ({
-    params: { categoryId: id }
+    params: { categorySlug: id.slug }
   }));
 
   return {
