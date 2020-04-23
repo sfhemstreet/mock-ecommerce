@@ -13,15 +13,15 @@ import {
 import { SpinningLoader } from "../SpinningLoader";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { Transition } from "react-transition-group";
-import { TopRightModal } from "../TopRightModal/TopRightModal";
 import {
   closeWishListModal,
   toggleWishListModal
 } from "../../storage/modals/modalActions";
-import { TopRightModalSkeleton } from "../TopRightModal/TopRightModalSkeleton";
-import { StoredProductListView } from "../TopRightModal/StoredProductListView";
+import { StoredProductListView } from "../ShoppingCartWishListModal/StoredProductListView";
 import { StoredProduct } from "../../storage/types";
 import { removeItemFromWishlist, editWishListItem } from "../../storage/wishlist/wishListActions";
+import { Modal } from "../ShoppingCartWishListModal/Modal";
+import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
 
 const ShakeAnimationMixin = css `
   animation: ${UpDownWait} 15s linear infinite;
@@ -107,8 +107,8 @@ export const WishListNavigationIcon = (): JSX.Element => {
         unmountOnExit
       >
         {state => (
-          <TopRightModal onClose={handleCloseModal} state={state}>
-            <TopRightModalSkeleton
+          <Modal onClose={handleCloseModal} state={state}>
+            <ModalSkeleton
               title={"WishList"}
               type={WISHLIST}
               onClose={handleCloseModal}
@@ -116,12 +116,12 @@ export const WishListNavigationIcon = (): JSX.Element => {
               <StoredProductListView
                 type={WISHLIST}
                 list={wishList.data}
-                submitButtonText={"Add All to Shopping Cart"}
+                submitButtonText={"Add to Shopping Cart"}
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}
               />
-            </TopRightModalSkeleton>
-          </TopRightModal>
+            </ModalSkeleton>
+          </Modal>
         )}
       </Transition>
     </>

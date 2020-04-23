@@ -19,6 +19,7 @@ import { getTop4Products } from "../queries/product/getTop4Products";
 import { ProductPreview, Brand } from "../queries/types";
 import { getAllBrands } from "../queries/brand/getAllBrands";
 import { BrandsBanner } from "../components/BrandsBanner";
+import Head from "next/head";
 
 type CoverImgProps = {
   mobileSrc: string;
@@ -40,15 +41,14 @@ const CoverImg = styled.div<CoverImgProps>`
   @media ${mediaDevices.mobileL} {
     background-image: ${props => `url(${props.tabletSrc})`};
     background-attachment: local;
-    
+
     height: 250px;
   }
 
   @media ${mediaDevices.tablet} {
     background-image: ${props => `url(${props.tabletSrc})`};
     background-attachment: local;
-    
-    
+
     height: 250px;
   }
 
@@ -94,34 +94,42 @@ const Home = ({
   brands
 }: HomeProps): JSX.Element => {
   return (
-    <NavigationBarSideDrawerLayout
-      filterChildrenWhenSideDrawerOpen
-      data={navigationBarSideDrawerData}
-    >
-      <CoverImg
-        mobileSrc={process.env.BACKEND_URL + homePageContent.mobileCover.url}
-        tabletSrc={process.env.BACKEND_URL + homePageContent.tabletCover.url}
-        laptopSrc={process.env.BACKEND_URL + homePageContent.laptopCover.url}
-        desktopSrc={process.env.BACKEND_URL + homePageContent.desktopCover.url}
-        hugeSrc={process.env.BACKEND_URL + homePageContent.hugeCover.url}
-      />
-      <Padded padding={"10px"}>
-        <Txt alignCenter big bold padding={"5px"}>
-          {homePageContent.subtitle}
-        </Txt>
-      </Padded>
-      <Padded padding={"0px 5px 5px 5px"}>
-        <Txt alignCenter padding={"0px 0px 8px 0px"}>
-          {homePageContent.content}
-        </Txt>
-        <Centered>
-          <ProductPreviewCardsList products={topFourProducts} />
-        </Centered>
-      </Padded>
-      <Padded padTop={"50px"}>
-        <BrandsBanner brands={brands} onSelection={(b) => {}} />
-      </Padded>
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>{homePageContent.title}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        filterChildrenWhenSideDrawerOpen
+        data={navigationBarSideDrawerData}
+      >
+        <CoverImg
+          mobileSrc={process.env.BACKEND_URL + homePageContent.mobileCover.url}
+          tabletSrc={process.env.BACKEND_URL + homePageContent.tabletCover.url}
+          laptopSrc={process.env.BACKEND_URL + homePageContent.laptopCover.url}
+          desktopSrc={
+            process.env.BACKEND_URL + homePageContent.desktopCover.url
+          }
+          hugeSrc={process.env.BACKEND_URL + homePageContent.hugeCover.url}
+        />
+        <Padded padding={"10px"}>
+          <Txt alignCenter big bold padding={"5px"}>
+            {homePageContent.subtitle}
+          </Txt>
+        </Padded>
+        <Padded padding={"0px 5px 5px 5px"}>
+          <Txt alignCenter padding={"0px 0px 8px 0px"}>
+            {homePageContent.content}
+          </Txt>
+          <Centered>
+            <ProductPreviewCardsList products={topFourProducts} />
+          </Centered>
+        </Padded>
+        <Padded padTop={"50px"}>
+          <BrandsBanner brands={brands} onSelection={b => {}} />
+        </Padded>
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 };
 

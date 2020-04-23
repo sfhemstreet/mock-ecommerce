@@ -16,7 +16,7 @@ import { ProductInfo } from "../../queries/types";
 import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import { Contained } from "../Contained";
-import { EditButton } from "./EditButton";
+import { EditButton } from "./components/EditButton";
 
 const EditStoredProductContainer = styled.div`
   width: 100%;
@@ -156,6 +156,7 @@ export const EditStoredProductOptions = ({
       const item: StoredProduct = {
         timeAdded: originalItem.timeAdded,
         id: product.id,
+        slug: product.slug,
         Price: product.Price,
         MSRP: product.MSRP,
         Discount: product.Discount,

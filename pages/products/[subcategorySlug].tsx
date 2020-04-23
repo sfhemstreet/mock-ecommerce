@@ -5,18 +5,18 @@ import {
 import { SubCategory, ProductPreview } from "../../queries/types";
 import { getSubCategoryBySlug } from "../../queries/categories/getSubCategoryBySlug";
 import { getTopProductsBySubCategorySlug } from "../../queries/product/getTopProductsBySubCategorySlug";
-import { getAllSubCategoryIdsSlugs } from '../../queries/categories/getAllSubCategoryIdsSlugs';
+import { getAllSubCategoryIdsSlugs } from "../../queries/categories/getAllSubCategoryIdsSlugs";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
+import Head from "next/head";
 
 type SubCategoryPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
   subcategory: SubCategory;
   products: ProductPreview[];
 };
-
 
 /**
  * Displays products of given subcategorySlug
@@ -30,16 +30,26 @@ export default function CategoryPage({
   navigationBarSideDrawerData
 }: SubCategoryPageProps): JSX.Element {
   return (
-    <NavigationBarSideDrawerLayout
-      data={navigationBarSideDrawerData}
-      filterChildrenWhenSideDrawerOpen
-    >
-      <CategoryLinkBox
-        mainCategory={subcategory.ParentCategory}
-        subCategory={{ id: subcategory.id, Name: subcategory.Name, slug: subcategory.slug }}
-      />
-      <ProductsPageContent title={subcategory.Name} products={products} />
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>{subcategory.Name}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        data={navigationBarSideDrawerData}
+        filterChildrenWhenSideDrawerOpen
+      >
+        <CategoryLinkBox
+          mainCategory={subcategory.ParentCategory}
+          subCategory={{
+            id: subcategory.id,
+            Name: subcategory.Name,
+            slug: subcategory.slug
+          }}
+        />
+        <ProductsPageContent title={subcategory.Name} products={products} />
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 

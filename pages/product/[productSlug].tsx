@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import useSWR, { mutate } from "swr";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
@@ -16,6 +17,15 @@ import { ProductPurchaseOptions } from "../../components/ProductPurchaseOptions/
 import { getAllProductsIdsSlugs } from "../../queries/product/getAllProductsIdsSlugs";
 import { ProductInfo } from "../../queries/types";
 import { getProductBySlug } from "../../queries/product/getProductBySlug";
+import Head from "next/head";
+import {
+  PRODUCT_HISTORY,
+  getProductHistory,
+  updateProductHistory
+} from "../../storage/storage";
+import { updateItemInProductHistory, addItemToProductHistory } from "../../storage/productHistory/productHistoryActions";
+import { ProductHistoryItem } from "../../storage/productHistory/productHistoryTypes";
+import { ProductHistoryBanner } from "../../components/ProductHistoryBanner";
 
 const ProductPageContainer = styled.div`
   background: white;
@@ -65,52 +75,100 @@ export default function SingleProductPage({
   navigationBarSideDrawerData,
   product
 }: ProductPageProps) {
+  const productHistory = useSWR(PRODUCT_HISTORY, getProductHistory);
+
+  // Check if item is in productHistory
+  if (productHistory.data) {
+    const index = productHistory.data.products.findIndex(
+      p => p.id === product.id
+    );
+    const now = Date.now();
+    // If product has an index update the timeViewed
+    if (index !== -1) {
+      const item: ProductHistoryItem = {
+        ...productHistory.data.products[index],
+        timeViewed: now
+      };
+      updateProductHistory(
+        mutate,
+        updateItemInProductHistory(item),
+        productHistory.data
+      );
+    } else {
+      // Item not in Product history, add it
+      const item: ProductHistoryItem = {
+        id: product.id,
+        slug: product.slug,
+        timeViewed: now,
+        Name: product.Name,
+        Price: product.Price,
+        Discount: product.Discount,
+        AvailableColors: product.AvailableColors,
+        AvailableSizes: product.AvailableSizes,
+        Brand: product.Brand,
+        Ranking: product.Ranking,
+        Preview: product.Preview
+      }
+      updateProductHistory(
+        mutate,
+        addItemToProductHistory(item),
+        productHistory.data
+      );
+    }
+  }
+
+  console.log(productHistory.data)
 
   return (
-    <NavigationBarSideDrawerLayout
-      data={navigationBarSideDrawerData}
-      filterChildrenWhenSideDrawerOpen
-    >
-      <ProductPageContainer>
-        <CategoryLinkBox
-          mainCategory={product.Category}
-          subCategory={product.Subcategory}
-        />
-        <PictureAndPurchaseOptionsContainer>
-          <Padded padding={"3px"}>
-            <ProductImageDisplay
-              photos={product.Pictures}
-              thumbnails={product.Thumbnails}
-            />
-          </Padded>
-          <Padded padding={"0px"}>
-            <ProductOptionsContainer>
-              <Column alignCenter>
-                <ProductPurchaseOptions product={product} />
-                <DisplayAtMedia desktop>
-                  <LargeScreenDescriptionContainer>
-                    <Txt padding={"20px 0px"}>{product.Description}</Txt>
-                  </LargeScreenDescriptionContainer>
-                </DisplayAtMedia>
-              </Column>
-            </ProductOptionsContainer>
-          </Padded>
-        </PictureAndPurchaseOptionsContainer>
-        <DisplayAtMedia mobile tablet laptop>
-          <Centered>
-            <SmallScreenDescriptionContainer>
-              <Txt padding={"20px 20px 40px 20px"}>{product.Description}</Txt>
-            </SmallScreenDescriptionContainer>
-          </Centered>
-        </DisplayAtMedia>
-      </ProductPageContainer>
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>{product.Name}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        data={navigationBarSideDrawerData}
+        filterChildrenWhenSideDrawerOpen
+      >
+        <ProductPageContainer>
+          <CategoryLinkBox
+            mainCategory={product.Category}
+            subCategory={product.Subcategory}
+          />
+          <PictureAndPurchaseOptionsContainer>
+            <Padded padding={"3px"}>
+              <ProductImageDisplay
+                photos={product.Pictures}
+                thumbnails={product.Thumbnails}
+              />
+            </Padded>
+            <Padded padding={"0px"}>
+              <ProductOptionsContainer>
+                <Column alignCenter>
+                  <ProductPurchaseOptions product={product} />
+                  <DisplayAtMedia desktop>
+                    <LargeScreenDescriptionContainer>
+                      <Txt padding={"20px 0px"}>{product.Description}</Txt>
+                    </LargeScreenDescriptionContainer>
+                  </DisplayAtMedia>
+                </Column>
+              </ProductOptionsContainer>
+            </Padded>
+          </PictureAndPurchaseOptionsContainer>
+          <DisplayAtMedia mobile tablet laptop>
+            <Centered>
+              <SmallScreenDescriptionContainer>
+                <Txt padding={"20px 20px 40px 20px"}>{product.Description}</Txt>
+              </SmallScreenDescriptionContainer>
+            </Centered>
+          </DisplayAtMedia>
+        </ProductPageContainer>
+        <ProductHistoryBanner products={productHistory.data?.products.filter(p => p.id !== product.id)} />
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 
-
 export const getStaticProps: GetStaticProps = async context => {
-
   const slug = context.params?.productSlug;
 
   if (typeof slug !== "string") {
@@ -140,6 +198,3 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false
   };
 };
-
-
-

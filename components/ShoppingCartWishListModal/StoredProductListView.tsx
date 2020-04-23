@@ -10,7 +10,7 @@ import { Transition, SwitchTransition } from "react-transition-group";
 import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
 import { StoredProductView } from "./StoredProductView";
 import {
-  KeyType as StoredType,
+  KeyType as StoredProductType,
   WISHLIST,
   updateModalsState,
   SHOPPING_CART
@@ -24,7 +24,7 @@ import {
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
-import { SubmitButton } from "./SubmitButton";
+import { SubmitButton } from "./components/SubmitButton";
 
 const TransitionContainer = styled.div<{ state: TransitionStatus }>`
   opacity: ${props => (props.state === ENTERED ? 1 : 0)};
@@ -56,7 +56,7 @@ const ProductScrollArea = styled.div<{ width: string; height: string }>`
 `;
 
 type StoredProductListViewProps = {
-  type: StoredType;
+  type: StoredProductType;
   list: StoredProductList | undefined;
   submitButtonText: string;
   onEdit: (item: StoredProduct) => void;
@@ -79,40 +79,61 @@ export const StoredProductListView = ({
   onEdit,
   onRemove
 }: StoredProductListViewProps): JSX.Element => {
-  // Store a local copy of the list for animating items on screen
+  // Store a local copy of the list for animating items on screen.
   const [items, setItems] = useState({ ...list });
 
-  // isEditting controlls switching of displays, between list and edit screen
-  const [isEditting, setIsEditting] = useState(false);
+  // editItem stores item user wants to edit and is used to
+  // control switching between list and edit screen.
   const [editItem, setEditItem] = useState<StoredProduct | null>(null);
 
-  // Saves selcted item for editting, use timeAdded as ID for items
-  const [selectedItemId, setSelectedItemId] = useState(-1);
+  // Remove item id, used to animate removal of item from list,
+  // use timeAdded as ID for items.
+  const [removeItemId, setRemoveItemId] = useState(-1);
 
   // Screen width to calculate width and height of containers on mobile screens
   const [width, height] = useWindowDimensions();
 
+  // Selected items
+  const [selectedItems, setSelectedItems] = useState(Array<StoredProduct>());
+
+  // Handle Start Edit
   const handleStartEdit = (item: StoredProduct) => {
     if (type === WISHLIST) updateModalsState(mutate, startEditWishListModal());
     else if (type === SHOPPING_CART)
       updateModalsState(mutate, startEditShoppingCartModal());
 
-    setIsEditting(true);
     setEditItem(item);
   };
 
+  // Handle Cancel Edit
   const handleCancelEditting = () => {
     if (type === WISHLIST) updateModalsState(mutate, stopEditWishListModal());
     else if (type === SHOPPING_CART)
       updateModalsState(mutate, stopEditShoppingCartModal());
 
-    setIsEditting(false);
     setEditItem(null);
     setItems({ ...list });
   };
 
+  // Handle Select Item adds item to selectedItems
+  // and removes item if its already in selectedItems
+  const handleSelectItem = (item: StoredProduct) => {
+    const index = selectedItems.findIndex(i => i.timeAdded === item.timeAdded);
+    if (index === -1) {
+      setSelectedItems([...selectedItems, item]);
+    } else {
+      setSelectedItems([...selectedItems.filter((_, i) => i !== index)]);
+    }
+  };
+
+  // Handle Removal of Item
   const handleRemove = (item: StoredProduct) => {
-    setSelectedItemId(item.timeAdded);
+    // Animate item out of list
+    setRemoveItemId(item.timeAdded);
+    // Make sure removed item is not in selectedItems.
+    setSelectedItems([
+      ...selectedItems.filter(i => i.timeAdded !== item.timeAdded)
+    ]);
     // Let animation finish before removing local version of item
     setTimeout(() => {
       setItems({
@@ -144,10 +165,13 @@ export const StoredProductListView = ({
     <StoredProductListContainer>
       {/* Fades between Edit screen and List of products screen */}
       <SwitchTransition mode={"out-in"}>
-        <Transition key={isEditting ? "Edit" : "ShowItems"} timeout={300}>
+        <Transition
+          key={editItem !== null ? "Edit" : "ShowItems"}
+          timeout={300}
+        >
           {state => (
             <TransitionContainer state={state}>
-              {isEditting ? (
+              {editItem !== null ? (
                 <EditStoredProduct
                   onEdit={onEdit}
                   item={editItem}
@@ -165,15 +189,22 @@ export const StoredProductListView = ({
                     {items.products.map(item => (
                       <Transformed
                         key={`${item.id}${item.timeAdded}`}
-                        isTransformed={item.timeAdded === selectedItemId}
+                        isTransformed={item.timeAdded === removeItemId}
                         transform={"translateX(420px)"}
                         transition={"all 0.3s linear"}
                       >
                         <Padded padding={"1px 0px"}>
                           <StoredProductView
+                            type={type}
                             item={item}
                             onEdit={handleStartEdit}
                             onRemove={handleRemove}
+                            onSelect={handleSelectItem}
+                            isSelected={
+                              selectedItems.findIndex(
+                                i => i.timeAdded === item.timeAdded
+                              ) !== -1
+                            }
                           />
                         </Padded>
                       </Transformed>
@@ -181,7 +212,11 @@ export const StoredProductListView = ({
                   </ProductScrollArea>
 
                   <Transition
-                    in={!isEditting && items.products.length > 0}
+                    in={
+                      items.products.length > 0 &&
+                      editItem === null &&
+                      (type === "WISHLIST" ? selectedItems.length > 0 : true)
+                    }
                     timeout={{
                       enter: 10,
                       exit: 300
@@ -197,7 +232,10 @@ export const StoredProductListView = ({
                             absolute
                             top={`${height - 230}px`}
                             style={{
-                              left: state === ENTERED ? `${(width - 300) / 2}px` : "510px",
+                              left:
+                                state === ENTERED
+                                  ? `${(width - 300) / 2}px`
+                                  : "510px",
                               transition: "all 0.3s linear"
                             }}
                           >

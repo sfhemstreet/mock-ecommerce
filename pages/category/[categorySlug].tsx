@@ -9,6 +9,7 @@ import { getAllCategoryIdsSlugs } from "../../queries/categories/getAllCategoryI
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
 import { getCategoryBySlug } from "../../queries/categories/getCategoryBySlug";
 import { getTopProductsByCategorySlug } from "../../queries/product/getTopProductsByCategorySlug";
+import Head from "next/head";
 
 type CategoryPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
@@ -22,19 +23,22 @@ export default function CategoryPage({
   navigationBarSideDrawerData
 }: CategoryPageProps): JSX.Element {
   return (
-    <NavigationBarSideDrawerLayout
-      data={navigationBarSideDrawerData}
-      filterChildrenWhenSideDrawerOpen
-    >
-      
-      <ProductsPageContent
-        title={category.Name}
-        subcategories={category.SubCategories}
-        products={products}
-      />  
-     
-      
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>{category.Name}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        data={navigationBarSideDrawerData}
+        filterChildrenWhenSideDrawerOpen
+      >
+        <ProductsPageContent
+          title={category.Name}
+          subcategories={category.SubCategories}
+          products={products}
+        />
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 

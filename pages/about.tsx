@@ -8,9 +8,13 @@ import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawe
 import { Txt } from "../components/Txt";
 import { Column } from "../components/Column";
 import { Centered } from "../components/Centered";
-import { getAboutPageData, AboutPageData } from "../queries/page/getAboutPageData";
+import {
+  getAboutPageData,
+  AboutPageData
+} from "../queries/page/getAboutPageData";
 import { Padded } from "../components/Padded";
 import { FlexBox } from "../components/FlexBox";
+import Head from "next/head";
 
 const AboutContainer = styled.div`
   background-color: ${props => props.theme.colors.white};
@@ -35,29 +39,42 @@ export default function AboutUsPage({
   aboutPageData
 }: AboutUsPageProps) {
   return (
-    <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData} filterChildrenWhenSideDrawerOpen>
-      <AboutContainer>
-        <Txt big bold underline alignCenter padding={"30px"}>
-          About Us
-        </Txt>
-        <Centered padding={"50px"}>
-          <FlexBox alignCenter justifyCenter>
-            {aboutPageData.people.map(person => (
-              <Padded key={`aboutperson${person.id}`} padding={"25px"}>
-                <Column alignCenter justifyCenter>
-                  <Txt big bold>{person.job}</Txt>
-                  <AboutImg
-                    src={`https://robohash.org/${person.id}?size=200x200`}
-                    alt={`${person.job}: ${person.name}`}
-                  />
-                  <Txt bold padding={"3px"}>{person.name}</Txt>
-                </Column>
-              </Padded>
-            ))}
-          </FlexBox>
-        </Centered>
-      </AboutContainer>
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>About</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        data={navigationBarSideDrawerData}
+        filterChildrenWhenSideDrawerOpen
+      >
+        <AboutContainer>
+          <Txt big bold underline alignCenter padding={"30px"}>
+            About Us
+          </Txt>
+          <Centered padding={"50px"}>
+            <FlexBox alignCenter justifyCenter>
+              {aboutPageData.people.map(person => (
+                <Padded key={`aboutperson${person.id}`} padding={"25px"}>
+                  <Column alignCenter justifyCenter>
+                    <Txt big bold>
+                      {person.job}
+                    </Txt>
+                    <AboutImg
+                      src={`https://robohash.org/${person.id}?size=200x200`}
+                      alt={`${person.job}: ${person.name}`}
+                    />
+                    <Txt bold padding={"3px"}>
+                      {person.name}
+                    </Txt>
+                  </Column>
+                </Padded>
+              ))}
+            </FlexBox>
+          </Centered>
+        </AboutContainer>
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 

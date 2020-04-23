@@ -15,7 +15,7 @@ import { CloseIcon } from "../CloseIcon";
 import { Txt } from "../Txt";
 
 
-const TopRightModalChildrenContainer = styled.div<{
+const ModalChildrenContainer = styled.div<{
   width: string;
   height: string;
 }>`
@@ -41,13 +41,13 @@ const MobileCloseButtonContainer = styled.div`
   z-index: -1;
 `;
 
-type TopRightModalSkeletonProps = {
+type ModalSkeletonProps = {
   onClose: () => void;
   type: StoredType;
   title: string;
 };
 
-export const TopRightModalSkeleton: FunctionComponent<TopRightModalSkeletonProps> = ({
+export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
   children,
   title,
   type,
@@ -98,21 +98,21 @@ export const TopRightModalSkeleton: FunctionComponent<TopRightModalSkeletonProps
 
       {/* Children */}
       <DisplayAtMedia mobile>
-        <TopRightModalChildrenContainer
+        <ModalChildrenContainer
           width={`${width - 4}px`}
           height={`${height - 245}px`}
         >
           {children}
-        </TopRightModalChildrenContainer>
+        </ModalChildrenContainer>
       </DisplayAtMedia>
 
       <DisplayAtMedia tablet laptop desktop>
-        <TopRightModalChildrenContainer
+        <ModalChildrenContainer
           width={"100%"}
           height={"455px"}
         >
           {children}
-        </TopRightModalChildrenContainer>
+        </ModalChildrenContainer>
       </DisplayAtMedia>
     </Contained>
   );

@@ -8,9 +8,12 @@ import { SearchItemList, SearchHistoryActionTypes } from './searchHistory/search
 import { searchHistoryReducer } from './searchHistory/searchHistoryReducer';
 import { ModalActionTypes } from './modals/modalTypes';
 import { modalReducer } from './modals/modalReducer';
+import { productHistoryInitState } from './productHistory/productHistoryConstants';
+import { ProductHistoryState, ProductHistoryActionTypes } from './productHistory/productHistoryTypes';
+import { productHistoryReducer } from './productHistory/productHistoryReducer';
 
 /** Type of state stored in localStorage */ 
-type StorageStateType = StoredProductList | SearchItemList | ModalsState;
+type StorageStateType = StoredProductList | SearchItemList | ModalsState | ProductHistoryState;
 
 /** key for getting and updating WishList state */
 export const WISHLIST = "WISHLIST";
@@ -24,18 +27,23 @@ export const SEARCH_HISTORY = "SEARCH_HISTORY";
 /** key for opening and closing Modals */
 export const MODAL = "MODAL";
 
+/** key for Product History state */
+export const PRODUCT_HISTORY = "PRODUCT_HISTORY";
+
 export type KeyType = 
   typeof WISHLIST | 
   typeof SHOPPING_CART | 
   typeof SEARCH_HISTORY | 
-  typeof MODAL
+  typeof MODAL |
+  typeof PRODUCT_HISTORY;
 
 function getInitStateByKey(key: KeyType) {
   switch (key) {
     case WISHLIST: return storedProductListInitState;
     case SHOPPING_CART: return storedProductListInitState;
     case SEARCH_HISTORY: return searchHistoryInitState;
-    case MODAL: return modalsInitState
+    case MODAL: return modalsInitState;
+    case PRODUCT_HISTORY: return productHistoryInitState;
     default: return undefined;
   }
 }
@@ -81,6 +89,8 @@ export async function storage(key: KeyType): Promise<StorageStateType | undefine
   return data;
 }
 
+
+// SETTERS
 
 /** 
  * Updates WishList in localStorage and in SWR cache. Supply the mutate function from "swr" package.
@@ -148,6 +158,25 @@ export async function updateModalsState(mutateFn: any, action: ModalActionTypes,
   return mutateFn(MODAL, updatedModalsState);
 }
 
+/** 
+ * Updates Product History in localStorage and in SWR cache. Supply the mutate function from "swr" package.
+ * 
+ * @param {mutateFn} mutateFn mutate function from "swr" package
+ * @param {ProductHistoryActionTypes} action action from productHistoryActions.ts
+ * @param {ProductHistoryState} productHistoryState if you have the current state of Product History supply it here
+ */
+export async function updateProductHistory(mutateFn: any, action: ProductHistoryActionTypes, productHistory?: ProductHistoryState) {
+  if (!productHistory) 
+  productHistory = await storage(PRODUCT_HISTORY) as ProductHistoryState;
+
+  const updatedProductHistoryState = productHistoryReducer(productHistory, action);
+  setLocalStorageState(updatedProductHistoryState, PRODUCT_HISTORY);
+  return mutateFn(PRODUCT_HISTORY, updatedProductHistoryState);
+}
+
+
+// GETTERS
+
 /**
  * Function to access WishList state saved in localStorage, supply to useSWR as second argument.
  * 
@@ -182,4 +211,13 @@ export async function getSearchHistory(key: typeof SEARCH_HISTORY): Promise<Sear
  */
 export async function getModalsState(key: typeof MODAL): Promise<ModalsState> {
   return await storage(key) as ModalsState;
+}
+
+/** 
+ * Function to access Product History state saved in localStorage, supply to useSWR as second argument.
+ * 
+ * @param {PRODUCT_HISTORY} key "PRODUCT_HISTORY"
+ */
+export async function getProductHistory(key: typeof PRODUCT_HISTORY): Promise<ProductHistoryState> {
+  return await storage(key) as ProductHistoryState;
 }

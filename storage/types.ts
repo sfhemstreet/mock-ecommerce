@@ -1,6 +1,7 @@
 export type StoredProduct = {
   timeAdded: number;
   id: string;
+  slug: string;
   Name: string;
   Price: number;
   Discount: number;

@@ -105,6 +105,7 @@ export const ProductPurchaseOptions = ({
     const item: StoredProduct = {
       timeAdded: now,
       id: product.id,
+      slug: product.slug,
       Price: product.Price,
       MSRP: product.MSRP,
       Discount: product.Discount,
@@ -124,6 +125,7 @@ export const ProductPurchaseOptions = ({
     const item: StoredProduct = {
       timeAdded: now,
       id: product.id,
+      slug: product.slug,
       Price: product.Price,
       MSRP: product.MSRP,
       Discount: product.Discount,

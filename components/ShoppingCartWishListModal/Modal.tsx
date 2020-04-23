@@ -4,7 +4,7 @@ import { mediaDevices } from "../DisplayAtMedia";
 import { FunctionComponent, useRef } from "react";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 
-const TopRightModalContainer = styled.div<{ state: TransitionStatus }>`
+const ModalContainer = styled.div<{ state: TransitionStatus }>`
   position: fixed;
   top: ${props => (props.state === ENTERED ? "0px" : "-100vh")};
   right: 0px;
@@ -38,12 +38,12 @@ const TopRightModalContainer = styled.div<{ state: TransitionStatus }>`
   }
 `;
 
-type TopRightModalProps = {
+type ModalProps = {
   state: TransitionStatus;
   onClose: () => void;
 };
 
-export const TopRightModal: FunctionComponent<TopRightModalProps> = ({
+export const Modal: FunctionComponent<ModalProps> = ({
   state,
   onClose,
   children
@@ -52,8 +52,8 @@ export const TopRightModal: FunctionComponent<TopRightModalProps> = ({
   useOutsideClick(modalRef, () => onClose());
 
   return (
-    <TopRightModalContainer ref={modalRef} state={state}>
+    <ModalContainer ref={modalRef} state={state}>
       {children}
-    </TopRightModalContainer>
+    </ModalContainer>
   );
 };

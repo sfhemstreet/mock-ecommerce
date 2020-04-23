@@ -18,9 +18,9 @@ import {
   closeShoppingCartModal,
   toggleShoppingCartModal
 } from "../../storage/modals/modalActions";
-import { TopRightModal } from "../TopRightModal/TopRightModal";
-import { TopRightModalSkeleton } from "../TopRightModal/TopRightModalSkeleton";
-import { StoredProductListView } from "../TopRightModal/StoredProductListView";
+import { Modal } from "../ShoppingCartWishListModal/Modal";
+import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
+import { StoredProductListView } from "../ShoppingCartWishListModal/StoredProductListView";
 import { StoredProduct } from "../../storage/types";
 import { removeItemFromShoppingCart, editShoppingCartItem } from "../../storage/shoppingCart/shoppingCartActions";
 
@@ -189,8 +189,8 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
         unmountOnExit
       >
         {state => (
-          <TopRightModal onClose={handleCloseModal} state={state}>
-            <TopRightModalSkeleton
+          <Modal onClose={handleCloseModal} state={state}>
+            <ModalSkeleton
               title={"Shopping Cart"}
               type={SHOPPING_CART}
               onClose={handleCloseModal}
@@ -202,8 +202,8 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
                 onEdit={(item: StoredProduct) => handleItemEdit(item)}
                 onRemove={(item: StoredProduct) => handleItemRemoval(item)}
               />
-            </TopRightModalSkeleton>
-          </TopRightModal>
+            </ModalSkeleton>
+          </Modal>
         )}
       </Transition>
     </>

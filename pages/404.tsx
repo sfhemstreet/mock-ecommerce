@@ -9,6 +9,7 @@ import { Txt } from "../components/Txt";
 import { Centered } from "../components/Centered";
 import { Column } from "../components/Column";
 import { Row } from "../components/Row";
+import Head from "next/head";
 
 const FourZeroFourContainer = styled.div`
   width: 100%;
@@ -23,27 +24,30 @@ type FourZeroFourPageProps = {
 };
 
 export default function FourZeroFourPage({
-  navigationBarSideDrawerData,
-  
+  navigationBarSideDrawerData
 }: FourZeroFourPageProps) {
   return (
-    <NavigationBarSideDrawerLayout
-      data={navigationBarSideDrawerData}
-      filterChildrenWhenSideDrawerOpen
-    >
-      <FourZeroFourContainer>
-        <Centered>
-          <Column alignCenter>
-            <Txt big bold  padding={"40px"}>
-              404: Page Not Found 
-            </Txt>
-            <Txt>
-              Sorry :(
-            </Txt>
-          </Column>
-        </Centered>
-      </FourZeroFourContainer>
-    </NavigationBarSideDrawerLayout>
+    <>
+      <Head>
+        <title>Page Not Found</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+      <NavigationBarSideDrawerLayout
+        data={navigationBarSideDrawerData}
+        filterChildrenWhenSideDrawerOpen
+      >
+        <FourZeroFourContainer>
+          <Centered>
+            <Column alignCenter>
+              <Txt big bold padding={"40px"}>
+                404: Page Not Found
+              </Txt>
+              <Txt>Sorry :(</Txt>
+            </Column>
+          </Centered>
+        </FourZeroFourContainer>
+      </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 
@@ -52,7 +56,7 @@ export const getStaticProps: GetStaticProps = async context => {
 
   return {
     props: {
-      navigationBarSideDrawerData,
+      navigationBarSideDrawerData
     }
   };
 };
