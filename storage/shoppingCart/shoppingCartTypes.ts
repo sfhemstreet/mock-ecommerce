@@ -5,25 +5,51 @@ import {
   REMOVE_ALL_ITEMS_FROM_SHOPPING_CART, 
   EDIT_SHOPPING_CART_ITEM
 } from "./shoppingCartConstants";
-import { StoredProduct } from "../types";
+
+export type ShoppingCartProduct = {
+  timeAdded: number;
+  id: string;
+  slug: string;
+  Name: string;
+  Price: number;
+  Discount: number;
+  MSRP: number;
+  Brand: {
+    id: string;
+    Name: string;
+    Logo: {
+      url: string;
+    }
+  }
+  Preview: {
+    url: string;
+  }
+  Color: string;
+  Size: string;
+  Quantity: number;
+}
+
+export type ShoppingCart = {
+  products: ShoppingCartProduct[]
+}
 
 export interface AddShoppingCartItemAction {
   type: typeof ADD_ITEM_TO_SHOPPING_CART;
   payload: {
-    item: StoredProduct
+    item: ShoppingCartProduct
   }
 }
 
 export interface AddAllShoppingCartItemsAction {
   type: typeof ADD_ALL_ITEMS_TO_SHOPPING_CART;
   payload: {
-    items: StoredProduct[]
+    items: ShoppingCartProduct[]
   }
 }
 
 export interface EditShoppingCartItemAction {
   type: typeof EDIT_SHOPPING_CART_ITEM;
-  payload: { item: StoredProduct }
+  payload: { item: ShoppingCartProduct }
 }
 
 export interface RemoveShoppingCartItemAction {

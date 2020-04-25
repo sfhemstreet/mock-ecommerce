@@ -1,6 +1,5 @@
 import { SearchItemList, SearchHistoryActionTypes } from "./searchHistoryTypes";
-import { searchHistoryInitState } from "../constants";
-import { ADD_ITEM_TO_SEARCH_HISTORY, REMOVE_ITEM_FROM_SEARCH_HISTORY, DELETE_SEARCH_HISTORY } from "./searchHistoryConstants";
+import { ADD_ITEM_TO_SEARCH_HISTORY, REMOVE_ITEM_FROM_SEARCH_HISTORY, DELETE_SEARCH_HISTORY, searchHistoryInitState } from "./searchHistoryConstants";
 
 export function searchHistoryReducer(state = searchHistoryInitState, action: SearchHistoryActionTypes): SearchItemList {
   switch (action.type) {

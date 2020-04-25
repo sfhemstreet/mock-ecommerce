@@ -1,15 +1,13 @@
 import useSWR from "swr";
-import { StoredProduct } from "../../storage/types";
-
 import { Centered } from "../Centered";
 import { SpinningLoader } from "../SpinningLoader";
 import { getProductById } from "../../queries/product/getProductById";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import { EditShoppingCartProductOptions } from "./EditShoppingCartProductOptions";
 
-import { EditStoredProductOptions } from "./EditStoredProductOptions";
-
-type EditStoredProductProps = {
-  onEdit: (item: StoredProduct) => void;
-  item: StoredProduct | null;
+type EditShoppingCartProductProps = {
+  onEdit: (item: ShoppingCartProduct) => void;
+  item: ShoppingCartProduct | null;
   onCancel: () => void;
   width: number;
   height: number;
@@ -17,23 +15,23 @@ type EditStoredProductProps = {
 
 /**
  * Edit a Stored Product in the TopRightModal.
- * 
- * Fetches the product info to let user see all 
+ *
+ * Fetches the product info to let user see all
  * options available and change to any of them.
- * 
+ *
  * @param onEdit
  * @param onCancel
  * @param item
  * @param width
  * @param height
  */
-export const EditStoredProduct = ({
+export const EditShoppingCartProduct = ({
   onEdit,
   item,
   onCancel,
   width,
   height
-}: EditStoredProductProps) => {
+}: EditShoppingCartProductProps) => {
   const productData = useSWR(item?.id || "", getProductById);
 
   if (!productData.data || !item) {
@@ -45,7 +43,7 @@ export const EditStoredProduct = ({
   }
 
   return (
-    <EditStoredProductOptions
+    <EditShoppingCartProductOptions
       width={width}
       height={height}
       onEdit={onEdit}

@@ -1,37 +1,31 @@
 import styled from "styled-components";
 import { mutate } from "swr";
-import { StoredProductList, StoredProduct } from "../../storage/types";
 import { SpinningLoader } from "../SpinningLoader";
 import { useState, useEffect } from "react";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
-import { EditStoredProduct } from "./EditStoredProduct";
+
 import { Transition, SwitchTransition } from "react-transition-group";
 import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
-import { StoredProductView } from "./StoredProductView";
+import { updateModalsState } from "../../storage/storage";
 import {
-  KeyType as StoredProductType,
-  WISHLIST,
-  updateModalsState,
-  SHOPPING_CART
-} from "../../storage/storage";
-import {
-  startEditWishListModal,
   startEditShoppingCartModal,
-  stopEditWishListModal,
   stopEditShoppingCartModal
 } from "../../storage/modals/modalActions";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { SubmitButton } from "./components/SubmitButton";
+import { ShoppingCart, ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import { ShoppingCartProductView } from "./ShoppingCartProductView";
+import { EditShoppingCartProduct } from "./EditShoppingCartProduct";
 
 const TransitionContainer = styled.div<{ state: TransitionStatus }>`
   opacity: ${props => (props.state === ENTERED ? 1 : 0)};
   transition: opacity 300ms ease-in-out;
 `;
 
-const StoredProductListContainer = styled.div`
+const ShoppingCartListContainer = styled.div`
   width: 98%;
   height: 100%;
 
@@ -55,36 +49,30 @@ const ProductScrollArea = styled.div<{ width: string; height: string }>`
   }
 `;
 
-type StoredProductListViewProps = {
-  type: StoredProductType;
-  list: StoredProductList | undefined;
-  submitButtonText: string;
-  onEdit: (item: StoredProduct) => void;
-  onRemove: (item: StoredProduct) => void;
+type ShoppingCartListViewProps = {
+  list: ShoppingCart | undefined;
+  onEdit: (item: ShoppingCartProduct) => void;
+  onRemove: (item: ShoppingCartProduct) => void;
 };
 
 /**
  * Displays list of StoredProducts and options for editting or removing them
  *
- * @param type
  * @param list
- * @param submitButtonText
  * @param onEdit
  * @param onRemove
  */
-export const StoredProductListView = ({
-  type,
+export const ShoppingCartListView = ({
   list,
-  submitButtonText,
   onEdit,
   onRemove
-}: StoredProductListViewProps): JSX.Element => {
+}: ShoppingCartListViewProps): JSX.Element => {
   // Store a local copy of the list for animating items on screen.
   const [items, setItems] = useState({ ...list });
 
   // editItem stores item user wants to edit and is used to
   // control switching between list and edit screen.
-  const [editItem, setEditItem] = useState<StoredProduct | null>(null);
+  const [editItem, setEditItem] = useState<ShoppingCartProduct | null>(null);
 
   // Remove item id, used to animate removal of item from list,
   // use timeAdded as ID for items.
@@ -93,47 +81,24 @@ export const StoredProductListView = ({
   // Screen width to calculate width and height of containers on mobile screens
   const [width, height] = useWindowDimensions();
 
-  // Selected items
-  const [selectedItems, setSelectedItems] = useState(Array<StoredProduct>());
-
   // Handle Start Edit
-  const handleStartEdit = (item: StoredProduct) => {
-    if (type === WISHLIST) updateModalsState(mutate, startEditWishListModal());
-    else if (type === SHOPPING_CART)
-      updateModalsState(mutate, startEditShoppingCartModal());
-
+  const handleStartEdit = (item: ShoppingCartProduct) => {
+    updateModalsState(mutate, startEditShoppingCartModal());
     setEditItem(item);
   };
 
   // Handle Cancel Edit
   const handleCancelEditting = () => {
-    if (type === WISHLIST) updateModalsState(mutate, stopEditWishListModal());
-    else if (type === SHOPPING_CART)
-      updateModalsState(mutate, stopEditShoppingCartModal());
-
+    updateModalsState(mutate, stopEditShoppingCartModal());
     setEditItem(null);
     setItems({ ...list });
   };
 
-  // Handle Select Item adds item to selectedItems
-  // and removes item if its already in selectedItems
-  const handleSelectItem = (item: StoredProduct) => {
-    const index = selectedItems.findIndex(i => i.timeAdded === item.timeAdded);
-    if (index === -1) {
-      setSelectedItems([...selectedItems, item]);
-    } else {
-      setSelectedItems([...selectedItems.filter((_, i) => i !== index)]);
-    }
-  };
-
   // Handle Removal of Item
-  const handleRemove = (item: StoredProduct) => {
+  const handleRemove = (item: ShoppingCartProduct) => {
     // Animate item out of list
     setRemoveItemId(item.timeAdded);
-    // Make sure removed item is not in selectedItems.
-    setSelectedItems([
-      ...selectedItems.filter(i => i.timeAdded !== item.timeAdded)
-    ]);
+    
     // Let animation finish before removing local version of item
     setTimeout(() => {
       setItems({
@@ -162,7 +127,7 @@ export const StoredProductListView = ({
   if (!list) return <SpinningLoader reverse />;
 
   return (
-    <StoredProductListContainer>
+    <ShoppingCartListContainer>
       {/* Fades between Edit screen and List of products screen */}
       <SwitchTransition mode={"out-in"}>
         <Transition
@@ -172,7 +137,7 @@ export const StoredProductListView = ({
           {state => (
             <TransitionContainer state={state}>
               {editItem !== null ? (
-                <EditStoredProduct
+                <EditShoppingCartProduct
                   onEdit={onEdit}
                   item={editItem}
                   onCancel={handleCancelEditting}
@@ -194,17 +159,10 @@ export const StoredProductListView = ({
                         transition={"all 0.3s linear"}
                       >
                         <Padded padding={"1px 0px"}>
-                          <StoredProductView
-                            type={type}
+                          <ShoppingCartProductView
                             item={item}
                             onEdit={handleStartEdit}
                             onRemove={handleRemove}
-                            onSelect={handleSelectItem}
-                            isSelected={
-                              selectedItems.findIndex(
-                                i => i.timeAdded === item.timeAdded
-                              ) !== -1
-                            }
                           />
                         </Padded>
                       </Transformed>
@@ -214,8 +172,7 @@ export const StoredProductListView = ({
                   <Transition
                     in={
                       items.products.length > 0 &&
-                      editItem === null &&
-                      (type === "WISHLIST" ? selectedItems.length > 0 : true)
+                      editItem === null 
                     }
                     timeout={{
                       enter: 10,
@@ -240,7 +197,7 @@ export const StoredProductListView = ({
                             }}
                           >
                             <SubmitButton isSubmit>
-                              {submitButtonText}
+                              Checkout
                             </SubmitButton>
                           </Positioned>
                         </DisplayAtMedia>
@@ -256,7 +213,7 @@ export const StoredProductListView = ({
                             }}
                           >
                             <SubmitButton isSubmit>
-                              {submitButtonText}
+                              Checkout
                             </SubmitButton>
                           </Positioned>
                         </DisplayAtMedia>
@@ -269,6 +226,6 @@ export const StoredProductListView = ({
           )}
         </Transition>
       </SwitchTransition>
-    </StoredProductListContainer>
+    </ShoppingCartListContainer>
   );
 };

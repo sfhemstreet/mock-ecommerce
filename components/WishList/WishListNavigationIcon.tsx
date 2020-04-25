@@ -16,11 +16,11 @@ import {
   closeWishListModal,
   toggleWishListModal
 } from "../../storage/modals/modalActions";
-import { StoredProductListView } from "../ShoppingCartWishListModal/StoredProductListView";
-import { StoredProduct } from "../../storage/types";
-import { removeItemFromWishlist, editWishListItem } from "../../storage/wishlist/wishListActions";
+
+import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
 import { Modal } from "../ShoppingCartWishListModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
+import { WishListProduct } from "../../storage/wishlist/wishListTypes";
 
 const WishListIconContainer = styled.div<{ willShake: boolean }>`
   cursor: pointer;
@@ -74,12 +74,8 @@ export const WishListNavigationIcon = (): JSX.Element => {
     updateModalsState(mutate, toggleWishListModal());
   };
 
-  const handleItemEdit = (item: StoredProduct) => {
-    updateWishList(mutate, editWishListItem(item));
-  };
-
-  const handleItemRemoval = (item: StoredProduct) => {
-    updateWishList(mutate, removeItemFromWishlist(item.id, item.timeAdded));
+  const handleItemRemoval = (item: WishListProduct) => {
+    updateWishList(mutate, removeItemFromWishlist(item.id));
   };
 
   if (!wishList.data || !open.data) return <SpinningLoader reverse />;
@@ -132,13 +128,7 @@ export const WishListNavigationIcon = (): JSX.Element => {
               type={WISHLIST}
               onClose={handleCloseModal}
             >
-              <StoredProductListView
-                type={WISHLIST}
-                list={wishList.data}
-                submitButtonText={"Add to Shopping Cart"}
-                onEdit={(item: StoredProduct) => handleItemEdit(item)}
-                onRemove={(item: StoredProduct) => handleItemRemoval(item)}
-              />
+              
             </ModalSkeleton>
           </Modal>
         )}

@@ -12,6 +12,16 @@ import {
   STOP_EDIT_SHOPPING_CART_MODAL
 } from "./modalConstants";
 
+export type ModalsState = {
+  wishlist: Modal,
+  shoppingCart: Modal
+}
+
+export type Modal = {
+  isOpen: boolean;
+  isEditting: boolean;
+}
+
 export interface OpenWishListModalAction {
   type: typeof OPEN_WISHLIST_MODAL
 }

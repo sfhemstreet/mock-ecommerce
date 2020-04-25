@@ -1,3 +1,5 @@
+import { ModalsState } from "./modalTypes";
+
 export const TOGGLE_SHOPPING_CART_MODAL = "TOGGLE_SHOPPING_CART_MODAL";
 export const TOGGLE_WISHLIST_MODAL = "TOGGLE_WISHLIST_MODAL";
 
@@ -12,3 +14,15 @@ export const START_EDIT_WISHLIST_MODAL = "START_EDIT_WISHLIST_MODAL";
 export const START_EDIT_SHOPPING_CART_MODAL = "START_EDIT_SHOPPING_CART_MODAL";
 export const STOP_EDIT_WISHLIST_MODAL = "STOP_EDIT_WISHLIST_MODAL";
 export const STOP_EDIT_SHOPPING_CART_MODAL = "STOP_EDIT_SHOPPING_CART_MODAL";
+
+
+export const modalsInitState: ModalsState = {
+  wishlist: {
+    isOpen: false,
+    isEditting: false,
+  },
+  shoppingCart: {
+    isOpen: false,
+    isEditting: false,
+  }
+}

@@ -55,32 +55,20 @@ type ProductPreviewCardsListProps = {
 export const ProductPreviewCardsList = ({
   products
 }: ProductPreviewCardsListProps) => {
+  const wishlistMap: { [key: string]: boolean } = {};
   const wishlist = useSWR(WISHLIST, getWishlist);
-  const [wishlistMap, setWishlistMap] = useState<{ [key: string]: boolean }>(
-    {}
-  );
-
-  const map: { [key: string]: boolean } = {};
 
   if (wishlist.data) {
-    for (const item of wishlist.data.products) {
-      map[item.id];
+    for (let i = 0; i < wishlist.data.products.length; i++) {
+      wishlistMap[wishlist.data.products[i].id] = true;
     }
   }
-  console.log(wishlist.data);
 
   return (
     <PPCCContainer shouldCenter={products.length < 4}>
       {products.map(product => {
-
-        // I tried using a map to store ids of the products in the wishlist data
-        // but was unsuccessful in getting it to work. Async issues.
-        // In future get this to be much faster with a hash 
-        const isOnWishList: boolean | undefined = wishlist.data
-          ? wishlist.data.products.findIndex(prod => prod.id === product.id) !==
-            -1
-            ? true
-            : false
+        const isOnWishList = wishlist.data
+          ? wishlistMap[product.id] === true
           : undefined;
 
         return (

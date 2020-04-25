@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { StoredProduct } from "../../storage/types";
-import { KeyType as StoredProductType } from "../../storage/storage";
 import { Contained } from "../Contained";
 import { SpinningLoader } from "../SpinningLoader";
 import { Column } from "../Column";
@@ -8,20 +6,20 @@ import { Txt } from "../Txt";
 import { EditIcon } from "../EditIcon";
 import { RemoveIcon } from "../RemoveIcon";
 import { mediaDevices } from "../DisplayAtMedia";
-import { SelectBox } from "./components/SelectBox";
 import Link from "next/link";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 
-const StoredProductIMG = styled.img`
+const ProductIMG = styled.img`
   height: auto;
   width: 100px;
 `;
 
-const GridContainer = styled.div<{ showSelect: boolean }>`
+const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: ${props => (props.showSelect ? "35px" : "0px")} 100px 1fr 0.5fr 40px;
+  grid-template-columns: 100px 1fr 0.5fr 40px;
   grid-template-rows: 1fr;
   gap: 3px 3px;
-  grid-template-areas: "select image name qualities edit";
+  grid-template-areas: "image name qualities edit";
 
   width: 100%;
   min-height: 100px;
@@ -50,32 +48,24 @@ const LinkContainer = styled.a`
   }
 `;
 
-type StoredProductViewProps = {
-  type: StoredProductType;
-  item: StoredProduct | undefined;
-  onEdit: (item: StoredProduct) => void;
-  onRemove: (item: StoredProduct) => void;
-  onSelect: (item: StoredProduct) => void;
-  isSelected: boolean;
+type ShoppingCartProductViewProps = {
+  item: ShoppingCartProduct | undefined;
+  onEdit: (item: ShoppingCartProduct) => void;
+  onRemove: (item: ShoppingCartProduct) => void;
 };
 
 /**
  * Displays a single StoredProduct, for use in StoredProductListView
  *
- * @param type
  * @param item
  * @param onRemove
  * @param onEdit
- * @param onSelect
  */
-export const StoredProductView = ({
-  type,
+export const ShoppingCartProductView = ({
   item,
   onEdit,
   onRemove,
-  onSelect,
-  isSelected
-}: StoredProductViewProps): JSX.Element => {
+}: ShoppingCartProductViewProps): JSX.Element => {
   if (!item) return <SpinningLoader />;
 
   const handleEdit = () => {
@@ -86,26 +76,15 @@ export const StoredProductView = ({
     onRemove(item);
   };
 
-  const handleSelect = () => {
-    onSelect(item);
-  };
-
   const calculateedPrice = (
     item.Price * item.Quantity -
     item.Discount * item.Quantity
   ).toFixed(2);
 
   return (
-    <GridContainer showSelect={type === "WISHLIST"}>
-      {type === "WISHLIST" && (
-        <GridItem gridName={"select"}>
-          <Column justifyCenter>
-            <SelectBox isSelected={isSelected} onClick={handleSelect} />
-          </Column>
-        </GridItem>
-      )}
+    <GridContainer>
       <GridItem gridName={"image"}>
-        <StoredProductIMG
+        <ProductIMG
           src={process.env.BACKEND_URL + item.Preview.url}
           alt={`${item.Name}`}
         />

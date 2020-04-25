@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import { StoredProduct } from "../../storage/types";
+
 import {
   SelectBoxOption,
   ProductOptionSelectBox
@@ -17,8 +17,9 @@ import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import { Contained } from "../Contained";
 import { EditButton } from "./components/EditButton";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 
-const EditStoredProductContainer = styled.div`
+const EditShoppingCartProductContainer = styled.div`
   width: 100%;
   height: 100%;
 
@@ -43,7 +44,7 @@ const OptionsArea = styled.div<{width: string, height: string}>`
   }
 `;
 
-const StoredProductOptionLabel = styled.label`
+const ProductOptionLabel = styled.label`
   display: flex;
   flex-direction: column;
 `;
@@ -58,9 +59,9 @@ const EditPhoto = styled.img`
   }
 `;
 
-type EditStoredProductOptionsProps = {
-  onEdit: (item: StoredProduct) => void;
-  originalItem: StoredProduct;
+type EditShoppingCartProductOptionsProps = {
+  onEdit: (item: ShoppingCartProduct) => void;
+  originalItem: ShoppingCartProduct;
   product: ProductInfo;
   onCancel: () => void;
   width: number;
@@ -78,14 +79,14 @@ type EditStoredProductOptionsProps = {
  * @param width
  * @param height
  */
-export const EditStoredProductOptions = ({
+export const EditShoppingCartProductOptions = ({
   product,
   originalItem,
   onEdit,
   onCancel,
   width,
   height
-}: EditStoredProductOptionsProps) => {
+}: EditShoppingCartProductOptionsProps) => {
   // Takes product color data and creates an array of color options,
   // and makes starting index the originalItems selected color. 
   let colorStartIndex = 0;
@@ -153,7 +154,7 @@ export const EditStoredProductOptions = ({
 
   function handleSubmitEdit() {
     if (product) {
-      const item: StoredProduct = {
+      const item: ShoppingCartProduct = {
         timeAdded: originalItem.timeAdded,
         id: product.id,
         slug: product.slug,
@@ -173,7 +174,7 @@ export const EditStoredProductOptions = ({
   }
 
   return (
-    <EditStoredProductContainer>
+    <EditShoppingCartProductContainer>
       {/* Gives dimensions to container for mobile screens */}
       <OptionsArea
         width={`${(width - 4)}px`}
@@ -205,7 +206,7 @@ export const EditStoredProductOptions = ({
 
           {/* Options */}
           <Padded padding={"3px"}>
-            <StoredProductOptionLabel>
+            <ProductOptionLabel>
               Select a Size:
               <ProductOptionSelectBox
                 label={"Select a Size"}
@@ -213,10 +214,10 @@ export const EditStoredProductOptions = ({
                 options={sizeOptions}
                 startIndex={sizeOptionStartIndex}
               />
-            </StoredProductOptionLabel>
+            </ProductOptionLabel>
           </Padded>
           <Padded padding={"3px"}>
-            <StoredProductOptionLabel>
+            <ProductOptionLabel>
               Select a Color:
               <ProductOptionSelectBox
                 label={"Select a Color"}
@@ -224,10 +225,10 @@ export const EditStoredProductOptions = ({
                 options={colorOptions}
                 startIndex={colorStartIndex}
               />
-            </StoredProductOptionLabel>
+            </ProductOptionLabel>
           </Padded>
           <Padded padding={"3px"}>
-            <StoredProductOptionLabel>
+            <ProductOptionLabel>
               Quantity:
               <ProductOptionSelectBox
                 label={"Quantity"}
@@ -235,7 +236,7 @@ export const EditStoredProductOptions = ({
                 options={quantityOptions}
                 startIndex={quantityStartIndex}
               />
-            </StoredProductOptionLabel>
+            </ProductOptionLabel>
           </Padded>
 
           {/* Price: If product is discounted, show that it is discounted. */}
@@ -305,6 +306,6 @@ export const EditStoredProductOptions = ({
           </Padded>
         </Positioned>
       </DisplayAtMedia>
-    </EditStoredProductContainer>
+    </EditShoppingCartProductContainer>
   );
 };

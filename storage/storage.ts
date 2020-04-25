@@ -1,19 +1,23 @@
 import { wishListReducer } from './wishlist/wishListReducer';
-import { WishListActionTypes } from './wishlist/wishListTypes';
+import { WishListActionTypes, WishList } from './wishlist/wishListTypes';
 import { shoppingCartReducer } from './shoppingCart/shoppingCartReducer';
-import { StoredProductList, ModalsState } from './types';
-import { storedProductListInitState, searchHistoryInitState, modalsInitState } from './constants';
-import { ShoppingCartActionTypes } from './shoppingCart/shoppingCartTypes';
+
+
+import { ShoppingCartActionTypes, ShoppingCart } from './shoppingCart/shoppingCartTypes';
 import { SearchItemList, SearchHistoryActionTypes } from './searchHistory/searchHistoryTypes';
 import { searchHistoryReducer } from './searchHistory/searchHistoryReducer';
-import { ModalActionTypes } from './modals/modalTypes';
+import { ModalActionTypes, ModalsState } from './modals/modalTypes';
 import { modalReducer } from './modals/modalReducer';
 import { productHistoryInitState } from './productHistory/productHistoryConstants';
 import { ProductHistoryState, ProductHistoryActionTypes } from './productHistory/productHistoryTypes';
 import { productHistoryReducer } from './productHistory/productHistoryReducer';
+import { modalsInitState } from './modals/modalConstants';
+import { searchHistoryInitState } from './searchHistory/searchHistoryConstants';
+import { shoppingCartInitState } from './shoppingCart/shoppingCartConstants';
+import { wishlistInitState } from './wishlist/wishListConstants';
 
 /** Type of state stored in localStorage */ 
-type StorageStateType = StoredProductList | SearchItemList | ModalsState | ProductHistoryState;
+type StorageStateType = ShoppingCart | WishList | SearchItemList | ModalsState | ProductHistoryState;
 
 /** key for getting and updating WishList state */
 export const WISHLIST = "WISHLIST";
@@ -39,8 +43,8 @@ export type KeyType =
 
 function getInitStateByKey(key: KeyType) {
   switch (key) {
-    case WISHLIST: return storedProductListInitState;
-    case SHOPPING_CART: return storedProductListInitState;
+    case WISHLIST: return wishlistInitState;
+    case SHOPPING_CART: return shoppingCartInitState;
     case SEARCH_HISTORY: return searchHistoryInitState;
     case MODAL: return modalsInitState;
     case PRODUCT_HISTORY: return productHistoryInitState;
@@ -55,7 +59,7 @@ function getLocalStorageState(key: KeyType) {
       if (!serializedState) {
         return getInitStateByKey(key);
       }
-      return JSON.parse(serializedState) as StoredProductList;
+      return JSON.parse(serializedState);
     } catch (err) {
       //console.log('ERROR: getLocalStorageState', err);
       return getInitStateByKey(key);
@@ -99,9 +103,9 @@ export async function storage(key: KeyType): Promise<StorageStateType | undefine
  * @param {WishListActionTypes} action action from wishListActions.ts
  * @param {wishlist} wishlist if you have the current state of the wishlist supply it here
  */
-export async function updateWishList(mutateFn: any, action: WishListActionTypes, wishlist?: StoredProductList ) {
+export async function updateWishList(mutateFn: any, action: WishListActionTypes, wishlist?: WishList ) {
   if (!wishlist) 
-    wishlist = await storage(WISHLIST) as StoredProductList;
+    wishlist = await storage(WISHLIST) as WishList;
 
   const updatedWishlist = wishListReducer(wishlist, action);
   setLocalStorageState(updatedWishlist, WISHLIST);
@@ -116,9 +120,9 @@ export async function updateWishList(mutateFn: any, action: WishListActionTypes,
  * @param {ShoppingCartActionTypes} action action from shoppingCartActions.ts
  * @param {StoredProductList} shoppingCart if you have the current state of the shoppingCart supply it here
  */
-export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActionTypes, shoppingCart?: StoredProductList) {
+export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActionTypes, shoppingCart?: ShoppingCart) {
   if (!shoppingCart) 
-    shoppingCart = await storage(SHOPPING_CART) as StoredProductList;
+    shoppingCart = await storage(SHOPPING_CART) as ShoppingCart;
 
   const updatedShoppingCart = shoppingCartReducer(shoppingCart, action);
   setLocalStorageState(updatedShoppingCart, SHOPPING_CART);
@@ -182,8 +186,8 @@ export async function updateProductHistory(mutateFn: any, action: ProductHistory
  * 
  * @param {WISHLIST} key "WISHLIST"
  */
-export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductList> {
-  return await storage(key) as StoredProductList;
+export async function getWishlist(key: typeof WISHLIST): Promise<WishList> {
+  return await storage(key) as WishList;
 } 
 
 /**
@@ -191,8 +195,8 @@ export async function getWishlist(key: typeof WISHLIST): Promise<StoredProductLi
  * 
  * @param {SHOPPING_CART} key "SHOPPING_CART"
  */
-export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<StoredProductList> {
-  return await storage(key) as StoredProductList;
+export async function getShoppingCart(key: typeof SHOPPING_CART): Promise<ShoppingCart> {
+  return await storage(key) as ShoppingCart;
 } 
 
 /**

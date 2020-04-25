@@ -24,11 +24,13 @@ import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
-import { StoredProduct } from "../../storage/types";
+
 import { Row } from "../Row";
 import { BrandLogo } from "../BrandLogo";
 import { openWishListModal, openShoppingCartModal } from "../../storage/modals/modalActions";
 import { ProductInfo } from "../../queries/types";
+import { WishListProduct } from "../../storage/wishlist/wishListTypes";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 
 const ProductPurchaseOptionsContainer = styled.div`
   width: 310px;
@@ -102,7 +104,7 @@ export const ProductPurchaseOptions = ({
 
   function handleAddToCart() {
     const now = Date.now();
-    const item: StoredProduct = {
+    const item: ShoppingCartProduct = {
       timeAdded: now,
       id: product.id,
       slug: product.slug,
@@ -121,20 +123,8 @@ export const ProductPurchaseOptions = ({
   }
 
   function handleAddToWishList() {
-    const now = Date.now();
-    const item: StoredProduct = {
-      timeAdded: now,
+    const item: WishListProduct = {
       id: product.id,
-      slug: product.slug,
-      Price: product.Price,
-      MSRP: product.MSRP,
-      Discount: product.Discount,
-      Name: product.Name,
-      Brand: product.Brand,
-      Size: selectedSize,
-      Color: selectedColor,
-      Quantity: parseInt(selectedQuantity, 10),
-      Preview: { url: product.Thumbnails[0].url }
     };
     updateWishList(mutate, addItemToWishList(item));
     updateModalsState(mutate, openWishListModal()); 

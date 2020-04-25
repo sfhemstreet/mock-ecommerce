@@ -10,6 +10,12 @@ import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { ProductPreview } from "../../queries/types";
 import { Transition } from "react-transition-group";
 import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
+import { updateWishList } from "../../storage/storage";
+import { mutate } from "swr";
+import {
+  removeItemFromWishlist,
+  addItemToWishList
+} from "../../storage/wishlist/wishListActions";
 
 // ratio used for width height: 1.4375
 
@@ -39,13 +45,8 @@ const ProductPreviewCardContainer = styled.div`
 
   cursor: pointer;
 
-  :hover,
-  :focus {
-    transform: scale(1.05);
-  }
-
-  :active {
-    transform: scale(0.99);
+  :hover {
+    color: ${props => props.theme.colors.green};
   }
 `;
 
@@ -103,7 +104,7 @@ const HeartIconContainer = styled.div<{ state: TransitionStatus }>`
 
   transition: all 0.3s ease-in;
 
-  opacity: ${props => props.state === ENTERED ? 1 : 0};
+  opacity: ${props => (props.state === ENTERED ? 1 : 0)};
 
   :focus,
   :hover {
@@ -133,23 +134,23 @@ type ProductWishListIcon = {
   transitionStatus: TransitionStatus;
 };
 
-export const ProductWishListIcon = ({transitionStatus, onClick, onWishList }: ProductWishListIcon) => {
-
+export const ProductWishListIcon = ({
+  transitionStatus,
+  onClick,
+  onWishList
+}: ProductWishListIcon) => {
   const handleClick = (evt: React.SyntheticEvent) => {
     // If this function is fired from a keyboard enter key press then
     // evt will be undefined and the event will not propagate.
     // If its a click we must stop it so that the user is not redirected.
-    if (typeof evt !== 'undefined' && evt.type === 'click'){
+    if (typeof evt !== "undefined" && evt.type === "click") {
       evt.stopPropagation();
     }
     onClick();
-  }
+  };
 
   return (
-    <HeartIconContainer 
-      state={transitionStatus}
-      onClick={handleClick}
-    >
+    <HeartIconContainer state={transitionStatus} onClick={handleClick}>
       <HeartSVG
         isFilled={onWishList}
         xmlns="http://www.w3.org/2000/svg"
@@ -189,8 +190,15 @@ export const ProductPreviewCard = ({
   };
 
   const handleWishList = () => {
+    if (isOnWishList === undefined) return;
 
-  }
+    updateWishList(
+      mutate,
+      isOnWishList
+        ? removeItemFromWishlist(productInfo.id)
+        : addItemToWishList({ id: productInfo.id })
+    );
+  };
 
   const displayNames = {
     brandName: productInfo.Brand.Name,
@@ -252,7 +260,11 @@ export const ProductPreviewCard = ({
           unmountOnExit
         >
           {state => (
-            <ProductWishListIcon transitionStatus={state} onClick={handleWishList} onWishList={isOnWishList ? true : false} />
+            <ProductWishListIcon
+              transitionStatus={state}
+              onClick={handleWishList}
+              onWishList={isOnWishList ? true : false}
+            />
           )}
         </Transition>
         <Padded padding={"5px"}>

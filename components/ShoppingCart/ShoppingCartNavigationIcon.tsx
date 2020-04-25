@@ -20,9 +20,10 @@ import {
 } from "../../storage/modals/modalActions";
 import { Modal } from "../ShoppingCartWishListModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
-import { StoredProductListView } from "../ShoppingCartWishListModal/StoredProductListView";
-import { StoredProduct } from "../../storage/types";
+
 import { removeItemFromShoppingCart, editShoppingCartItem } from "../../storage/shoppingCart/shoppingCartActions";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import { ShoppingCartListView } from "../ShoppingCartWishListModal/ShoppingCartListView";
 
 const ShakeAnimationMixin = css `
   animation: ${ShakeNWait} 15s linear infinite;
@@ -146,12 +147,12 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
 
   if (!shoppingCart.data || !open.data) return <SpinningLoader />;
 
-  const handleItemEdit = (item: StoredProduct) => {
+  const handleItemEdit = (item: ShoppingCartProduct) => {
     console.log("new prod", item);
     updateShoppingCart(mutate, editShoppingCartItem(item));
   };
 
-  const handleItemRemoval = (item: StoredProduct) => {
+  const handleItemRemoval = (item: ShoppingCartProduct) => {
     updateShoppingCart(mutate, removeItemFromShoppingCart(item.id, item.timeAdded));
   };
 
@@ -207,12 +208,10 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
               type={SHOPPING_CART}
               onClose={handleCloseModal}
             >
-              <StoredProductListView
-                type={SHOPPING_CART}
-                submitButtonText={"Checkout"}
+              <ShoppingCartListView
                 list={shoppingCart.data}
-                onEdit={(item: StoredProduct) => handleItemEdit(item)}
-                onRemove={(item: StoredProduct) => handleItemRemoval(item)}
+                onEdit={(item: ShoppingCartProduct) => handleItemEdit(item)}
+                onRemove={(item: ShoppingCartProduct) => handleItemRemoval(item)}
               />
             </ModalSkeleton>
           </Modal>
