@@ -171,7 +171,7 @@ export async function updateProductHistory(mutateFn: any, action: ProductHistory
 
   const updatedProductHistoryState = productHistoryReducer(productHistory, action);
   setLocalStorageState(updatedProductHistoryState, PRODUCT_HISTORY);
-  return mutateFn(PRODUCT_HISTORY, updatedProductHistoryState);
+  return mutateFn(PRODUCT_HISTORY, updatedProductHistoryState, false);
 }
 
 

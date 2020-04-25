@@ -8,12 +8,51 @@ import { Padded } from "./Padded";
 import { SpinningLoader } from "./SpinningLoader";
 import { Txt } from "./Txt";
 import React from "react";
+import { mediaDevices } from "./DisplayAtMedia";
+import { Transformed } from "./Transformed";
 
-const ScrollArea = styled.div`
-  
+type ScrollAreaProps = {
+  centerSmall: boolean;
+  centerMedium: boolean;
+  centerLarge: boolean;
+};
+
+const ScrollArea = styled.div<ScrollAreaProps>`
+  margin: 0 auto;
+  max-width: 319px;
+  padding: 10px 0px;
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
   overflow-x: scroll;
-  display: inline-flex;
-  justify-content: center;
+
+  @media ${mediaDevices.mobileM} {
+    max-width: 374px;
+    justify-content: ${props => (props.centerSmall ? "center" : "flex-start")};
+  }
+
+  @media ${mediaDevices.mobileL} {
+    max-width: 420px;
+    justify-content: ${props => (props.centerSmall ? "center" : "flex-start")};
+  }
+
+  @media ${mediaDevices.tablet} {
+    max-width: 760px;
+    justify-content: ${props => (props.centerMedium ? "center" : "flex-start")};
+  }
+
+  @media ${mediaDevices.laptop} {
+    max-width: 998px;
+    justify-content: ${props => (props.centerMedium ? "center" : "flex-start")};
+  }
+
+  @media ${mediaDevices.laptopL} {
+    max-width: 1200px;
+    justify-content: ${props => (props.centerLarge ? "center" : "flex-start")};
+  }
 `;
 
 type ProductHistoryBannerProps = {
@@ -42,20 +81,30 @@ export const ProductHistoryBanner = ({
     }));
 
   return (
-    <Contained>
-      <Txt alignCenter bold big>
-        Previously Viewed Products
-      </Txt>
-      <ScrollArea>
-        {displayedProducts.map(product => (
-          <Padded
-            padding={"10px 5px"}
-            key={`PreviouslyViewedProduct${product.id}`}
-          >
-            <ProductPreviewCard productInfo={product} />
-          </Padded>
-        ))}
-      </ScrollArea>
+    <Contained padding={"30px 0px"}>
+      <Transformed
+        isTransformed={products.length === 0}
+        transform={""}
+        willFade
+      >
+        <Txt alignCenter bold big>
+          Previously Viewed Products
+        </Txt>
+        <ScrollArea
+          centerLarge={displayedProducts.length < 5}
+          centerMedium={displayedProducts.length < 4}
+          centerSmall={displayedProducts.length < 3}
+        >
+          {displayedProducts.map((product, index) => (
+            <Contained
+              padding={"10px 5px"}
+              key={`PreviouslyViewedProduct${product.id}`}
+            >
+              <ProductPreviewCard productInfo={product} />
+            </Contained>
+          ))}
+        </ScrollArea>
+      </Transformed>
     </Contained>
   );
 };

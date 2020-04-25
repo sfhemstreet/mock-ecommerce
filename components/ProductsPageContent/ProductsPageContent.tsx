@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { Row } from "../Row";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { Padded } from "../Padded";
-import { FilterIcon } from "./FilterIcon";
+import { FilterIcon } from "./components/FilterIcon";
 import { Txt } from "../Txt";
-import { SortIcon } from "./SortIcon";
 import { Contained } from "../Contained";
 import { ProductPreviewCardsList } from "../ProductPreviewCard/ProductPreviewCardsList";
 import { ProductPreview, Category } from "../../queries/types";
@@ -15,11 +13,13 @@ import {
   FilterBox,
   createFilterOptions,
   FilterKeyObj
-} from "./FilterBox";
-import { SortBox } from "./SortBox";
+} from "./components/FilterBox";
+import { SortBox } from "./components/SortBox";
 import { Centered } from "../Centered";
-import Link from "next/link";
-import { FlexBox } from "../FlexBox";
+import { SubCategoriesBox } from "./components/SubCategoriesBox";
+import Transition from "react-transition-group/Transition";
+import { Positioned } from "../Positioned";
+import { SlideIn, SlideInChild } from "./components/SlideIn";
 
 export const SORT_NONE = "None";
 export const SORT_PRICE_LO_HI = "Price: Low to High";
@@ -43,9 +43,11 @@ export const sortOptions = [
 ] as SortOptionTypes[];
 
 const ProductsAndFilterContainer = styled.div`
+  position: relative;
+
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
 
   max-width: 1400px;
   min-height: 800px;
@@ -53,24 +55,6 @@ const ProductsAndFilterContainer = styled.div`
 
   @media ${mediaDevices.laptop} {
     justify-content: flex-start;
-  }
-`;
-
-const LinkA = styled.a`
-  text-decoration: none;
-  font-size: ${props => props.theme.typography.fontSize};
-
-  transition: color 0.3s ease-in;
-
-  padding: 10px 10px 20px 10px;
-  text-align: center;
-
-  width: 100px;
-
-  cursor: pointer;
-
-  :hover {
-    color: ${props => props.theme.colors.green};
   }
 `;
 
@@ -97,8 +81,7 @@ export const ProductsPageContent = ({
 
   const [filteredProducts, setFilteredProducts] = useState([...products]);
   const [sortOption, setSortOption] = useState<SortOptionTypes>(SORT_NONE);
-  const [isSortModal, setIsSortModal] = useState(false);
-  const [isFilterModal, setIsFilterModal] = useState(false);
+  const [isShowingSortFilter, setShowSortFilter] = useState(false);
 
   const handleSort = (option: SortOptionTypes, products: ProductPreview[]) => {
     switch (option) {
@@ -128,8 +111,9 @@ export const ProductsPageContent = ({
     const p = products.filter(product => {
       // Go thru each filter key in filter
       for (const key in filter) {
+        // SIZE
         if (key === "Size") {
-          // Zero length means filter is inactive.
+          // Zero length means filter is inactive, skip it.
           if (filter.Size.length === 0) continue;
           // See if product is offered in size required by filter.
           // Put all sizes in filter into sizesMap.
@@ -150,8 +134,9 @@ export const ProductsPageContent = ({
           }
           if (pass) continue;
           else return false;
+          // COLOR
         } else if (key === "Color") {
-          // Zero length means filter is inactive.
+          // Zero length means filter is inactive, skip it.
           if (filter.Color.length === 0) continue;
           // See if product is offered in color required by filter.
           // Put all colors in filter into colorsMap.
@@ -171,12 +156,14 @@ export const ProductsPageContent = ({
           }
           if (pass) continue;
           else return false;
+          // BRAND
         } else if (key === "Brand") {
-          // Check if brand filter is active.
+          // Zero length means filter is inactive, skip it.
           if (filter.Brand.length === 0) continue;
           // If our brand filter includes this products brand it passes.
           if (filter.Brand.includes(product.Brand.Name)) continue;
           else return false;
+          // PRICE
         } else if (key === "Price") {
           // Check if product price is in filter price range
           if (
@@ -185,6 +172,7 @@ export const ProductsPageContent = ({
           )
             continue;
           else return false;
+          // DISCOUNT
         } else if (key === "Discount") {
           // Checks if discount filter is in use.
           if (filter.Discount === undefined) continue;
@@ -202,8 +190,8 @@ export const ProductsPageContent = ({
   };
 
   const handleSortChange = (option: SortOptionTypes) => {
-    const p = handleSort(option, filteredProducts);
-    setFilteredProducts(p);
+    const sortedProducts = handleSort(option, filteredProducts);
+    setFilteredProducts(sortedProducts);
     setSortOption(option);
   };
 
@@ -211,78 +199,91 @@ export const ProductsPageContent = ({
     <Centered>
       <Contained maxWidth={"1400px"} width={"100%"}>
         <Column justifyCenter alignCenter>
-          <Row justifyEvenly alignCenter>
-            {/* Mobile Filter Icon */}
-            <DisplayAtMedia mobile tablet>
-              <Padded padding="10px">
-                <FilterIcon
-                  onClick={() => {
-                    setIsSortModal(false);
-                    setIsFilterModal(true);
-                  }}
-                />
-              </Padded>
-            </DisplayAtMedia>
+          {/* Mobile Tablet Filter Sort Icon */}
+          <DisplayAtMedia mobile tablet>
+            <Positioned absolute top={"15px"} right={"20px"}>
+              <FilterIcon
+                onClick={() => setShowSortFilter(!isShowingSortFilter)}
+              />
+            </Positioned>
+          </DisplayAtMedia>
 
-            {/* Title of Page */}
-            <Txt alignCenter big bold padding={"20px 5px"}>
-              {title}
-            </Txt>
+          {/* Title of Page */}
+          <Txt alignCenter big bold padding={"20px 5px"}>
+            {title}
+          </Txt>
 
-            {/* Mobile Sort Icon */}
-            <DisplayAtMedia mobile tablet>
-              <Padded padding="10px">
-                <SortIcon
-                  onClick={() => {
-                    setIsFilterModal(false);
-                    setIsSortModal(true);
-                  }}
-                />
-              </Padded>
-            </DisplayAtMedia>
-          </Row>
-
-          {subcategories ? (
-            <FlexBox justifyCenter alignCenter>
-              {subcategories.map(category => (
-                <Link
-                  href={`/products/${category.slug}`}
-                  key={`subcategoryLink${category.id}`}
-                >
-                  <LinkA>{category.Name}</LinkA>
-                </Link>
-              ))}
-            </FlexBox>
-          ) : (
-            <Padded padTop={"20px"} />
-          )}
-
-          <Contained maxWidth={"1400px"} width={"100%"} minHeight={"800px"}>
-            <ProductsAndFilterContainer>
-              {/* Displays SortBox and FilterBox on left side of products */}
-              <DisplayAtMedia laptop desktop>
-                <Padded padding={"0px 30px 10px 40px"}>
-                  <Column>
-                    <SortBox
-                      options={sortOptions}
-                      onSelect={option =>
-                        handleSortChange(option as SortOptionTypes)
-                      }
+          {/* Products, Filter and Sort Box */}
+          <ProductsAndFilterContainer>
+            {/* Big screens, displays SortBox and FilterBox on left side of products */}
+            <DisplayAtMedia laptop desktop>
+              <Padded
+                padding={
+                  filteredProducts.length > 2
+                    ? "0px 30px 10px 40px"
+                    : "0px 110px 10px 40px"
+                }
+              >
+                <Column>
+                  <SortBox
+                    options={sortOptions}
+                    onSelect={option =>
+                      handleSortChange(option as SortOptionTypes)
+                    }
+                  />
+                  <Padded padding={"40px 0px"}>
+                    <FilterBox
+                      filterOptions={filterOptions}
+                      onChange={(f: FilterOptionsObj) => handleFilter(f)}
                     />
-                    <Padded padTop={"40px"}>
-                      <FilterBox
-                        filterOptions={filterOptions}
-                        onChange={(f: FilterOptionsObj) => handleFilter(f)}
-                      />
-                    </Padded>
-                  </Column>
-                </Padded>
-              </DisplayAtMedia>
+                  </Padded>
+                  {subcategories && (
+                    <SubCategoriesBox subcategories={subcategories} />
+                  )}
+                </Column>
+              </Padded>
+            </DisplayAtMedia>
 
-              {/* Displays Filtered Products */}
-              <ProductPreviewCardsList products={filteredProducts} />
-            </ProductsAndFilterContainer>
-          </Contained>
+            {/* Filtered Products */}
+            <ProductPreviewCardsList products={filteredProducts} />
+
+            {/* On Mobile and Tablet Filter and Sort Boxes
+                    slide in from right off screen */}
+            <DisplayAtMedia mobile tablet>
+              <Transition
+                in={isShowingSortFilter}
+                timeout={{
+                  enter: 10,
+                  exit: 300
+                }}
+                mountOnEnter
+              >
+                {state => (
+                  <SlideIn state={state}>
+                    <SlideInChild>
+                      <Column>
+                        <SortBox
+                          options={sortOptions}
+                          onSelect={option =>
+                            handleSortChange(option as SortOptionTypes)
+                          }
+                        />
+                        <Padded padding={"20px 0px"}>
+                          <FilterBox
+                            filterOptions={filterOptions}
+                            onChange={(f: FilterOptionsObj) => handleFilter(f)}
+                          />
+                        </Padded>
+                        {subcategories && (
+                          <SubCategoriesBox subcategories={subcategories} />
+                        )}
+                      </Column>
+                    </SlideInChild>
+                  </SlideIn>
+                )}
+              </Transition>
+            </DisplayAtMedia>
+          </ProductsAndFilterContainer>
         </Column>
       </Contained>
     </Centered>

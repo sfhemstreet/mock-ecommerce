@@ -20,7 +20,7 @@ const AddToCartContainer = styled.button`
 
   cursor: pointer;
 
-  transition: color 0.3s linear;
+  transition: all 0.3s linear;
 
   @media ${mediaDevices.tablet} {
     width: 192px;
@@ -32,6 +32,17 @@ const AddToCartContainer = styled.button`
 
   :hover {
     color: ${props => props.theme.colors.green};
+    transform: scale(1.1);
+  }
+
+  :active {
+    color: ${props => props.theme.colors.green};
+    transform: scale(0.8);
+  }
+
+  :focus {
+    color: ${props => props.theme.colors.green};
+    transform: scale(1.1);
   }
 `;
 

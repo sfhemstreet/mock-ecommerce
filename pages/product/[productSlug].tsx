@@ -23,9 +23,13 @@ import {
   getProductHistory,
   updateProductHistory
 } from "../../storage/storage";
-import { updateItemInProductHistory, addItemToProductHistory } from "../../storage/productHistory/productHistoryActions";
+import {
+  updateItemInProductHistory,
+  addItemToProductHistory
+} from "../../storage/productHistory/productHistoryActions";
 import { ProductHistoryItem } from "../../storage/productHistory/productHistoryTypes";
 import { ProductHistoryBanner } from "../../components/ProductHistoryBanner";
+import { useEffect, useState } from "react";
 
 const ProductPageContainer = styled.div`
   background: white;
@@ -75,10 +79,13 @@ export default function SingleProductPage({
   navigationBarSideDrawerData,
   product
 }: ProductPageProps) {
+
   const productHistory = useSWR(PRODUCT_HISTORY, getProductHistory);
+  const [checked, setChecked] = useState(false);
 
   // Check if item is in productHistory
-  if (productHistory.data) {
+  if (!checked && productHistory.data) {
+    setChecked(true);
     const index = productHistory.data.products.findIndex(
       p => p.id === product.id
     );
@@ -108,7 +115,7 @@ export default function SingleProductPage({
         Brand: product.Brand,
         Ranking: product.Ranking,
         Preview: product.Preview
-      }
+      };
       updateProductHistory(
         mutate,
         addItemToProductHistory(item),
@@ -117,7 +124,6 @@ export default function SingleProductPage({
     }
   }
 
-  console.log(productHistory.data)
 
   return (
     <>
@@ -162,7 +168,11 @@ export default function SingleProductPage({
             </Centered>
           </DisplayAtMedia>
         </ProductPageContainer>
-        <ProductHistoryBanner products={productHistory.data?.products.filter(p => p.id !== product.id)} />
+        <ProductHistoryBanner
+          products={productHistory.data?.products.filter(
+            p => p.id !== product.id
+          )}
+        />
       </NavigationBarSideDrawerLayout>
     </>
   );

@@ -6,7 +6,7 @@ import { KeyboardEvent } from 'react';
  * @param {(() => void) | undefined} onClick 
  * Function that should be called when enter key is processed (usually the same function as onClick events)
 */
-export const accessibleEnterKeyPress = (onClick: ((clickedThing?: any) => void) | undefined) => ({ key }: KeyboardEvent) => {
+export const accessibleEnterKeyPress = (onClick: ((...clickedThing: any) => void) | undefined) => ({ key }: KeyboardEvent) => {
   if (key === 'Enter' && onClick) {
     onClick();
   }

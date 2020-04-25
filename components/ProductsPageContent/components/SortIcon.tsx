@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import { Txt } from "../Txt";
+import { accessibleEnterKeyPress } from "../../../util/accessibleEnterKeyPress";
+import { Txt } from "../../Txt";
 
 const SortContainer = styled.div`
   display: flex;

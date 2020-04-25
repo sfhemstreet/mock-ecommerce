@@ -36,7 +36,6 @@ export default class MyDocument extends Document<any> {
     }
   }
 
-  
   render() {
     return (  
       <Html lang="en">

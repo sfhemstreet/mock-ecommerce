@@ -50,6 +50,10 @@ const ShoppingCartSVG = styled.svg`
   ${ShoppingCartIconContainer}:hover & {
     fill: ${props => props.theme.colors.rose};
   }
+
+  ${ShoppingCartIconContainer}:focus & {
+    fill: ${props => props.theme.colors.rose};
+  }
 `;
 
 const ShoppingCartCircle = styled.div`
@@ -77,6 +81,10 @@ const ShoppingCartCircle = styled.div`
   ${ShoppingCartIconContainer}:hover & {
     background-color: ${props => props.theme.colors.rose};
   }
+
+  ${ShoppingCartIconContainer}:focus & {
+    background-color: ${props => props.theme.colors.rose};
+  }
 `;
 
 const ShoppingCartNumber = styled.p`
@@ -91,6 +99,10 @@ const ShoppingCartNumber = styled.p`
   transition: color 0.3s linear;
 
   ${ShoppingCartIconContainer}:hover & {
+    color: ${props => props.theme.colors.black};
+  }
+
+  ${ShoppingCartIconContainer}:focus & {
     color: ${props => props.theme.colors.black};
   }
 `;

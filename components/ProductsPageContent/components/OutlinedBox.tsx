@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const OutlinedBox = styled.div`
+export const OutlinedBox = styled.form`
   width: 170px;
   height: auto;
   border: solid 1px ${props => props.theme.colors.transparentWhite};

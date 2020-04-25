@@ -19,7 +19,7 @@ const AddToWishListContainer = styled.button`
 
   cursor: pointer;
 
-  transition: color 0.3s linear;
+  transition: all 0.3s linear;
 
   @media ${mediaDevices.tablet} {
     width: 192px;
@@ -31,6 +31,17 @@ const AddToWishListContainer = styled.button`
 
   :hover {
     color: ${props => props.theme.colors.rose};
+    transform: scale(1.1);
+  }
+  
+  :active {
+    color: ${props => props.theme.colors.rose};
+    transform: scale(0.8);
+  }
+
+  :focus {
+    color: ${props => props.theme.colors.rose};
+    transform: scale(1.1);
   }
 `;
 

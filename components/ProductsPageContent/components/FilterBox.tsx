@@ -1,12 +1,13 @@
 import styled from "styled-components";
-import { Category, ProductPreview } from "../../queries/types";
+import { Category, ProductPreview } from "../../../queries/types";
 import { OutlinedBox } from "./OutlinedBox";
-import { Txt } from "../Txt";
+import { Txt } from "../../Txt";
 import { PriceRangeSlider } from "./PriceRangeSlider";
-import { Padded } from "../Padded";
-import { Row } from "../Row";
+import { Padded } from "../../Padded";
+import { Row } from "../../Row";
 import { useState } from "react";
-import { Column } from "../Column";
+import { Column } from "../../Column";
+import { accessibleEnterKeyPress } from "../../../util/accessibleEnterKeyPress";
 
 const CheckBox = styled.input`
   width: 50px;
@@ -27,9 +28,12 @@ type LabelProps = {
 
 const CheckBoxLabel = styled.label<LabelProps>`
   display: inline-block;
+
   width: ${props => props.doNotPad ? "163px" : "135px"};
   border-radius: 2px;
+
   padding: ${props => props.doNotPad ? "3px 3px 3px 3px" : "3px 3px 3px 20px"};
+
   font-weight: ${props => (props.bold ? "500" : "400")};
   font-size: ${props =>
     props.big
@@ -45,9 +49,10 @@ const CheckBoxLabel = styled.label<LabelProps>`
     if (text === "") return "none";
     else return text;
   }};
-  transition: all 0.2s ease-in-out;
 
   transition: all 0.2s ease-in-out;
+
+  cursor: pointer;
 
   background: ${props =>
     props.isHighlighted ? props.theme.colors.white : "none"};
@@ -197,12 +202,12 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   };
 
   const handleBrandChange = (
-    evt: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
     brand: string
   ) => {
     const f: FilterOptionsObj = {
       ...filter,
-      Brand: evt.target.checked
+      Brand: checked
         ? [...filter.Brand, brand]
         : [...filter.Brand.filter(b => b !== brand)]
     };
@@ -211,12 +216,12 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   };
 
   const handleSizeChange = (
-    evt: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
     size: string
   ) => {
     const f: FilterOptionsObj = {
       ...filter,
-      Size: evt.target.checked
+      Size: checked
         ? [...filter.Size, size]
         : [...filter.Size.filter(s => s !== size)]
     };
@@ -225,12 +230,12 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   };
 
   const handleColorChange = (
-    evt: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
     color: string
   ) => {
     const f: FilterOptionsObj = {
       ...filter,
-      Color: evt.target.checked
+      Color: checked
         ? [...filter.Color, color]
         : [...filter.Color.filter(c => c !== color)]
     };
@@ -238,10 +243,10 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
     onChange(f);
   };
 
-  const handleDiscountChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDiscountChange = (checked: boolean) => {
     const f: FilterOptionsObj = {
       ...filter,
-      Discount: evt.target.checked
+      Discount: checked
     };
     setFilter(f);
     onChange(f);
@@ -250,7 +255,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   return (
     <>
       <Txt bold>Filter</Txt>
-      <OutlinedBox>
+      <OutlinedBox title="Filter Options">
         {keys.map((key, index) => {
           switch (key) {
             case "Discount":
@@ -259,9 +264,11 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                   key={`filterOption${key}`}
                   isHighlighted={filter.Discount === true}
                   doNotPad
+                  tabIndex={0}
+                  onKeyPress={accessibleEnterKeyPress(() => handleDiscountChange(!filter.Discount))}
                 >
                   On Sale
-                  <CheckBox type="checkbox" onChange={handleDiscountChange} />
+                  <CheckBox type="checkbox" onChange={(evt) => handleDiscountChange(evt.target.checked)} />
                 </CheckBoxLabel>
               );
 
@@ -298,11 +305,13 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                           !filter.Brand.includes(brand)
                         }
                         small
+                        tabIndex={0}
+                        onKeyPress={accessibleEnterKeyPress(() => handleBrandChange(!filter.Brand.includes(brand), brand))}
                       >
                         {brand}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt => handleBrandChange(evt, brand)}
+                          onChange={evt => handleBrandChange(evt.target.checked, brand)}
                         />
                       </CheckBoxLabel>
                     ))}
@@ -326,11 +335,13 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                           !filter.Color.includes(color)
                         }
                         small
+                        tabIndex={0}
+                        onKeyPress={accessibleEnterKeyPress(() => handleColorChange(!filter.Color.includes(color), color))}
                       >
                         {color}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt => handleColorChange(evt, color)}
+                          onChange={evt => handleColorChange(evt.target.checked, color)}
                         />
                       </CheckBoxLabel>
                     ))}
@@ -352,11 +363,13 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                           filter.Size.length > 0 && !filter.Size.includes(size)
                         }
                         small
+                        tabIndex={0}
+                        onKeyPress={accessibleEnterKeyPress(() => handleSizeChange(!filter.Size.includes(size), size))}
                       >
                         {size}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt => handleSizeChange(evt, size)}
+                          onChange={evt => handleSizeChange(evt.target.checked, size)}
                         />
                       </CheckBoxLabel>
                     ))}

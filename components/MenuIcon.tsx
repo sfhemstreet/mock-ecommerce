@@ -30,6 +30,11 @@ const MenuIconLine = styled.div<MenuIconLineProps>`
   ${MenuIconContainer}:hover & {
     background: ${props => props.theme.colors.rose};
   }
+
+  ${MenuIconContainer}:focus & {
+    background: ${props => props.theme.colors.rose};
+  }
+
 `;
 
 export type MenuIconProps = {

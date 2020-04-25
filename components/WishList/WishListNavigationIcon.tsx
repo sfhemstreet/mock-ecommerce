@@ -1,7 +1,6 @@
 import useSWR, { mutate } from "swr";
 import styled, { css } from "styled-components";
 import { UpDownWait } from "../../keyframes/UpDownWait";
-import { WishListSVG } from "../WishListSVG";
 import {
   WISHLIST,
   getWishlist,
@@ -23,11 +22,6 @@ import { removeItemFromWishlist, editWishListItem } from "../../storage/wishlist
 import { Modal } from "../ShoppingCartWishListModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
 
-const ShakeAnimationMixin = css `
-  animation: ${UpDownWait} 15s linear infinite;
-  animation-delay: 3s;
-`;
-
 const WishListIconContainer = styled.div<{ willShake: boolean }>`
   cursor: pointer;
   position: relative;
@@ -37,6 +31,31 @@ const WishListIconContainer = styled.div<{ willShake: boolean }>`
   align-items: center;
 
   ${props => props.willShake && ShakeAnimationMixin};
+`;
+
+type WishListSVGProps = {
+  isFilled: boolean;
+}
+
+const WishListSVG = styled.svg<WishListSVGProps>`
+  fill: ${props => props.isFilled ? props.theme.colors.rose : props.theme.colors.white};
+  position: relative;
+  cursor: pointer;
+
+  transition: fill 0.3s linear;
+
+  :hover {
+    fill: ${props => props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
+  }
+
+  ${WishListIconContainer}:focus & {
+    fill: ${props => props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
+  }
+`;
+
+const ShakeAnimationMixin = css `
+  animation: ${UpDownWait} 15s linear infinite;
+  animation-delay: 3s;
 `;
 
 /**
