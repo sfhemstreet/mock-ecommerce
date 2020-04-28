@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { Row } from "../Row";
@@ -15,6 +15,8 @@ import { Positioned } from "../Positioned";
 import { WishListNavigationIcon } from "../WishList/WishListNavigationIcon";
 import { AppTheme } from "../../themes/AppTheme";
 import { Category, SiteLogo } from "../../queries/types";
+import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export const NAV_HEIGHT = "85px";
 
@@ -106,10 +108,22 @@ export function NavigationBar({
   };
 
   // Closes SearchBox if open and sets dropDown state to active with given option
-  const handleNavLinkItemFocus = (option: string) => {
+  const handleNavLinkItemMouseEnter = (option: string) => {
     setState({
       ...state,
       dropDownActive: true,
+      dropDownOption: option,
+      searchBoxActive: false
+    });
+  };
+
+  // Closes SearchBox if open and sets dropDown state to active with given option
+  const handleNavLinkItemKeyPressEnter = (option: string) => {
+
+
+    setState({
+      ...state,
+      dropDownActive: state.dropDownActive && option === state.dropDownOption ? false : true,
       dropDownOption: option,
       searchBoxActive: false
     });
@@ -120,7 +134,7 @@ export function NavigationBar({
   }, [navigationContent]);
 
   return (
-    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)}>
+    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)} >
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
           <DisplayAtMedia mobile tablet>
@@ -151,17 +165,18 @@ export function NavigationBar({
 
           {!isSideDrawerOpen && (
             <DisplayAtMedia laptop desktop>
-              <Positioned left={"50px"}>
+              <Positioned left={"60px"}>
                 <Row justifyCenter>
                   {navContent.map(item => (
                     <NavLinkItem
-                      onMouseEnter={() => handleNavLinkItemFocus(item.Name)}
-                      onFocus={() => handleNavLinkItemFocus(item.Name)}
+                      onMouseEnter={() => handleNavLinkItemMouseEnter(item.Name)}
+                      onKeyPress={accessibleEnterKeyPress(() => handleNavLinkItemKeyPressEnter(item.Name))}
                       isActive={
                         state.dropDownActive &&
                         state.dropDownOption === item.Name
                       }
                       tabIndex={0}
+                      aria-label={`${state.dropDownActive && state.dropDownOption === item.Name ? "Close" : "Open"} submenu for ${item.Name}`}
                       key={`DropDown${item.Name}`}
                     >
                       {item.Name}

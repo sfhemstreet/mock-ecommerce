@@ -1,5 +1,6 @@
-import styled from 'styled-components';
-import { Contained } from './Contained';
+import styled from "styled-components";
+import { Contained } from "./Contained";
+import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
 const BackArrowButtonContainer = styled.div`
   width: 70px;
@@ -30,12 +31,20 @@ const BackArrowButtonHead = styled.div`
 
 type BackArrowButtonProps = {
   onClick: () => void;
-}
+};
 
-export const BackArrowButton = ({onClick}: BackArrowButtonProps): JSX.Element => {
+export const BackArrowButton = ({
+  onClick
+}: BackArrowButtonProps): JSX.Element => {
   return (
-    <BackArrowButtonContainer onClick={onClick}> 
+    <BackArrowButtonContainer
+      onClick={onClick}
+      onKeyPress={accessibleEnterKeyPress(onClick)}
+      tabIndex={0}
+      role="button"
+      aria-label="Go Back One Layer in Menu"
+    >
       <BackArrowButtonHead />
     </BackArrowButtonContainer>
-  )
-}
+  );
+};

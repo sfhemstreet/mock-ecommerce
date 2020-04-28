@@ -8,6 +8,10 @@ const GET_TOP_4_PRODUCTS = `
       slug
       Name
       Price
+      Discount
+      AvailableColors
+      AvailableSizes
+      Ranking
       Brand {
         id
         Name

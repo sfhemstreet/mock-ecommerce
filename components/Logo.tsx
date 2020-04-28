@@ -26,9 +26,7 @@ type SiteLogoProps = {
 
 export const Logo = ({ siteLogo }: SiteLogoProps): JSX.Element => {
   return (
-    <MyLogoContainer
-      tabIndex={0}
-    >
+    <MyLogoContainer>
       <MyLogo
         src={process.env.BACKEND_URL + siteLogo.NormalLogo.url}
         alt="Site Logo"

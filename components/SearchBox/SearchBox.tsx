@@ -66,14 +66,16 @@ export const SearchBox = ({
         <Centered padding={"5px 10px 0px 10px"}>
           <SearchIcon onClick={onActiveClick} isActive={isActive} />
         </Centered>
-        <SearchBoxInput
-          isActive={isActive}
-          type="text"
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          placeholder="Search"
-          ref={inputRef}
-        />
+        <label title="Search site for products, brands, and categories.">
+          <SearchBoxInput
+            isActive={isActive}
+            type="text"
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            placeholder="Search"
+            ref={inputRef}
+          />  
+        </label>
       </Row>
       <Transition
         in={isActive && searchText.trim().length > 1}

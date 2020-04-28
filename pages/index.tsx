@@ -37,7 +37,7 @@ const CoverImg = styled.div<CoverImgProps>`
   background-repeat: no-repeat;
   background-position-x: center;
   background-size: cover;
-  
+
   border-bottom: solid 1px ${props => props.theme.colors.black};
 
   @media ${mediaDevices.mobileL} {
@@ -100,6 +100,14 @@ const Home = ({
       <Head>
         <title>{homePageContent.title}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="Description"
+          content={`${homePageContent.title} ${
+            homePageContent.content
+          } ${topFourProducts
+            .map(prod => ` ${prod.Name}, by ${prod.Brand}, for ${prod.Price} `)
+            .join(" ")}`}
+        ></meta>
       </Head>
       <NavigationBarSideDrawerLayout
         filterChildrenWhenSideDrawerOpen

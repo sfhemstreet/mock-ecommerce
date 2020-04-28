@@ -35,6 +35,7 @@ export default function ReturnsPage({
       <Head>
         <title>Returns</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Return Policy."></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
         <ReturnsContainer>

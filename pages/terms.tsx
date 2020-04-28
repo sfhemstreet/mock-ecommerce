@@ -35,6 +35,7 @@ export default function TermsPage({
       <Head>
         <title>Terms of Use</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Terms of use."></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
         <TermsContainer>

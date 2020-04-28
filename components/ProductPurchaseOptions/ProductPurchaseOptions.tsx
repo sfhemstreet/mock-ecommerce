@@ -200,7 +200,7 @@ export const ProductPurchaseOptions = ({
           </Txt>
         )}
         <Padded padding={"10px 3px 3px 3px"}>
-          <AddToCartButton onClick={handleAddToCart} />
+          <AddToCartButton ariaText={`Add ${product.Name} to Shopping Cart, in size ${selectedSize}, color ${selectedColor}, quantity ${selectedQuantity}.`} onClick={handleAddToCart} />
         </Padded>
         <Padded padding={"20px 3px 3px 3px"}>
           {wishList.data && (

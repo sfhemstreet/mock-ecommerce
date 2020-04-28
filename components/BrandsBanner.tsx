@@ -95,6 +95,7 @@ export const BrandsBanner = ({
             pad={`0px ${pad / 2}px`}
             src={process.env.BACKEND_URL + brand.Logo.url}
             alt={`${brand.Name} logo`}
+            loading="lazy"
           />
         ))}
       </Banner>

@@ -37,6 +37,7 @@ export default function ContactPage({
       <Head>
         <title>Contact</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Contact us."></meta>
       </Head>
       <NavigationBarSideDrawerLayout
         data={navigationBarSideDrawerData}

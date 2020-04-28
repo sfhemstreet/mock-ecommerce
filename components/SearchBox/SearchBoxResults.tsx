@@ -7,6 +7,8 @@ import { Txt } from "../Txt";
 import { Padded } from "../Padded";
 import { mediaDevices } from "../DisplayAtMedia";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 
 const SearchBoxResultsContainer = styled.div`
   width: 210px;
@@ -173,6 +175,24 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
 
   const queryResults = useSWR(SEARCH_QUERY, fetchQueryHandler);
 
+  const router = useRouter();
+
+  const handleProductClick = (slug: string) => {
+    router.push(`/product/${slug}`);
+  };
+
+  const handleBrandClick = (slug: string) => {
+    router.push(`/brand/${slug}`);
+  };
+
+  const handleCategoryClick = (slug: string) => {
+    router.push(`/category/${slug}`);
+  };
+
+  const handleSubCategoryClick = (slug: string) => {
+    router.push(`/products/${slug}`);
+  };
+
   if (queryResults.data === undefined) return <SpinningLoader />;
 
   return (
@@ -186,27 +206,29 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
         </TitleItem>
       )}
       {queryResults.data.products.map(item => (
-        <Link
-          href={`/product/${item.slug}`}
+        <SearchResultItem
+          onClick={() => handleProductClick(item.slug)}
+          onKeyPress={accessibleEnterKeyPress(() =>
+            handleProductClick(item.slug)
+          )}
+          tabIndex={0}
           key={`product-${item.id}-${Date.now()}`}
         >
-          <SearchResultItem>
-            <GridItem name={"image"}>
-              <Column justifyCenter>
-                <ProdImg
-                  src={process.env.BACKEND_URL + item.Preview.url}
-                  alt={`${item.Name} by ${item.Brand.Name}`}
-                />
-              </Column>
-            </GridItem>
-            <GridItem name={"name"}>
-              <Column justifyCenter>
-                <Txt small>{item.Brand.Name}</Txt>
-                <Txt bold>{item.Name}</Txt>
-              </Column>
-            </GridItem>
-          </SearchResultItem>
-        </Link>
+          <GridItem name={"image"}>
+            <Column justifyCenter>
+              <ProdImg
+                src={process.env.BACKEND_URL + item.Preview.url}
+                alt={`${item.Name} by ${item.Brand.Name}`}
+              />
+            </Column>
+          </GridItem>
+          <GridItem name={"name"}>
+            <Column justifyCenter>
+              <Txt small>{item.Brand.Name}</Txt>
+              <Txt bold>{item.Name}</Txt>
+            </Column>
+          </GridItem>
+        </SearchResultItem>
       ))}
 
       {/* BRAND RESULTS 2nd */}
@@ -218,26 +240,28 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
         </TitleItem>
       )}
       {queryResults.data.brands.map(item => (
-        <Link
-          href={`/brand/${item.slug}`}
+        <SearchResultItem
+          onClick={() => handleBrandClick(item.slug)}
+          onKeyPress={accessibleEnterKeyPress(() =>
+            handleBrandClick(item.slug)
+          )}
+          tabIndex={0}
           key={`brand-${item.id}-${Date.now()}`}
         >
-          <SearchResultItem>
-            <GridItem name={"image"}>
-              <Column justifyCenter alignCenter>
-                <ProdImg
-                  src={process.env.BACKEND_URL + item.Logo.url}
-                  alt={`${item.Name} logo`}
-                />
-              </Column>
-            </GridItem>
-            <GridItem name={"name"}>
-              <Column justifyCenter alignCenter>
-                <Txt>{item.Name}</Txt>
-              </Column>
-            </GridItem>
-          </SearchResultItem>
-        </Link>
+          <GridItem name={"image"}>
+            <Column justifyCenter alignCenter>
+              <ProdImg
+                src={process.env.BACKEND_URL + item.Logo.url}
+                alt={`${item.Name} logo`}
+              />
+            </Column>
+          </GridItem>
+          <GridItem name={"name"}>
+            <Column justifyCenter alignCenter>
+              <Txt>{item.Name}</Txt>
+            </Column>
+          </GridItem>
+        </SearchResultItem>
       ))}
 
       {/* CATEGORY RESULTS 3rd */}
@@ -249,18 +273,20 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
         </TitleItem>
       )}
       {queryResults.data.categories.map(item => (
-        <Link
-          href={`/category/${item.slug}`}
+        <SearchResultItem
+          onClick={() => handleCategoryClick(item.slug)}
+          onKeyPress={accessibleEnterKeyPress(() =>
+            handleCategoryClick(item.slug)
+          )}
           key={`category-${item.id}-${Date.now()}`}
+          tabIndex={0}
         >
-          <SearchResultItem>
-            <Column justifyCenter>
-              <Txt noWrap padding={"4px"}>
-                {item.Name}
-              </Txt>
-            </Column>
-          </SearchResultItem>
-        </Link>
+          <Column justifyCenter>
+            <Txt noWrap padding={"4px"}>
+              {item.Name}
+            </Txt>
+          </Column>
+        </SearchResultItem>
       ))}
 
       {/* SUBCATEGORY RESULTS 4th */}
@@ -272,11 +298,15 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
         </TitleItem>
       )}
       {queryResults.data.subcategories.map(item => (
-        <Link
-          href={`/products/${item.slug}`}
-          key={`subcategory-${item.id}-${Date.now()}`}
-        >
-          <SearchResultItem>
+        <Link href={`/products/${item.slug}`}>
+          <SearchResultItem
+            onClick={() => handleSubCategoryClick(item.slug)}
+            onKeyPress={accessibleEnterKeyPress(() =>
+              handleSubCategoryClick(item.slug)
+            )}
+            key={`subcategory-${item.id}-${Date.now()}`}
+            tabIndex={0}
+          >
             <Column justifyCenter>
               <Txt noWrap padding={"4px"}>
                 {item.Name}

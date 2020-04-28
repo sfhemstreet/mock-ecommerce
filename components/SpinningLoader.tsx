@@ -42,7 +42,7 @@ export function SpinningLoader({ delay = 0, reverse = false }: SpinningLoaderPro
   ];
 
   return (
-    <SpinningLoaderContainer>
+    <SpinningLoaderContainer aria-label="Loading animation">
       {balls.map(ball => (
         <LoadingBall
           key={`LoadingSpinnerBall-${ball.color}`}

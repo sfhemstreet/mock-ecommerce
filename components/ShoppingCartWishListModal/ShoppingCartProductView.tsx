@@ -86,6 +86,7 @@ export const ShoppingCartProductView = ({
       <GridItem gridName={"image"}>
         <ProductIMG
           src={process.env.BACKEND_URL + item.Preview.url}
+          loading="lazy"
           alt={`${item.Name}`}
         />
       </GridItem>

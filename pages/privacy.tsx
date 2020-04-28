@@ -35,6 +35,7 @@ export default function PrivacyPage({
       <Head>
         <title>Privacy Policy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Privacy information."></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
         <TermsContainer>

@@ -92,6 +92,7 @@ export const WishListNavigationIcon = (): JSX.Element => {
     <>
       <WishListIconContainer
         tabIndex={0}
+        role="button"
         aria-label={
           !open.data
             ? "Wishlist"

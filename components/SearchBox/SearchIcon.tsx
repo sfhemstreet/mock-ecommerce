@@ -40,6 +40,8 @@ export const SearchIcon = ({ onClick, isActive }: SearchIconProps) => {
                 onClick={onClick}
                 onKeyPress={accessibleEnterKeyPress(onClick)}
                 tabIndex={0}
+                role="button"
+                aria-label="Open Search Input"
                 xmlns="http://www.w3.org/2000/svg"
                 height="24"
                 viewBox="0 0 24 24"
@@ -54,6 +56,8 @@ export const SearchIcon = ({ onClick, isActive }: SearchIconProps) => {
                 onClick={onClick}
                 onKeyPress={accessibleEnterKeyPress(onClick)}
                 tabIndex={0}
+                role="button"
+                aria-label="Close Search Input"
                 xmlns="http://www.w3.org/2000/svg"
                 height="24"
                 viewBox="0 0 24 24"

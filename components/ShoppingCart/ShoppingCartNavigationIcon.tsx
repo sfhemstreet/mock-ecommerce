@@ -165,6 +165,7 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
     <>
       <ShoppingCartIconContainer
         tabIndex={0}
+        role="button"
         aria-label={
           !open.data
             ? "Shopping Cart"

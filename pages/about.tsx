@@ -43,6 +43,7 @@ export default function AboutUsPage({
       <Head>
         <title>About</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="About us."></meta>
       </Head>
       <NavigationBarSideDrawerLayout
         data={navigationBarSideDrawerData}

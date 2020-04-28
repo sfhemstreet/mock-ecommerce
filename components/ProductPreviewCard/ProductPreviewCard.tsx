@@ -240,10 +240,10 @@ export const ProductPreviewCard = ({
   };
 
   const checkTextLength = () => {
-    let maxLength = 27;
+    let maxLength = 14;
 
     if (width <= mediaSizes.mobileM) {
-      maxLength = 16;
+      maxLength = 15;
     } else if (width <= mediaSizes.mobileL) {
       maxLength = 16;
     } else if (width <= mediaSizes.tablet) {
@@ -271,15 +271,18 @@ export const ProductPreviewCard = ({
       onClick={handleClick}
       onKeyPress={accessibleEnterKeyPress(handleClick)}
       tabIndex={0}
-      aria-label={`Product for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}. Available in the following sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. Priced at $${productInfo.Price}.`}
+      role="link"
+      aria-label={`Product for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}, priced at $${productInfo.Price}. Available in the following sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. `}
     >
       <Column justifyBetween>
         <ProductCardThumbnailImg
           src={process.env.BACKEND_URL + productInfo.Preview.url}
+          loading="lazy"
           alt={`Product: ${productInfo.Name}, Brand: ${productInfo.Brand.Name}, Price: $${productInfo.Price}`}
         />
         <ProductBrandLogo
           src={process.env.BACKEND_URL + productInfo.Brand.Logo.url}
+          loading="lazy"
           alt={`${productInfo.Brand.Name} logo`}
         />
         <Transition

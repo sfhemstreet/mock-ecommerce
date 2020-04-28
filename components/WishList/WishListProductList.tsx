@@ -125,11 +125,11 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
       setDisplayedProducts([
         ...displayedProducts.filter(i => i.id !== item.id)
       ]);
-    }, 310);
+    }, 210);
     // After local version is removed, remove from WishList
     setTimeout(() => {
       updateWishList(mutate, removeItemFromWishlist(item.id));
-    }, 500);
+    }, 400);
   };
 
   // Whenever products changes we want to wait a tiny bit for the animations,
@@ -170,6 +170,7 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
                               src={
                                 process.env.BACKEND_URL + product.Preview.url
                               }
+                              loading="lazy"
                               alt={`${product.Name} by ${product.Brand.Name}`}
                             />
                           </GridItem>

@@ -4,10 +4,9 @@ import { OutlinedBox } from "./OutlinedBox";
 import { useState } from "react";
 import { accessibleEnterKeyPress } from "../../../util/accessibleEnterKeyPress";
 
-
 const SortOptionRadio = styled.input`
   display: none;
-`
+`;
 
 const SortOptionLabel = styled.label<{ isHighlighted: boolean }>`
   display: inline-block;
@@ -16,13 +15,12 @@ const SortOptionLabel = styled.label<{ isHighlighted: boolean }>`
   border-radius: 4px;
   cursor: pointer;
 
-  ${props => props.isHighlighted && (
+  ${props =>
+    props.isHighlighted &&
     css `
       color: ${props => props.theme.colors.black};
-      background-color: ${props => props.theme.colors.white};`
-  )}
-    
-  
+      background-color: ${props => props.theme.colors.white};
+    `}
 `;
 
 type SortBoxProps = {
@@ -42,9 +40,15 @@ export const SortBox = ({ onSelect, options }: SortBoxProps) => {
       <Txt bold>Sort</Txt>
       <OutlinedBox title="Sort Options">
         {options.map((option: string, index: number) => (
-          <SortOptionLabel tabIndex={0} key={`SortOption${index}`} isHighlighted={selectedIndex === index} onKeyPress={accessibleEnterKeyPress(() => handleClick(index))}>
+          <SortOptionLabel
+            tabIndex={0}
+            aria-label={`Sort products by ${option}`}
+            key={`SortOption${index}`}
+            isHighlighted={selectedIndex === index}
+            onKeyPress={accessibleEnterKeyPress(() => handleClick(index))}
+          >
             {option}
-            <SortOptionRadio type="radio" onClick={(evt) => handleClick(index)}  />
+            <SortOptionRadio type="radio" onClick={evt => handleClick(index)} />
           </SortOptionLabel>
         ))}
       </OutlinedBox>

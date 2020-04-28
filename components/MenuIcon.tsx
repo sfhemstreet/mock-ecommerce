@@ -49,6 +49,7 @@ export const MenuIcon = ({
     onKeyPress={ accessibleEnterKeyPress(onClick) }
     tabIndex={0}
     aria-label={isOpen ? "Close side drawer menu" : "Open side drawer menu"}
+    role="button"
   >
     <MenuIconLine
       top={isOpen ? 11 : 0}

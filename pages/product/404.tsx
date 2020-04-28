@@ -5,6 +5,7 @@ import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDr
 import { Centered } from "../../components/Centered";
 import { Column } from "../../components/Column";
 import { Txt } from "../../components/Txt";
+import Head from "next/head";
 
 
 const FourZeroFourContainer = styled.div`
@@ -24,6 +25,12 @@ export default function FourZeroFourPage({
   
 }: FourZeroFourPageProps) {
   return (
+    <>
+    <Head>
+        <title>404: Not Found</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Page not found"></meta>
+      </Head>
     <NavigationBarSideDrawerLayout
       data={navigationBarSideDrawerData}
       filterChildrenWhenSideDrawerOpen
@@ -41,6 +48,7 @@ export default function FourZeroFourPage({
         </Centered>
       </FourZeroFourContainer>
     </NavigationBarSideDrawerLayout>
+    </>
   );
 }
 

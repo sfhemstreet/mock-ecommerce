@@ -34,6 +34,15 @@ export default function CategoryPage({
       <Head>
         <title>{subcategory.Name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="Description"
+          content={`${subcategory.Name} products for sale. ${products
+            .map(
+              prod =>
+                `${prod.Name} made by ${prod.Brand.Name}, for ${prod.Price} US dollars, available in ${prod.AvailableSizes} sizes and ${prod.AvailableColors} colors.`
+            )
+            .join(" ")}`}
+        ></meta>
       </Head>
       <NavigationBarSideDrawerLayout
         data={navigationBarSideDrawerData}

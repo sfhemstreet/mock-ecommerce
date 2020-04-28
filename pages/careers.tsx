@@ -35,6 +35,7 @@ export default function CareersPage({
       <Head>
         <title>Careers</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="Description" content="Exciting Careers."></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
         <CareersContainer>

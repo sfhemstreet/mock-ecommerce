@@ -79,7 +79,6 @@ export default function SingleProductPage({
   navigationBarSideDrawerData,
   product
 }: ProductPageProps) {
-
   const productHistory = useSWR(PRODUCT_HISTORY, getProductHistory);
   const [checked, setChecked] = useState(false);
 
@@ -124,12 +123,15 @@ export default function SingleProductPage({
     }
   }
 
-
   return (
     <>
       <Head>
         <title>{product.Name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="Description"
+          content={`Product for sale. ${product.Name} made by ${product.Brand.Name} for ${product.Price} US dollars. Available in ${product.AvailableSizes} sizes and ${product.AvailableColors} colors. ${product.Description}.`}
+        ></meta>
       </Head>
       <NavigationBarSideDrawerLayout
         data={navigationBarSideDrawerData}

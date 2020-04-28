@@ -34,6 +34,8 @@ export const CloseIcon = ({ onClick }: CloseIconProps) => (
     onClick={onClick}
     onKeyPress={accessibleEnterKeyPress(onClick)}
     tabIndex={0}
+    role="button"
+    aria-label="Close Button"
   >
     <CloseIconLine angle={-45} />
     <CloseIconLine angle={45} />

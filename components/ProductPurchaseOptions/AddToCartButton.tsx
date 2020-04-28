@@ -60,13 +60,15 @@ const AddToCartSVG = styled.svg`
 
 type AddToCartButtonProps = {
   onClick: () => void;
+  ariaText: string;
 };
 
-export const AddToCartButton = ({ onClick }: AddToCartButtonProps) => {
+export const AddToCartButton = ({ onClick, ariaText }: AddToCartButtonProps) => {
   return (
     <AddToCartContainer
       onClick={onClick}
       onKeyPress={accessibleEnterKeyPress(onClick)}
+      aria-label={ariaText}
     >
       <Row justifyAround alignCenter>
         <Txt bold noWrap>

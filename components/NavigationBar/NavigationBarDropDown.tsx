@@ -2,6 +2,8 @@ import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
 import { Category } from "../../queries/types";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
+import { useRef } from "react";
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   position: absolute;

@@ -36,6 +36,8 @@ export const AddToCartSmallIcon = ({ onClick }: AddToCartSmallIconProps) => {
       width="24"
       onClick={onClick}
       onKeyPress={accessibleEnterKeyPress(onClick)}
+      aria-label="Add to shopping cart"
+      role="button"
       tabIndex={0}
     >
       <path d="M0 0h24v24H0V0z" fill="none" />
