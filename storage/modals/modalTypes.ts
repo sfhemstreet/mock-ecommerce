@@ -9,7 +9,8 @@ import {
   START_EDIT_WISHLIST_MODAL,
   START_EDIT_SHOPPING_CART_MODAL,
   STOP_EDIT_WISHLIST_MODAL,
-  STOP_EDIT_SHOPPING_CART_MODAL
+  STOP_EDIT_SHOPPING_CART_MODAL,
+  CLOSE_WISHLIST_OPEN_SHOPPING_CART
 } from "./modalConstants";
 
 export type ModalsState = {
@@ -66,6 +67,10 @@ export interface StopEditShoppingCartModalAction {
   type: typeof STOP_EDIT_SHOPPING_CART_MODAL
 }
 
+export interface CloseWishListOpenShoppingCartModalAction {
+  type: typeof CLOSE_WISHLIST_OPEN_SHOPPING_CART
+}
+
 export type ModalActionTypes = 
   OpenShoppingCartModalAction | 
   OpenWishListModalAction | 
@@ -77,4 +82,5 @@ export type ModalActionTypes =
   StartEditWishListModalAction |
   StartEditShoppingCartModalAction | 
   StopEditWishListModalAction |
-  StopEditShoppingCartModalAction;
+  StopEditShoppingCartModalAction |
+  CloseWishListOpenShoppingCartModalAction;

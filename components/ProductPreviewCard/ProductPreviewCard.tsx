@@ -5,7 +5,6 @@ import { mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
 import { Column } from "../Column";
-import { getWindowDimensions } from "../../util/getWindowDimensions";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { ProductPreview } from "../../queries/types";
 import { Transition } from "react-transition-group";
@@ -16,6 +15,8 @@ import {
   removeItemFromWishlist,
   addItemToWishList
 } from "../../storage/wishlist/wishListActions";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { useEffect, useState } from "react";
 
 // ratio used for width height: 1.4375
 
@@ -47,6 +48,7 @@ const ProductPreviewCardContainer = styled.div`
 
   :hover {
     color: ${props => props.theme.colors.green};
+    transform: scale(1.02);
   }
 `;
 
@@ -100,15 +102,13 @@ const HeartIconContainer = styled.div<{ state: TransitionStatus }>`
 
   cursor: pointer;
 
-  box-shadow: 0px 1px 1px 1px #fff;
-
   transition: all 0.3s ease-in;
 
   opacity: ${props => (props.state === ENTERED ? 1 : 0)};
 
   :focus,
   :hover {
-    box-shadow: 0px 1px 1px 1px ${props => props.theme.colors.transparentBrown};
+    box-shadow: 0px 1px 1px 1px ${props => props.theme.colors.transparentWhite};
     transform: scale(1.1);
     background-color: ${props => props.theme.colors.transparentWhite};
   }
@@ -125,6 +125,25 @@ const HeartSVG = styled.svg<{ isFilled: boolean }>`
 
   ${HeartIconContainer}:hover & {
     fill: ${props => props.theme.colors.rose};
+  }
+
+  ${HeartIconContainer}:active & {
+    transform: scale(0.1);
+  }
+
+  @media ${mediaDevices.mobileM} {
+    width: 25px;
+    height: 25px;
+  }
+
+  @media ${mediaDevices.mobileL} {
+    width: 27px;
+    height: 27px;
+  }
+
+  @media ${mediaDevices.tablet} {
+    width: 30px;
+    height: 30px;
   }
 `;
 
@@ -179,11 +198,20 @@ type ProductPreviewCardProps = {
   isOnWishList?: boolean | undefined;
 };
 
+/**
+ *
+ * @param productInfo
+ * @param isOnWishList leave as undefined to not display heart icon
+ */
 export const ProductPreviewCard = ({
   productInfo,
   isOnWishList
 }: ProductPreviewCardProps): JSX.Element => {
   const router = useRouter();
+  const [width] = useWindowDimensions();
+  // For adjusting displayed name, if too long, shorten and add "..."
+  const [brandName, setBrandName] = useState(productInfo.Brand.Name);
+  const [productName, setProductName] = useState(productInfo.Name);
 
   const handleClick = () => {
     router.push(`/product/${productInfo.slug}`);
@@ -196,50 +224,54 @@ export const ProductPreviewCard = ({
       mutate,
       isOnWishList
         ? removeItemFromWishlist(productInfo.id)
-        : addItemToWishList({ id: productInfo.id })
+        : addItemToWishList({
+            id: productInfo.id,
+            slug: productInfo.slug,
+            Name: productInfo.Name,
+            Brand: {
+              id: productInfo.Brand.id,
+              Name: productInfo.Brand.Name
+            },
+            Preview: productInfo.Preview,
+            Price: productInfo.Price,
+            Discount: productInfo.Discount
+          })
     );
   };
 
-  const displayNames = {
-    brandName: productInfo.Brand.Name,
-    productName: productInfo.Name
-  };
-
   const checkTextLength = () => {
-    if (typeof window !== "undefined" && window) {
-      const { width } = getWindowDimensions();
-      let maxLength = 28;
+    let maxLength = 27;
 
-      if (width <= mediaSizes.mobileM) {
-        maxLength = 14;
-      } else if (width <= mediaSizes.mobileL) {
-        maxLength = 16;
-      } else if (width <= mediaSizes.tablet) {
-        maxLength = 22;
-      } else if (width <= mediaSizes.laptop) {
-        maxLength = 24;
-      }
+    if (width <= mediaSizes.mobileM) {
+      maxLength = 16;
+    } else if (width <= mediaSizes.mobileL) {
+      maxLength = 16;
+    } else if (width <= mediaSizes.tablet) {
+      maxLength = 21;
+    } else if (width <= mediaSizes.laptop) {
+      maxLength = 26;
+    }
 
-      if (productInfo.Name.length > maxLength) {
-        if (productInfo.Name[maxLength - 1] === " ") maxLength -= 1;
-        displayNames.productName =
-          productInfo.Name.substring(0, maxLength) + "...";
-      }
-      if (productInfo.Brand.Name.length > maxLength) {
-        if (productInfo.Brand.Name[maxLength - 1] === " ") maxLength -= 1;
-        displayNames.brandName =
-          productInfo.Brand.Name.substring(0, maxLength) + "...";
-      }
+    if (productInfo.Name.length > maxLength) {
+      if (productInfo.Name[maxLength - 1] === " ") maxLength -= 1;
+      setProductName(productInfo.Name.substring(0, maxLength) + "...");
+    }
+    if (productInfo.Brand.Name.length > maxLength) {
+      if (productInfo.Brand.Name[maxLength - 1] === " ") maxLength -= 1;
+      setBrandName(productInfo.Brand.Name.substring(0, maxLength) + "...");
     }
   };
 
-  checkTextLength();
+  useEffect(() => {
+    checkTextLength();
+  }, [width]);
 
   return (
     <ProductPreviewCardContainer
       onClick={handleClick}
       onKeyPress={accessibleEnterKeyPress(handleClick)}
       tabIndex={0}
+      aria-label={`Product for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}. Available in the following sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. Priced at $${productInfo.Price}.`}
     >
       <Column justifyBetween>
         <ProductCardThumbnailImg
@@ -269,9 +301,9 @@ export const ProductPreviewCard = ({
         </Transition>
         <Padded padding={"5px"}>
           <Column justifyBetween>
-            <Txt noWrap>{displayNames.brandName}</Txt>
+            <Txt noWrap>{brandName}</Txt>
             <Txt bold noWrap>
-              {displayNames.productName}
+              {productName}
             </Txt>
             <Txt bold padding={"4px 0px 0px 0px"} noWrap>
               ${productInfo.Price}

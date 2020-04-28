@@ -21,6 +21,7 @@ import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
 import { Modal } from "../ShoppingCartWishListModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
 import { WishListProduct } from "../../storage/wishlist/wishListTypes";
+import { WishListProductList } from "./WishListProductList";
 
 const WishListIconContainer = styled.div<{ willShake: boolean }>`
   cursor: pointer;
@@ -35,21 +36,24 @@ const WishListIconContainer = styled.div<{ willShake: boolean }>`
 
 type WishListSVGProps = {
   isFilled: boolean;
-}
+};
 
 const WishListSVG = styled.svg<WishListSVGProps>`
-  fill: ${props => props.isFilled ? props.theme.colors.rose : props.theme.colors.white};
+  fill: ${props =>
+    props.isFilled ? props.theme.colors.rose : props.theme.colors.white};
   position: relative;
   cursor: pointer;
 
   transition: fill 0.3s linear;
 
   :hover {
-    fill: ${props => props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
+    fill: ${props =>
+      props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
   }
 
   ${WishListIconContainer}:focus & {
-    fill: ${props => props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
+    fill: ${props =>
+      props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
   }
 `;
 
@@ -57,6 +61,10 @@ const ShakeAnimationMixin = css `
   animation: ${UpDownWait} 15s linear infinite;
   animation-delay: 3s;
 `;
+
+
+
+
 
 /**
  * Displays a Material Icons heart icon that is filled in if items are in WishList
@@ -84,6 +92,13 @@ export const WishListNavigationIcon = (): JSX.Element => {
     <>
       <WishListIconContainer
         tabIndex={0}
+        aria-label={
+          !open.data
+            ? "Wishlist"
+            : open.data.wishlist.isOpen
+            ? "Close Wishlist"
+            : "Open Wishlist"
+        }
         willShake={wishList.data.products.length > 0}
         onClick={handleClickIcon}
         onKeyPress={accessibleEnterKeyPress(handleClickIcon)}
@@ -125,10 +140,9 @@ export const WishListNavigationIcon = (): JSX.Element => {
           <Modal onClose={handleCloseModal} state={state}>
             <ModalSkeleton
               title={"WishList"}
-              type={WISHLIST}
               onClose={handleCloseModal}
             >
-              
+              <WishListProductList products={wishList.data?.products} />
             </ModalSkeleton>
           </Modal>
         )}

@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
-
 const MenuIconContainer = styled.div`
   width: 33px;
   height: 28px;
@@ -34,7 +33,6 @@ const MenuIconLine = styled.div<MenuIconLineProps>`
   ${MenuIconContainer}:focus & {
     background: ${props => props.theme.colors.rose};
   }
-
 `;
 
 export type MenuIconProps = {
@@ -50,6 +48,7 @@ export const MenuIcon = ({
     onClick={onClick}
     onKeyPress={ accessibleEnterKeyPress(onClick) }
     tabIndex={0}
+    aria-label={isOpen ? "Close side drawer menu" : "Open side drawer menu"}
   >
     <MenuIconLine
       top={isOpen ? 11 : 0}

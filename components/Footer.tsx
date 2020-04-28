@@ -37,13 +37,14 @@ export const Footer = () => {
             </Link>
           </Txt>
           <Txt>
-            <FooterLink>Order Status</FooterLink>
+            <Link href={"/privacy"}>
+              <FooterLink>Privacy Policy</FooterLink>
+            </Link>
           </Txt>
           <Txt>
-            <FooterLink>Privacy Policy</FooterLink>
-          </Txt>
-          <Txt>
-            <FooterLink>Terms of Use</FooterLink>
+            <Link href={"/terms"}>
+              <FooterLink>Terms of Use</FooterLink>
+            </Link>
           </Txt>
         </Column>
         <Column>
@@ -61,10 +62,9 @@ export const Footer = () => {
             </Link>
           </Txt>
           <Txt>
-            <FooterLink>Site Map</FooterLink>
-          </Txt>
-          <Txt>
-            <FooterLink>Careers</FooterLink>
+            <Link href={"/careers"}>
+              <FooterLink>Careers</FooterLink>
+            </Link>
           </Txt>
         </Column>
       </Row>

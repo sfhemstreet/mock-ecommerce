@@ -9,8 +9,7 @@ export const wishListReducer = (state = wishlistInitState, action: WishListActio
       if (indexOfProduct !== -1) {
         return state;
       }
-
-      // item is not already in wishlist, just add it to products
+      // item is not in wishlist, add it.
       return { ...state, products: [...state.products, action.payload.item] }
 
     case ADD_ALL_ITEMS_TO_WISHLIST:

@@ -7,6 +7,17 @@ import {
 
 export type WishListProduct = {
   id: string;
+  slug: string;
+  Name: string;
+  Price: number;
+  Discount: number;
+  Brand: {
+    id: string;
+    Name: string;
+  }
+  Preview: {
+    url: string;
+  }
 }
 
 export type WishList = {

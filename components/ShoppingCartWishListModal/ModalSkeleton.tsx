@@ -14,11 +14,12 @@ import { Positioned } from "../Positioned";
 import { CloseIcon } from "../CloseIcon";
 import { Txt } from "../Txt";
 
-
-const ModalChildrenContainer = styled.div<{
+type ModalChildrenContainerProps = {
   width: string;
   height: string;
-}>`
+}
+
+const ModalChildrenContainer = styled.div<ModalChildrenContainerProps>`
   width: ${props => props.width};
   height: ${props => props.height};
 
@@ -43,18 +44,15 @@ const MobileCloseButtonContainer = styled.div`
 
 type ModalSkeletonProps = {
   onClose: () => void;
-  type: StoredType;
   title: string;
 };
 
 export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
   children,
   title,
-  type,
   onClose
 }): JSX.Element => {
   const [width, height] = useWindowDimensions();
-  const modals = useSWR(MODAL, getModalsState);
 
   return (
     <Contained width={"100%"} height={"100%"}>

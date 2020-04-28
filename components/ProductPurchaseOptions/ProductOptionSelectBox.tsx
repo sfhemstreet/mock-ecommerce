@@ -199,6 +199,7 @@ export const ProductOptionSelectBox = ({
         onKeyPress={accessibleEnterKeyPress(() => setIsActive(!isActive))}
         tabIndex={0}
         ref={selectorRef}
+        aria-label={`${label}`}
       >
         <Row justifyBetween alignCenter>
           <Contained>

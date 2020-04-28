@@ -1,7 +1,7 @@
 
 import { ModalActionTypes, ModalsState } from "./modalTypes";
 
-import { OPEN_SHOPPING_CART_MODAL, OPEN_WISHLIST_MODAL, TOGGLE_SHOPPING_CART_MODAL, TOGGLE_WISHLIST_MODAL, CLOSE_SHOPPING_CART_MODAL, CLOSE_WISHLIST_MODAL, CLOSE_SHOPPING_CART_AND_WISHLIST_MODALS, START_EDIT_WISHLIST_MODAL, START_EDIT_SHOPPING_CART_MODAL, STOP_EDIT_SHOPPING_CART_MODAL, STOP_EDIT_WISHLIST_MODAL, modalsInitState } from "./modalConstants";
+import { OPEN_SHOPPING_CART_MODAL, OPEN_WISHLIST_MODAL, TOGGLE_SHOPPING_CART_MODAL, TOGGLE_WISHLIST_MODAL, CLOSE_SHOPPING_CART_MODAL, CLOSE_WISHLIST_MODAL, CLOSE_SHOPPING_CART_AND_WISHLIST_MODALS, START_EDIT_WISHLIST_MODAL, START_EDIT_SHOPPING_CART_MODAL, STOP_EDIT_SHOPPING_CART_MODAL, STOP_EDIT_WISHLIST_MODAL, modalsInitState, CLOSE_WISHLIST_OPEN_SHOPPING_CART } from "./modalConstants";
 
 export function modalReducer(state = modalsInitState, action: ModalActionTypes): ModalsState {
   switch (action.type) {
@@ -62,6 +62,12 @@ export function modalReducer(state = modalsInitState, action: ModalActionTypes):
       return {
         ...state,
         shoppingCart: {...state.shoppingCart, isEditting: false }
+      }
+    case CLOSE_WISHLIST_OPEN_SHOPPING_CART:
+      return {
+        ...state,
+        shoppingCart: { isEditting: false, isOpen: true },
+        wishlist: { isEditting: false, isOpen: false }
       }
     default: 
       return state

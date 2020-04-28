@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { useRef, useEffect, useState } from "react";
 import { Row } from "../Row";
-import { SearchIcon } from "./SearchIcon";
+import { SearchIcon, FadeContainer } from "./SearchIcon";
 import { Centered } from "../Centered";
 import { SearchBoxResults } from "./SearchBoxResults";
-
+import { Transition } from "react-transition-group";
+import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
 
 const SearchBoxContainer = styled.div`
   height: 30px;
@@ -31,8 +32,10 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
   width: ${props => (props.isActive ? "160px" : "0px")};
   transition: all 0.5s ease-out;
 
-  pointer-events:  ${props => (props.isActive ? "auto" : "none")};
+  pointer-events: ${props => (props.isActive ? "auto" : "none")};
 `;
+
+
 
 type SearchBoxProps = {
   isActive: boolean;
@@ -43,11 +46,11 @@ type SearchBoxProps = {
 export const SearchBox = ({
   isActive,
   onActiveClick,
-  focusOnActive = true,
+  focusOnActive = true
 }: SearchBoxProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [searchText, setSearchText] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (inputRef && inputRef.current && focusOnActive && isActive) {
@@ -61,20 +64,29 @@ export const SearchBox = ({
     <SearchBoxContainer>
       <Row alignCenter justifyEnd>
         <Centered padding={"0px 10px"}>
-          <SearchIcon onClick={onActiveClick} />
+          <SearchIcon onClick={onActiveClick} isActive={isActive} />
         </Centered>
         <SearchBoxInput
           isActive={isActive}
           type="text"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={e => setSearchText(e.target.value)}
           placeholder="Search"
           ref={inputRef}
         />
       </Row>
-      {isActive && (
-        <SearchBoxResults text={searchText}/>
-      )}
+      <Transition
+        in={isActive && searchText.trim().length > 1}
+        timeout={200}
+        mountOnEnter
+        unmountOnExit
+      >
+        {state => (
+          <FadeContainer state={state}>
+            <SearchBoxResults text={searchText} />
+          </FadeContainer>
+        )}
+      </Transition>
     </SearchBoxContainer>
   );
 };

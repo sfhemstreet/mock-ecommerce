@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 import { useState } from "react";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
@@ -7,20 +7,28 @@ import { BackgroundBlack } from "../Background";
 import { Logo } from "../Logo";
 import { SearchBox } from "../SearchBox/SearchBox";
 import { Padded } from "../Padded";
-import { DisplayAtMedia } from "../DisplayAtMedia";
+import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { MenuIcon } from "../MenuIcon";
 import { ShoppingCartNavigationIcon } from "../ShoppingCart/ShoppingCartNavigationIcon";
 import { NavigationBarDropDown } from "./NavigationBarDropDown";
 import { Positioned } from "../Positioned";
 import { WishListNavigationIcon } from "../WishList/WishListNavigationIcon";
-import { AppTheme } from '../../themes/AppTheme';
-import { Category, SiteLogo } from '../../queries/types';
+import { AppTheme } from "../../themes/AppTheme";
+import { Category, SiteLogo } from "../../queries/types";
 
 export const NAV_HEIGHT = "85px";
 
+const MenuContainer = styled.div`
+  padding-left: 10px;
+
+  @media ${mediaDevices.mobileM} {
+    padding-left: 20px;
+  }
+`;
+
 const NavLinkItem = styled.a<{ isActive: boolean }>`
   position: relative;
-  
+
   width: 100px;
   text-align: center;
 
@@ -83,19 +91,19 @@ export function NavigationBar({
   };
 
   return (
-    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)} >
+    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)}>
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
           <DisplayAtMedia mobile tablet laptop>
-            <Padded padding={"0px 20px"}>
+            <MenuContainer>
               <MenuIcon onClick={onClickSideDrawer} isOpen={isSideDrawerOpen} />
-            </Padded>
+            </MenuContainer>
           </DisplayAtMedia>
 
           <Padded padding={"20px 20px 20px 50px"}>
             <Link href={"/"}>
               <a>
-                <Logo siteLogo={siteLogo}/>
+                <Logo siteLogo={siteLogo} />
               </a>
             </Link>
           </Padded>
@@ -109,7 +117,8 @@ export function NavigationBar({
                       onMouseEnter={() => handleNavLinkItemFocus(item.Name)}
                       onFocus={() => handleNavLinkItemFocus(item.Name)}
                       isActive={
-                        state.dropDownActive && state.dropDownOption === item.Name
+                        state.dropDownActive &&
+                        state.dropDownOption === item.Name
                       }
                       tabIndex={0}
                       key={`DropDown${item.Name}`}
@@ -117,7 +126,8 @@ export function NavigationBar({
                       {item.Name}
                       <Transition
                         in={
-                          state.dropDownActive && state.dropDownOption === item.Name
+                          state.dropDownActive &&
+                          state.dropDownOption === item.Name
                         }
                         mountOnEnter
                         unmountOnExit
@@ -151,9 +161,9 @@ export function NavigationBar({
                 </Padded>
               </DisplayAtMedia>
               <Padded padRight={"10px"}>
-                <WishListNavigationIcon /> 
+                <WishListNavigationIcon />
               </Padded>
-              <ShoppingCartNavigationIcon /> 
+              <ShoppingCartNavigationIcon />
             </Row>
           </Padded>
         </Row>
@@ -161,11 +171,13 @@ export function NavigationBar({
       <NavigationBarDropDown
         isActive={state.dropDownActive && !isSideDrawerOpen}
         onMouseLeave={() => setState({ ...state, dropDownActive: false })}
-        navigationContentItem={navigationContent.filter(item => {
-          if (item.Name === state.dropDownOption){
-            return item;
-          } 
-        })[0]}
+        navigationContentItem={
+          navigationContent.filter(item => {
+            if (item.Name === state.dropDownOption) {
+              return item;
+            }
+          })[0]
+        }
       />
     </Positioned>
   );

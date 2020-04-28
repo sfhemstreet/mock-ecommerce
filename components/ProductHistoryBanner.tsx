@@ -10,6 +10,8 @@ import { Txt } from "./Txt";
 import React from "react";
 import { mediaDevices } from "./DisplayAtMedia";
 import { Transformed } from "./Transformed";
+import useSWR from "swr";
+import { WISHLIST, getWishlist } from "../storage/storage";
 
 type ScrollAreaProps = {
   centerSmall: boolean;
@@ -62,6 +64,15 @@ type ProductHistoryBannerProps = {
 export const ProductHistoryBanner = ({
   products
 }: ProductHistoryBannerProps) => {
+  const wishlistMap: { [key: string]: boolean } = {};
+  const wishlist = useSWR(WISHLIST, getWishlist);
+
+  if (wishlist.data) {
+    for (let i = 0; i < wishlist.data.products.length; i++) {
+      wishlistMap[wishlist.data.products[i].id] = true;
+    }
+  }
+
   if (products === undefined) return <SpinningLoader />;
 
   // Sort by timeViewed and convert to ProductPreview
@@ -100,7 +111,7 @@ export const ProductHistoryBanner = ({
               padding={"10px 5px"}
               key={`PreviouslyViewedProduct${product.id}`}
             >
-              <ProductPreviewCard productInfo={product} />
+              <ProductPreviewCard isOnWishList={wishlist.data ? wishlistMap[product.id] === true : undefined} productInfo={product} />
             </Contained>
           ))}
         </ScrollArea>

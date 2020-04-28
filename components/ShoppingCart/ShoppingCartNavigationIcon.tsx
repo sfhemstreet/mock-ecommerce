@@ -21,7 +21,10 @@ import {
 import { Modal } from "../ShoppingCartWishListModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
 
-import { removeItemFromShoppingCart, editShoppingCartItem } from "../../storage/shoppingCart/shoppingCartActions";
+import {
+  removeItemFromShoppingCart,
+  editShoppingCartItem
+} from "../../storage/shoppingCart/shoppingCartActions";
 import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 import { ShoppingCartListView } from "../ShoppingCartWishListModal/ShoppingCartListView";
 
@@ -148,18 +151,27 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
   if (!shoppingCart.data || !open.data) return <SpinningLoader />;
 
   const handleItemEdit = (item: ShoppingCartProduct) => {
-    console.log("new prod", item);
     updateShoppingCart(mutate, editShoppingCartItem(item));
   };
 
   const handleItemRemoval = (item: ShoppingCartProduct) => {
-    updateShoppingCart(mutate, removeItemFromShoppingCart(item.id, item.timeAdded));
+    updateShoppingCart(
+      mutate,
+      removeItemFromShoppingCart(item.id, item.timeAdded)
+    );
   };
 
   return (
     <>
       <ShoppingCartIconContainer
         tabIndex={0}
+        aria-label={
+          !open.data
+            ? "Shopping Cart"
+            : open.data.shoppingCart.isOpen
+            ? "Close Shopping Cart"
+            : "Open Shopping Cart"
+        }
         willShake={shoppingCart.data.products.length > 0}
         onClick={handleClickIcon}
         onKeyPress={accessibleEnterKeyPress(handleClickIcon)}
@@ -205,13 +217,14 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
           <Modal onClose={handleCloseModal} state={state}>
             <ModalSkeleton
               title={"Shopping Cart"}
-              type={SHOPPING_CART}
               onClose={handleCloseModal}
             >
               <ShoppingCartListView
                 list={shoppingCart.data}
                 onEdit={(item: ShoppingCartProduct) => handleItemEdit(item)}
-                onRemove={(item: ShoppingCartProduct) => handleItemRemoval(item)}
+                onRemove={(item: ShoppingCartProduct) =>
+                  handleItemRemoval(item)
+                }
               />
             </ModalSkeleton>
           </Modal>

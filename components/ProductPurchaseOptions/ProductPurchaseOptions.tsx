@@ -125,6 +125,12 @@ export const ProductPurchaseOptions = ({
   function handleAddToWishList() {
     const item: WishListProduct = {
       id: product.id,
+      slug: product.slug,
+      Price: product.Price,
+      Discount: product.Discount,
+      Name: product.Name,
+      Brand: product.Brand,
+      Preview: product.Preview
     };
     updateWishList(mutate, addItemToWishList(item));
     updateModalsState(mutate, openWishListModal()); 
