@@ -63,7 +63,7 @@ export const SearchBox = ({
   return (
     <SearchBoxContainer>
       <Row alignCenter justifyEnd>
-        <Centered padding={"0px 10px"}>
+        <Centered padding={"5px 10px 0px 10px"}>
           <SearchIcon onClick={onActiveClick} isActive={isActive} />
         </Centered>
         <SearchBoxInput

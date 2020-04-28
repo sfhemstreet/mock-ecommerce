@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { Row } from "../Row";
@@ -69,7 +69,32 @@ export function NavigationBar({
   isSideDrawerOpen,
   onClickSideDrawer
 }: NavigationBarProps) {
+  // Join categorioes which have same last word
+  const joinLikeCategories = (categories: Category[]) => {
+    const lastWords: { [key: string]: Category[] } = {};
+
+    for (const cat of categories) {
+      const last = cat.Name.substring(cat.Name.lastIndexOf(" ")).trim();
+      lastWords[last] = lastWords[last]
+        ? [...lastWords[last], cat]
+        : (lastWords[last] = [cat]);
+    }
+
+    return Object.keys(lastWords).map(
+      key =>
+        ({
+          id: key,
+          slug: key,
+          Name: key,
+          SubCategories: lastWords[key].map(cat => cat)
+        } as Category)
+    );
+  };
+
   const [state, setState] = useState(initNavigationBarState);
+  const [navContent, setNavContent] = useState(
+    joinLikeCategories(navigationContent)
+  );
 
   // Closes Dropdown and opens/closes the SearchBox
   const handleSearchOpenClose = () => {
@@ -90,29 +115,45 @@ export function NavigationBar({
     });
   };
 
+  useEffect(() => {
+    setNavContent(joinLikeCategories(navigationContent));
+  }, [navigationContent]);
+
   return (
     <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)}>
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
-          <DisplayAtMedia mobile tablet laptop>
+          <DisplayAtMedia mobile tablet>
             <MenuContainer>
               <MenuIcon onClick={onClickSideDrawer} isOpen={isSideDrawerOpen} />
             </MenuContainer>
           </DisplayAtMedia>
 
-          <Padded padding={"20px 20px 20px 50px"}>
-            <Link href={"/"}>
-              <a>
-                <Logo siteLogo={siteLogo} />
-              </a>
-            </Link>
-          </Padded>
+          <DisplayAtMedia mobile tablet>
+            <Padded padding={"20px 20px 20px 50px"}>
+              <Link href={"/"}>
+                <a>
+                  <Logo siteLogo={siteLogo} />
+                </a>
+              </Link>
+            </Padded>
+          </DisplayAtMedia>
+
+          <DisplayAtMedia laptop desktop>
+            <Padded padding={"20px 20px 20px 20px"}>
+              <Link href={"/"}>
+                <a>
+                  <Logo siteLogo={siteLogo} />
+                </a>
+              </Link>
+            </Padded>
+          </DisplayAtMedia>
 
           {!isSideDrawerOpen && (
-            <DisplayAtMedia desktop>
-              <Positioned left={"60px"}>
+            <DisplayAtMedia laptop desktop>
+              <Positioned left={"50px"}>
                 <Row justifyCenter>
-                  {navigationContent.map(item => (
+                  {navContent.map(item => (
                     <NavLinkItem
                       onMouseEnter={() => handleNavLinkItemFocus(item.Name)}
                       onFocus={() => handleNavLinkItemFocus(item.Name)}
@@ -152,7 +193,7 @@ export function NavigationBar({
 
           <Padded padding={"0px 20px"}>
             <Row alignCenter justifyCenter>
-              <DisplayAtMedia desktop>
+              <DisplayAtMedia laptop desktop>
                 <Padded padRight={"10px"}>
                   <SearchBox
                     isActive={state.searchBoxActive}
@@ -172,11 +213,7 @@ export function NavigationBar({
         isActive={state.dropDownActive && !isSideDrawerOpen}
         onMouseLeave={() => setState({ ...state, dropDownActive: false })}
         navigationContentItem={
-          navigationContent.filter(item => {
-            if (item.Name === state.dropDownOption) {
-              return item;
-            }
-          })[0]
+          navContent.filter(item => item.Name === state.dropDownOption)[0]
         }
       />
     </Positioned>

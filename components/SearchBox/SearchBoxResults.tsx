@@ -9,14 +9,14 @@ import { mediaDevices } from "../DisplayAtMedia";
 import Link from "next/link";
 
 const SearchBoxResultsContainer = styled.div`
-  width: 200px;
+  width: 210px;
   max-height: 300px;
 
   padding-top: 10px;
 
   position: absolute;
   top: 42px;
-  left: -7px;
+  left: -17px;
 
   overflow-y: scroll;
   overflow-x: hidden;
@@ -24,16 +24,16 @@ const SearchBoxResultsContainer = styled.div`
   background-color: ${props => props.theme.colors.black};
 
   border-left-style: solid;
-  border-left-width: 1px;
-  border-left-color: ${props => props.theme.colors.white};
+  border-left-width: 2px;
+  border-left-color: ${props => props.theme.colors.black};
 
   border-right-style: solid;
-  border-right-width: 1px;
-  border-right-color: ${props => props.theme.colors.white};
+  border-right-width: 2px;
+  border-right-color: ${props => props.theme.colors.black};
 
   border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: ${props => props.theme.colors.white};
+  border-bottom-width: 2px;
+  border-bottom-color: ${props => props.theme.colors.black};
 
   z-index: ${props => props.theme.zIndexes.searchBoxResults};
 
@@ -53,6 +53,8 @@ const SearchResultItem = styled.a`
   color: ${props => props.theme.colors.black};
 
   margin-top: 1px;
+
+  padding: 2px;
 
   display: grid;
   grid-template-columns: 60px 1fr;
@@ -190,10 +192,12 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
         >
           <SearchResultItem>
             <GridItem name={"image"}>
-              <ProdImg
-                src={process.env.BACKEND_URL + item.Preview.url}
-                alt={`${item.Name} by ${item.Brand.Name}`}
-              />
+              <Column justifyCenter>
+                <ProdImg
+                  src={process.env.BACKEND_URL + item.Preview.url}
+                  alt={`${item.Name} by ${item.Brand.Name}`}
+                />
+              </Column>
             </GridItem>
             <GridItem name={"name"}>
               <Column justifyCenter>

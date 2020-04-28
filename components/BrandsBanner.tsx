@@ -75,7 +75,7 @@ export const BrandsBanner = ({
       ? 300
       : 500;
 
-  const [pad, setPad] = useState(findPad());
+  const [pad, setPad] = useState(500);
 
   // updates pad when width changes
   useEffect(() => {

@@ -37,6 +37,8 @@ const CoverImg = styled.div<CoverImgProps>`
   background-repeat: no-repeat;
   background-position-x: center;
   background-size: cover;
+  
+  border-bottom: solid 1px ${props => props.theme.colors.black};
 
   @media ${mediaDevices.mobileL} {
     background-image: ${props => `url(${props.tabletSrc})`};
@@ -118,7 +120,7 @@ const Home = ({
           </Txt>
         </Padded>
         <Padded padding={"0px 5px 5px 5px"}>
-          <Txt alignCenter padding={"0px 0px 8px 0px"}>
+          <Txt alignCenter padding={"0px 0px 20px 0px"}>
             {homePageContent.content}
           </Txt>
           <Centered>

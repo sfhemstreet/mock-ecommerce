@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
 import { Category } from "../../queries/types";
 
-
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   position: absolute;
   top: 70px;
@@ -13,24 +12,21 @@ const NavigationBarDropDownContainer = styled.div<{ state: string }>`
 
   overflow: hidden;
 
-  display: ${props => props.state === "unmount" ? "none" : "block"};
+  display: ${props => (props.state === "unmount" ? "none" : "block")};
   opacity: ${props => (props.state === "entered" ? 1 : 1)};
 
   transition: all 0.5s ease-in-out;
 
   width: auto;
-  height: ${props => (props.state === "entered" ? "70px" : "1px")};
+  height: ${props => (props.state === "entered" ? "160px" : "1px")};
 
   padding: ${props => (props.state === "entered" ? "20px" : "0px")};
 
-  background-color: ${props => props.theme.colors.white};
-  color: ${props => props.theme.colors.black};
+  background-color: ${props => props.theme.colors.black};
+  color: ${props => props.theme.colors.white};
 
-  border-top-style: solid;
   border-bottom-style: solid;
-  border-top-color: ${props => props.theme.colors.white};
   border-bottom-color: ${props => props.theme.colors.white};
-  border-top-width: 1px;
   border-bottom-width: 1px;
 `;
 
@@ -64,7 +60,9 @@ export const NavigationBarDropDown = ({
             onMouseLeave={onMouseLeave}
             state={state}
           >
-            <NavigationBarDropDownItem navigationContentItem={navigationContentItem} />
+            <NavigationBarDropDownItem
+              navigationContentItem={navigationContentItem}
+            />
           </NavigationBarDropDownContainer>
         )}
       </Transition>
