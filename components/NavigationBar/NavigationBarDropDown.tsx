@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
 import { Category } from "../../queries/types";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   position: absolute;
@@ -49,25 +49,54 @@ export const NavigationBarDropDown = ({
   onMouseLeave,
   navigationContentItem
 }: NavigationBarDropDownProps): JSX.Element => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close DropDown if user clicks or hits enter key outside of dropdown.
+  useEffect(() => {
+    function handleOutsideClick(evt: globalThis.MouseEvent) {
+      if (ref.current && evt.composedPath().includes(ref.current)) {
+        return;
+      }
+      if (isActive) onMouseLeave();
+    }
+
+    function handleOutsideEnterKeyPress(evt: KeyboardEvent) {
+      if (
+        evt.key === "Enter" &&
+        ref.current &&
+        evt.composedPath().includes(ref.current)
+      ) {
+        return;
+      }
+      if (isActive) onMouseLeave();
+    }
+
+    document.addEventListener("click", handleOutsideClick, false);
+    document.addEventListener("keypress", handleOutsideEnterKeyPress, false);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick, false);
+      document.removeEventListener("keypress", handleOutsideEnterKeyPress,false);
+    };
+  }, [isActive]);
+
   return (
-    <>
-      <Transition
-        in={isActive}
-        mountOnEnter
-        unmountOnExit
-        timeout={{ appear: 0, enter: 10, exit: 500 }}
-      >
-        {state => (
-          <NavigationBarDropDownContainer
-            onMouseLeave={onMouseLeave}
-            state={state}
-          >
-            <NavigationBarDropDownItem
-              navigationContentItem={navigationContentItem}
-            />
-          </NavigationBarDropDownContainer>
-        )}
-      </Transition>
-    </>
+    <Transition
+      in={isActive}
+      mountOnEnter
+      unmountOnExit
+      timeout={{ appear: 0, enter: 10, exit: 500 }}
+    >
+      {state => (
+        <NavigationBarDropDownContainer
+          ref={ref}
+          onMouseLeave={onMouseLeave}
+          state={state}
+        >
+          <NavigationBarDropDownItem
+            navigationContentItem={navigationContentItem}
+          />
+        </NavigationBarDropDownContainer>
+      )}
+    </Transition>
   );
 };

@@ -58,7 +58,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
     <Contained width={"100%"} height={"100%"}>
       {/* Close Button */}
       <DisplayAtMedia tablet laptop desktop>
-        <Positioned absolute top={"3px"} left={"3px"}>
+        <Positioned absolute top={"6px"} left={"3px"}>
           <CloseIcon onClick={onClose} />
         </Positioned>
       </DisplayAtMedia>

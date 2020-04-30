@@ -113,7 +113,8 @@ export default function SingleProductPage({
         AvailableSizes: product.AvailableSizes,
         Brand: product.Brand,
         Ranking: product.Ranking,
-        Preview: product.Preview
+        Preview: product.Preview,
+        PreviewWebP: product.PreviewWebP
       };
       updateProductHistory(
         mutate,
@@ -146,7 +147,9 @@ export default function SingleProductPage({
             <Padded padding={"3px"}>
               <ProductImageDisplay
                 photos={product.Pictures}
+                photosWebP={product.PicturesWebP}
                 thumbnails={product.Thumbnails}
+                thumbnailsWebP={product.ThumbnailsWebP}
               />
             </Padded>
             <Padded padding={"0px"}>

@@ -33,9 +33,9 @@ const Banner = styled.div<{ width: string; moveLeft: string }>`
   animation: ${props => MoveLeft(props.moveLeft)} 20s linear infinite;
   animation-play-state: running;
 
-  :hover {
+  /* :hover {
     animation-play-state: paused;
-  }
+  } */
 `;
 
 const BrandImg = styled.img<{ pad: string }>`

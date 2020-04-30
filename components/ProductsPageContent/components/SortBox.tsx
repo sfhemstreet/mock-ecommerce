@@ -36,22 +36,19 @@ export const SortBox = ({ onSelect, options }: SortBoxProps) => {
   };
 
   return (
-    <>
-      <Txt bold>Sort</Txt>
-      <OutlinedBox title="Sort Options">
-        {options.map((option: string, index: number) => (
-          <SortOptionLabel
-            tabIndex={0}
-            aria-label={`Sort products by ${option}`}
-            key={`SortOption${index}`}
-            isHighlighted={selectedIndex === index}
-            onKeyPress={accessibleEnterKeyPress(() => handleClick(index))}
-          >
-            {option}
-            <SortOptionRadio type="radio" onClick={evt => handleClick(index)} />
-          </SortOptionLabel>
-        ))}
-      </OutlinedBox>
-    </>
+    <OutlinedBox title="Sort Options">
+      {options.map((option: string, index: number) => (
+        <SortOptionLabel
+          tabIndex={0}
+          aria-label={`Sort products by ${option}`}
+          key={`SortOption${index}`}
+          isHighlighted={selectedIndex === index}
+          onKeyPress={accessibleEnterKeyPress(() => handleClick(index))}
+        >
+          {option}
+          <SortOptionRadio type="radio" onClick={evt => handleClick(index)} />
+        </SortOptionLabel>
+      ))}
+    </OutlinedBox>
   );
 };

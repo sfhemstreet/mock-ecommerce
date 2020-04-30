@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Contained } from "./Contained";
 import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
+import { useRef, useEffect } from "react";
 
 const BackArrowButtonContainer = styled.div`
   width: 70px;
@@ -34,7 +35,7 @@ type BackArrowButtonProps = {
 };
 
 export const BackArrowButton = ({
-  onClick
+  onClick, 
 }: BackArrowButtonProps): JSX.Element => {
   return (
     <BackArrowButtonContainer

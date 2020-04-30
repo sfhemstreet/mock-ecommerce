@@ -24,7 +24,7 @@ import {
 } from "../../storage/modals/modalActions";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { FadeContainer } from "../SearchBox/SearchIcon";
-import { EditShoppingCartProduct } from "../ShoppingCartWishListModal/EditShoppingCartProduct";
+import { EditShoppingCartProduct } from "../ShoppingCartModal/EditShoppingCartProduct";
 import { AddToCartFromWishList } from "./AddToCartFromWishList";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 
@@ -125,11 +125,11 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
       setDisplayedProducts([
         ...displayedProducts.filter(i => i.id !== item.id)
       ]);
-    }, 210);
+    }, 300);
     // After local version is removed, remove from WishList
     setTimeout(() => {
       updateWishList(mutate, removeItemFromWishlist(item.id));
-    }, 400);
+    }, 500);
   };
 
   // Whenever products changes we want to wait a tiny bit for the animations,

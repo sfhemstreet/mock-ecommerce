@@ -1,6 +1,6 @@
 import { fetchQuery } from "../../util/fetchQuery";
 import { sortProductPhotos } from "../../util/sortProductPhotos";
-import { ProductInfo } from "../types";
+import { ProductInfo, ProductInfoQuery } from "../types";
 
 
 
@@ -8,46 +8,7 @@ export async function getProductBySlug(slug: string) {
   const GET_PRODUCT_BY_SLUG = `
     {
       products(where: {slug: "${slug}"}) {
-        id
-        slug
-        Brand {
-          id
-          Name
-          Logo {
-            url
-          }
-        }
-        Name
-        Description
-        Thumbnails {
-          name
-          url
-        }
-        Pictures {
-          name
-          url
-        }
-        Preview {
-          url
-        }
-        Price
-        MSRP
-        Discount
-        IsAvailable
-        AvailableColors
-        AvailableSizes
-        Ranking
-        UnitsInStock
-        Category {
-          id
-          slug
-          Name
-        }
-        Subcategory {
-          id
-          slug
-          Name
-        }
+        ${ProductInfoQuery}
       }
     }
   `;
@@ -64,9 +25,13 @@ export async function getProductBySlug(slug: string) {
   // Organize thumbnails and photos by number in photo name
   const photos = sortProductPhotos(prod.Pictures); 
   const thumbs = sortProductPhotos(prod.Thumbnails);
+  const photosWebP = sortProductPhotos(prod.PicturesWebP);
+  const thumbsWebP = sortProductPhotos(prod.ThumbnailsWebP);
 
   prod.Pictures = photos;
   prod.Thumbnails = thumbs;
+  prod.PicturesWebP = photosWebP;
+  prod.ThumbnailsWebP = thumbsWebP;
 
   return prod;
 }

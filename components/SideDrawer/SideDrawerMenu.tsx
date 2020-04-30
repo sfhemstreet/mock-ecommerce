@@ -137,9 +137,10 @@ export const SideDrawerMenu = ({
                   onClick={handleTitleLinkClick} 
                   onKeyPress={accessibleEnterKeyPress(handleTitleLinkClick)}
                 >
-                  <Txt padding={"0px 20px"} big>
+                  <Txt padding={"0px 4px 0px 15px"} big>
                     {contentStack[contentStack.length - 1].Name}
                   </Txt>
+                  <Txt small padding={"0px 4px 0px 15px"}>View All</Txt>
                 </LinkContainer>
               )}
             </Row>

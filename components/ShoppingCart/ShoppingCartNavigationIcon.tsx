@@ -18,15 +18,15 @@ import {
   closeShoppingCartModal,
   toggleShoppingCartModal
 } from "../../storage/modals/modalActions";
-import { Modal } from "../ShoppingCartWishListModal/Modal";
-import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
+import { Modal } from "../ShoppingCartModal/Modal";
+import { ModalSkeleton } from "../ShoppingCartModal/ModalSkeleton";
 
 import {
   removeItemFromShoppingCart,
   editShoppingCartItem
 } from "../../storage/shoppingCart/shoppingCartActions";
 import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
-import { ShoppingCartListView } from "../ShoppingCartWishListModal/ShoppingCartListView";
+import { ShoppingCartListView } from "../ShoppingCartModal/ShoppingCartListView";
 
 const ShakeAnimationMixin = css `
   animation: ${ShakeNWait} 15s linear infinite;

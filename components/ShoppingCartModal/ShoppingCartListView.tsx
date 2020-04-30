@@ -10,15 +10,21 @@ import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
 import { updateModalsState } from "../../storage/storage";
 import {
   startEditShoppingCartModal,
-  stopEditShoppingCartModal
+  stopEditShoppingCartModal,
+  closeShoppingCartModal
 } from "../../storage/modals/modalActions";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { SubmitButton } from "./components/SubmitButton";
-import { ShoppingCart, ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import {
+  ShoppingCart,
+  ShoppingCartProduct
+} from "../../storage/shoppingCart/shoppingCartTypes";
 import { ShoppingCartProductView } from "./ShoppingCartProductView";
 import { EditShoppingCartProduct } from "./EditShoppingCartProduct";
+import { useRouter } from "next/router";
+import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 
 const TransitionContainer = styled.div<{ state: TransitionStatus }>`
   opacity: ${props => (props.state === ENTERED ? 1 : 0)};
@@ -67,6 +73,8 @@ export const ShoppingCartListView = ({
   onEdit,
   onRemove
 }: ShoppingCartListViewProps): JSX.Element => {
+  const router = useRouter();
+
   // Store a local copy of the list for animating items on screen.
   const [items, setItems] = useState({ ...list });
 
@@ -98,7 +106,7 @@ export const ShoppingCartListView = ({
   const handleRemove = (item: ShoppingCartProduct) => {
     // Animate item out of list
     setRemoveItemId(item.timeAdded);
-    
+
     // Let animation finish before removing local version of item
     setTimeout(() => {
       setItems({
@@ -114,6 +122,13 @@ export const ShoppingCartListView = ({
     setTimeout(() => {
       onRemove(item);
     }, 500);
+  };
+
+  const handleCheckOut = () => {
+    if (items.products.length > 0) {
+      router.push(`/checkout`);
+      updateModalsState(mutate, closeShoppingCartModal())
+    }
   };
 
   // Whenever list prop changes we want to wait a tiny bit for the animations,
@@ -170,10 +185,7 @@ export const ShoppingCartListView = ({
                   </ProductScrollArea>
 
                   <Transition
-                    in={
-                      items.products.length > 0 &&
-                      editItem === null 
-                    }
+                    in={items.products.length > 0 && editItem === null}
                     timeout={{
                       enter: 10,
                       exit: 300
@@ -196,7 +208,19 @@ export const ShoppingCartListView = ({
                               transition: "all 0.3s linear"
                             }}
                           >
-                            <SubmitButton isSubmit>
+                            <SubmitButton
+                              isSubmit
+                              onClick={handleCheckOut}
+                              onKeyPress={accessibleEnterKeyPress(
+                                handleCheckOut
+                              )}
+                              aria-label={`Checkout with the following items, ${items.products
+                                .map(
+                                  p =>
+                                    `${p.Name} by ${p.Brand.Name}, in size ${p.Size}, in color ${p.Color}, in quantity ${p.Quantity}, for ${p.Price}.`
+                                )
+                                .join(" ")}`}
+                            >
                               Checkout
                             </SubmitButton>
                           </Positioned>
@@ -212,7 +236,19 @@ export const ShoppingCartListView = ({
                               transition: "all 0.3s linear"
                             }}
                           >
-                            <SubmitButton isSubmit>
+                            <SubmitButton
+                              isSubmit
+                              onClick={handleCheckOut}
+                              onKeyPress={accessibleEnterKeyPress(
+                                handleCheckOut
+                              )}
+                              aria-label={`Checkout with the following items, ${items.products
+                                .map(
+                                  p =>
+                                    `${p.Name} by ${p.Brand.Name}, in size ${p.Size}, in color ${p.Color}, in quantity ${p.Quantity}, for ${p.Price}.`
+                                )
+                                .join(" ")}`}
+                            >
                               Checkout
                             </SubmitButton>
                           </Positioned>

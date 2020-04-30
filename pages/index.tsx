@@ -20,6 +20,9 @@ import { ProductPreview, Brand } from "../queries/types";
 import { getAllBrands } from "../queries/brand/getAllBrands";
 import { BrandsBanner } from "../components/BrandsBanner";
 import Head from "next/head";
+import { ProductHistoryBanner } from "../components/ProductHistoryBanner";
+import { PRODUCT_HISTORY, getProductHistory } from "../storage/storage";
+import useSWR from "swr";
 
 type CoverImgProps = {
   mobileSrc: string;
@@ -95,6 +98,8 @@ const Home = ({
   topFourProducts,
   brands
 }: HomeProps): JSX.Element => {
+  const productHistory = useSWR(PRODUCT_HISTORY, getProductHistory);
+
   return (
     <>
       <Head>
@@ -135,9 +140,10 @@ const Home = ({
             <ProductPreviewCardsList products={topFourProducts} />
           </Centered>
         </Padded>
-        <Padded padTop={"50px"}>
+        <Padded padTop={"50px"} padBottom={"50px"}>
           <BrandsBanner brands={brands} onSelection={b => {}} />
         </Padded>
+        <ProductHistoryBanner products={productHistory.data?.products} />
       </NavigationBarSideDrawerLayout>
     </>
   );

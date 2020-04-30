@@ -1,6 +1,6 @@
 import { fetchQuery } from "../../util/fetchQuery";
 import { sortProductPhotos } from "../../util/sortProductPhotos";
-import { ProductInfo } from "../types";
+import { ProductInfo, ProductInfoQuery } from "../types";
 
 
 
@@ -8,44 +8,7 @@ export async function getProductById(id: string) {
   const GET_PRODUCT_BY_ID = `
     {
       product(id: ${id}) {
-        id
-        slug
-        Brand {
-          id
-          Name
-          Logo {
-            url
-          }
-        }
-        Name
-        Description
-        Thumbnails {
-          name
-          url
-        }
-        Pictures {
-          name
-          url
-        }
-        Preview {
-          url
-        }
-        Price
-        MSRP
-        Discount
-        IsAvailable
-        AvailableColors
-        AvailableSizes
-        Ranking
-        UnitsInStock
-        Category {
-          id
-          Name
-        }
-        Subcategory {
-          id
-          Name
-        }
+        ${ProductInfoQuery}
       }
     }
   `;

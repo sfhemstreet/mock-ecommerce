@@ -43,7 +43,7 @@ export default class MyDocument extends Document<any> {
           <link
             href="https://fonts.googleapis.com/css?family=Rubik:400,500&display=swap"
             rel="stylesheet"
-          />
+          /> 
           {this.props.styleTags}
         </Head>
         <body>

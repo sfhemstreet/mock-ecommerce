@@ -225,6 +225,7 @@ export const ProductsPageContent = ({
                 }
               >
                 <Column>
+                  <Txt bold>Sort</Txt>
                   <SortBox
                     options={sortOptions}
                     onSelect={option =>
@@ -232,6 +233,7 @@ export const ProductsPageContent = ({
                     }
                   />
                   <Padded padding={"40px 0px"}>
+                    <Txt bold>Filter</Txt>
                     <FilterBox
                       filterOptions={filterOptions}
                       onChange={(f: FilterOptionsObj) => handleFilter(f)}

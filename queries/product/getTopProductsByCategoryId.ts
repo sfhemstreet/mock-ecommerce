@@ -1,5 +1,5 @@
 import { getProductsBaseQuery } from "./getProducts";
-import { ProductPreview } from "../types";
+import { ProductPreview, ProductPreviewQuery } from "../types";
 
 export const getTopProductsByCategoryId = async (id: string) => {
 
@@ -7,24 +7,7 @@ export const getTopProductsByCategoryId = async (id: string) => {
   const GET_TOP_PRODUCTS_BY_CATEGORY_ID = `
     {	
       products(where: { Category: {id: ${id}} }, sort: "Ranking:asc") {
-        id
-        slug
-        Name
-        Price
-        Discount
-        AvailableColors
-        AvailableSizes
-        Ranking
-        Brand {
-          id
-          Name
-          Logo {
-            url
-          }
-        }
-        Preview {
-          url
-        }
+        ${ProductPreviewQuery}
       }
     }
   `;

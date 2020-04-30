@@ -16,22 +16,38 @@ type ProductImageDisplayProps = {
     url: string;
     name: string;
   }[];
+  photosWebP?: {
+    url: string;
+    name: string;
+  }[];
+  thumbnailsWebP?: {
+    url: string;
+    name: string;
+  }[];
 };
 
 export function ProductImageDisplay({
   photos,
-  thumbnails
+  thumbnails,
+  photosWebP,
+  thumbnailsWebP
 }: ProductImageDisplayProps): JSX.Element {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
 
   return (
     <ProductImageDisplayContainer>
-      <SelectedProductImg
-        src={process.env.BACKEND_URL + photos[selectedIndex].url}
-        alt={"Product Photo"}
-        onClick={() => setIsZoomed(true)}
-      />
+      <picture>
+        {photosWebP && (
+          <source type="image/webp" srcSet={process.env.BACKEND_URL + photosWebP[selectedIndex].url} />
+        )}
+        <SelectedProductImg
+          src={process.env.BACKEND_URL + photos[selectedIndex].url}
+          alt={"Product Photo"}
+          onClick={() => setIsZoomed(true)}
+        />  
+      </picture>
+      
       {thumbnails.length > 1 && (
         <ThumbnailsContainer>
           {thumbnails.map((thumb, index) => (
@@ -39,11 +55,17 @@ export function ProductImageDisplay({
               key={thumb.url}
               highlight={index === selectedIndex}
             >
-              <ThumbnailImg
-                src={process.env.BACKEND_URL + thumb.url}
-                alt={`${thumb.name} thumbnail`}
-                onClick={() => setSelectedIndex(index)}
-              />
+              <picture>
+                {thumbnailsWebP && (
+                  <source type="image/webp" srcSet={process.env.BACKEND_URL + thumbnailsWebP[index].url} />
+                )}
+                <ThumbnailImg
+                  src={process.env.BACKEND_URL + thumb.url}
+                  alt={`${thumb.name} thumbnail`}
+                  onClick={() => setSelectedIndex(index)}
+                />  
+              </picture>
+              
             </Thumbnail>
           ))}
         </ThumbnailsContainer>

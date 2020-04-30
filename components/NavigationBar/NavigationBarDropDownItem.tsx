@@ -50,7 +50,7 @@ export const NavigationBarDropDownItem = ({
   return (
     <>
       {navigationContentItem && (
-        <Contained height={"150px"}>
+        <Contained height={"150px"} >
           <Padded padding={"20px 10px"}>
             <Row justifyEvenly alignStart>
               {navigationContentItem?.SubCategories?.map((item, index) => (

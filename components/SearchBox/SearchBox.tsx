@@ -5,7 +5,11 @@ import { SearchIcon, FadeContainer } from "./SearchIcon";
 import { Centered } from "../Centered";
 import { SearchBoxResults } from "./SearchBoxResults";
 import { Transition } from "react-transition-group";
-import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
+import {
+  TransitionStatus,
+  ENTERED,
+  ENTERING
+} from "react-transition-group/Transition";
 
 const SearchBoxContainer = styled.div`
   height: 30px;
@@ -20,7 +24,7 @@ const SearchBoxContainer = styled.div`
 `;
 
 const SearchBoxInput = styled.input<{ isActive: boolean }>`
-  padding: 5px;
+  padding: ${props => (props.isActive ? "4px" : "0px")};
   border: none;
   border-bottom: ${props =>
     props.isActive ? `1px solid ${props.theme.colors.white}` : "none"};
@@ -30,12 +34,10 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
   font-size: ${props => props.theme.typography.fontSize};
 
   width: ${props => (props.isActive ? "160px" : "0px")};
-  transition: all 0.5s ease-out;
+  transition: all 0.3s ease-out;
 
   pointer-events: ${props => (props.isActive ? "auto" : "none")};
 `;
-
-
 
 type SearchBoxProps = {
   isActive: boolean;
@@ -66,16 +68,25 @@ export const SearchBox = ({
         <Centered padding={"5px 10px 0px 10px"}>
           <SearchIcon onClick={onActiveClick} isActive={isActive} />
         </Centered>
-        <label title="Search site for products, brands, and categories.">
-          <SearchBoxInput
-            isActive={isActive}
-            type="text"
-            value={searchText}
-            onChange={e => setSearchText(e.target.value)}
-            placeholder="Search"
-            ref={inputRef}
-          />  
-        </label>
+        <Transition
+          in={isActive}
+          timeout={{ enter: 10, exit: 310 }}
+          mountOnEnter
+          unmountOnExit
+        >
+          {state => (
+            <label title="Search site for products, brands, and categories.">
+              <SearchBoxInput
+                isActive={state === ENTERING || state === ENTERED}
+                type="text"
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                placeholder="Search"
+                ref={inputRef}
+              />
+            </label>
+          )}
+        </Transition>
       </Row>
       <Transition
         in={isActive && searchText.trim().length > 1}

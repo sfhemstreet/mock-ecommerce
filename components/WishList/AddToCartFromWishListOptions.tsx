@@ -17,7 +17,7 @@ import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import { Contained } from "../Contained";
 
-import { EditButton } from "../ShoppingCartWishListModal/components/EditButton";
+import { EditButton } from "../ShoppingCartModal/components/EditButton";
 import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 import { updateShoppingCart, updateModalsState } from "../../storage/storage";
 import { addItemToShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";

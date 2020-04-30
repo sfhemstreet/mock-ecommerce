@@ -1,27 +1,10 @@
 import { getProductsBaseQuery } from "./getProducts";
-import { ProductPreview } from "../types";
+import { ProductPreview, ProductPreviewQuery } from "../types";
 
 const GET_TOP_4_PRODUCTS = `
   {
     products(sort: "Ranking:desc", where: {IsAvailable: true, Ranking_gte: 4}, limit: 4) {
-      id
-      slug
-      Name
-      Price
-      Discount
-      AvailableColors
-      AvailableSizes
-      Ranking
-      Brand {
-        id
-        Name
-        Logo {
-          url
-        }
-      }
-      Preview {
-        url
-      }
+      ${ProductPreviewQuery}
     }
   }
 `;

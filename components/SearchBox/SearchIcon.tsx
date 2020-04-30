@@ -5,14 +5,13 @@ import Transition, {
   TransitionStatus,
   ENTERED
 } from "react-transition-group/Transition";
-import { CloseIcon } from "../CloseIcon";
 
 const SearchIconSVG = styled.svg<{ moveDown?: boolean }>`
   fill: ${props => props.theme.colors.white};
   transition: fill 0.3s ease-in-out;
   cursor: pointer;
 
-  padding-top: ${props => props.moveDown ? "6px" : "0px"};
+  padding-top: ${props => (props.moveDown ? "6px" : "0px")};
 
   :hover {
     fill: ${props => props.theme.colors.rose};
@@ -32,7 +31,13 @@ type SearchIconProps = {
 export const SearchIcon = ({ onClick, isActive }: SearchIconProps) => {
   return (
     <SwitchTransition mode={"out-in"}>
-      <Transition key={!isActive ? "Open" : "Close"} timeout={200}>
+      <Transition
+        key={!isActive ? "Open" : "Close"}
+        timeout={{
+          enter: 10,
+          exit: 310
+        }}
+      >
         {state => (
           <FadeContainer state={state}>
             {!isActive ? (

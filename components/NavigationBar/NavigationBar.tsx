@@ -108,22 +108,23 @@ export function NavigationBar({
   };
 
   // Closes SearchBox if open and sets dropDown state to active with given option
-  const handleNavLinkItemMouseEnter = (option: string) => {
-    setState({
-      ...state,
-      dropDownActive: true,
-      dropDownOption: option,
-      searchBoxActive: false
-    });
-  };
+  // const handleNavLinkItemMouseEnter = (option: string) => {
+  //   console.log("enter")
+  //   setState({
+  //     ...state,
+  //     dropDownActive: !state.dropDownActive,
+  //     dropDownOption: option,
+  //     searchBoxActive: false
+  //   });
+  // };
 
   // Closes SearchBox if open and sets dropDown state to active with given option
-  const handleNavLinkItemKeyPressEnter = (option: string) => {
-
-
+  const handleNavLinkItemClick = (option: string) => {
+    console.log("Clcik")
     setState({
       ...state,
-      dropDownActive: state.dropDownActive && option === state.dropDownOption ? false : true,
+      dropDownActive:
+        state.dropDownActive && option === state.dropDownOption ? false : true,
       dropDownOption: option,
       searchBoxActive: false
     });
@@ -134,7 +135,7 @@ export function NavigationBar({
   }, [navigationContent]);
 
   return (
-    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)} >
+    <Positioned zIndex={parseInt(AppTheme.zIndexes.navigationBar, 10)}>
       <BackgroundBlack>
         <Row alignCenter justifyBetween>
           <DisplayAtMedia mobile tablet>
@@ -165,18 +166,28 @@ export function NavigationBar({
 
           {!isSideDrawerOpen && (
             <DisplayAtMedia laptop desktop>
-              <Positioned left={"60px"}>
+              <Positioned left={"85px"}>
                 <Row justifyCenter>
                   {navContent.map(item => (
                     <NavLinkItem
-                      onMouseEnter={() => handleNavLinkItemMouseEnter(item.Name)}
-                      onKeyPress={accessibleEnterKeyPress(() => handleNavLinkItemKeyPressEnter(item.Name))}
+                      // onMouseEnter={() =>
+                      //   handleNavLinkItemMouseEnter(item.Name)
+                      // }
+                      onClick={() => handleNavLinkItemClick(item.Name)}
+                      onKeyPress={accessibleEnterKeyPress(() =>
+                        handleNavLinkItemClick(item.Name)
+                      )}
                       isActive={
                         state.dropDownActive &&
                         state.dropDownOption === item.Name
                       }
                       tabIndex={0}
-                      aria-label={`${state.dropDownActive && state.dropDownOption === item.Name ? "Close" : "Open"} submenu for ${item.Name}`}
+                      aria-label={`${
+                        state.dropDownActive &&
+                        state.dropDownOption === item.Name
+                          ? "Close"
+                          : "Open"
+                      } submenu for ${item.Name}`}
                       key={`DropDown${item.Name}`}
                     >
                       {item.Name}

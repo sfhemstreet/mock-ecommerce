@@ -88,7 +88,8 @@ export const ProductHistoryBanner = ({
       AvailableSizes: product.AvailableSizes,
       Ranking: product.Ranking,
       Brand: product.Brand,
-      Preview: product.Preview
+      Preview: product.Preview,
+      PreviewWebP: product.PreviewWebP
     }));
 
   return (

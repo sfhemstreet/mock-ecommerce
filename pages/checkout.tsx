@@ -30,7 +30,7 @@ export default function CheckOutPage({
         <meta name="Description" content="Check Out Page"></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
-        <Txt alignCenter padding={"40px"} big bold>
+        <Txt alignCenter padding={"60px"} big bold>
           Check Out
         </Txt>
         <Contained minHeight={"600px"}>

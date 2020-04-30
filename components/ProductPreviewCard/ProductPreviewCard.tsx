@@ -22,19 +22,19 @@ import { useEffect, useState } from "react";
 
 const ProductPreviewCardContainer = styled.div`
   width: 150px;
-  height: 216px;
+  height: 226px;
   position: relative;
   color: ${props => props.theme.colors.productPreviewText};
   background: ${props => props.theme.colors.productPreviewBackground};
 
   @media ${mediaDevices.mobileM} {
     width: 160px;
-    height: 230px;
+    height: 240px;
   }
 
   @media ${mediaDevices.mobileL} {
     width: 200px;
-    height: 288px;
+    height: 298px;
   }
 
   @media ${mediaDevices.tablet} {
@@ -239,31 +239,40 @@ export const ProductPreviewCard = ({
     );
   };
 
-  const checkTextLength = () => {
+  const checkTextLength = (width: number) => {
     let maxLength = 14;
 
-    if (width <= mediaSizes.mobileM) {
+    if (width >= mediaSizes.mobileM) {
       maxLength = 15;
-    } else if (width <= mediaSizes.mobileL) {
+    }
+    if (width >= mediaSizes.mobileL) {
       maxLength = 16;
-    } else if (width <= mediaSizes.tablet) {
+    }
+    if (width >= mediaSizes.tablet) {
       maxLength = 21;
-    } else if (width <= mediaSizes.laptop) {
+    }
+    if (width >= mediaSizes.laptop) {
       maxLength = 26;
     }
 
     if (productInfo.Name.length > maxLength) {
       if (productInfo.Name[maxLength - 1] === " ") maxLength -= 1;
+
       setProductName(productInfo.Name.substring(0, maxLength) + "...");
+    } else {
+      setProductName(productInfo.Name);
     }
     if (productInfo.Brand.Name.length > maxLength) {
       if (productInfo.Brand.Name[maxLength - 1] === " ") maxLength -= 1;
+
       setBrandName(productInfo.Brand.Name.substring(0, maxLength) + "...");
+    } else {
+      setBrandName(productInfo.Brand.Name);
     }
   };
 
   useEffect(() => {
-    checkTextLength();
+    checkTextLength(width);
   }, [width]);
 
   return (
@@ -275,11 +284,17 @@ export const ProductPreviewCard = ({
       aria-label={`Product for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}, priced at $${productInfo.Price}. Available in the following sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. `}
     >
       <Column justifyBetween>
-        <ProductCardThumbnailImg
-          src={process.env.BACKEND_URL + productInfo.Preview.url}
-          loading="lazy"
-          alt={`Product: ${productInfo.Name}, Brand: ${productInfo.Brand.Name}, Price: $${productInfo.Price}`}
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcSet={process.env.BACKEND_URL + productInfo.PreviewWebP.url}
+          />
+          <ProductCardThumbnailImg
+            src={process.env.BACKEND_URL + productInfo.Preview.url}
+            loading="lazy"
+            alt={`Product: ${productInfo.Name}, Brand: ${productInfo.Brand.Name}, Price: $${productInfo.Price}`}
+          />
+        </picture>
         <ProductBrandLogo
           src={process.env.BACKEND_URL + productInfo.Brand.Logo.url}
           loading="lazy"

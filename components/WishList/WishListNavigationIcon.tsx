@@ -18,8 +18,8 @@ import {
 } from "../../storage/modals/modalActions";
 
 import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
-import { Modal } from "../ShoppingCartWishListModal/Modal";
-import { ModalSkeleton } from "../ShoppingCartWishListModal/ModalSkeleton";
+import { Modal } from "../ShoppingCartModal/Modal";
+import { ModalSkeleton } from "../ShoppingCartModal/ModalSkeleton";
 import { WishListProduct } from "../../storage/wishlist/wishListTypes";
 import { WishListProductList } from "./WishListProductList";
 

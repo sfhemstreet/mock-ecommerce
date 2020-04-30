@@ -17,7 +17,34 @@ export type ProductPreview = {
   Preview: {
     url: string;
   }
+  PreviewWebP: {
+    url: string;
+  }
 }
+
+export const ProductPreviewQuery = `
+  id
+  slug
+  Name
+  Price
+  Discount
+  AvailableColors
+  AvailableSizes
+  Ranking
+  Brand {
+    id
+    Name
+    Logo {
+      url
+    }
+  }
+  Preview {
+    url
+  }
+  PreviewWebP {
+    url
+  }
+`;
 
 export type ProductInfo = {
   id: string;
@@ -35,7 +62,15 @@ export type ProductInfo = {
     name: string;
     url: string;
   }[]
+  ThumbnailsWebP: {
+    name: string;
+    url: string;
+  }[]
   Pictures: {
+    name: string;
+    url: string;
+  }[]
+  PicturesWebP: {
     name: string;
     url: string;
   }[]
@@ -60,7 +95,64 @@ export type ProductInfo = {
   Preview: {
     url: string;
   }
+  PreviewWebP: {
+    url: string;
+  }
 }
+
+export const ProductInfoQuery = `
+  id
+  slug
+  Brand {
+    id
+    Name
+    Logo {
+      url
+    }
+  }
+  Name
+  Description
+  Thumbnails {
+    name
+    url
+  }
+  ThumbnailsWebP {
+    name
+    url
+  }
+  Pictures {
+    name
+    url
+  }
+  PicturesWebP {
+    name
+    url
+  }
+  Preview {
+    url
+  }
+  PreviewWebP {
+    url
+  }
+  Price
+  MSRP
+  Discount
+  IsAvailable
+  AvailableColors
+  AvailableSizes
+  Ranking
+  UnitsInStock
+  Category {
+    id
+    slug
+    Name
+  }
+  Subcategory {
+    id
+    slug
+    Name
+  }
+`;
 
 export type Category = {
   id: string;
