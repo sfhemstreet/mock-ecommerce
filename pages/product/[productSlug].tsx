@@ -114,7 +114,9 @@ export default function SingleProductPage({
         Brand: product.Brand,
         Ranking: product.Ranking,
         Preview: product.Preview,
-        PreviewWebP: product.PreviewWebP
+        PreviewWebP: product.PreviewWebP,
+        Category: product.Category,
+        Subcategory: product.Subcategory
       };
       updateProductHistory(
         mutate,

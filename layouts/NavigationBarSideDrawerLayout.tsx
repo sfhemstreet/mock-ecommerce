@@ -33,53 +33,99 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
   sideDrawerOpenWidth = 300,
   sideDrawerClosedWidth = -20,
   sideDrawerBorderWidth = 1,
-  children
+  children,
 }): JSX.Element => {
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
 
   return (
-      <FullPageContainer>
-        <BackgroundBlackGradient>
-          <SideDrawer
-            open={isSideDrawerOpen}
-            setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
-            minWidth={sideDrawerClosedWidth}
-            maxWidth={sideDrawerOpenWidth}
-            borderWidth={sideDrawerBorderWidth}
+    <FullPageContainer>
+      <BackgroundBlackGradient>
+        <SideDrawer
+          open={isSideDrawerOpen}
+          setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
+          minWidth={sideDrawerClosedWidth}
+          maxWidth={sideDrawerOpenWidth}
+          borderWidth={sideDrawerBorderWidth}
+        >
+          <SideDrawerMenu
+            siteLogo={data.siteLogo}
+            sideDrawerWidth={sideDrawerOpenWidth}
+            navigationContent={data.navCategories}
+          />
+        </SideDrawer>
+        <div
+          onClick={() => {
+            if (isSideDrawerOpen) setSideDrawerOpen(false);
+          }}
+        >
+          <Transformed
+            isTransformed={isSideDrawerOpen}
+            transform={`translateX(${sideDrawerOpenWidth}px)`}
+            transition={AppTheme.transitions.sideDrawer}
           >
-            <SideDrawerMenu
-              siteLogo={data.siteLogo}
-              sideDrawerWidth={sideDrawerOpenWidth}
+            <NavigationBar
+              isSideDrawerOpen={isSideDrawerOpen}
+              onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
               navigationContent={data.navCategories}
+              siteLogo={data.siteLogo}
             />
-          </SideDrawer>
-          <div
-            onClick={() => {
-              if (isSideDrawerOpen) setSideDrawerOpen(false);
-            }}
-          >
-            <Transformed
-              isTransformed={isSideDrawerOpen}
-              transform={`translateX(${sideDrawerOpenWidth}px)`}
+            <Filtered
+              isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
+              filter={"grayscale(100%)"}
               transition={AppTheme.transitions.sideDrawer}
             >
-              <NavigationBar
-                isSideDrawerOpen={isSideDrawerOpen}
-                onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
-                navigationContent={data.navCategories}
-                siteLogo={data.siteLogo}
-              />
-              <Filtered
-                isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
-                filter={"grayscale(100%)"}
-                transition={AppTheme.transitions.sideDrawer}
-              >
-                {children}
-              </Filtered>
-              <Footer />
-            </Transformed>
-          </div>
-        </BackgroundBlackGradient>
-      </FullPageContainer>
+              {children}
+            </Filtered>
+            <Footer />
+          </Transformed>
+        </div>
+      </BackgroundBlackGradient>
+    </FullPageContainer>
   );
+
+  // return (
+  //   <FullPageContainer>
+  //     <BackgroundBlackGradient>
+  //       <SideDrawer
+  //         open={isSideDrawerOpen}
+  //         setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
+  //         minWidth={sideDrawerClosedWidth}
+  //         maxWidth={sideDrawerOpenWidth}
+  //         borderWidth={sideDrawerBorderWidth}
+  //       >
+  //         <SideDrawerMenu
+  //           siteLogo={data.siteLogo}
+  //           sideDrawerWidth={sideDrawerOpenWidth}
+  //           navigationContent={data.navCategories}
+  //         />
+  //       </SideDrawer>
+  //       <div
+  //         onClick={() => {
+  //           if (isSideDrawerOpen) setSideDrawerOpen(false);
+  //         }}
+  //       >
+  //         <Transformed
+  //           isTransformed={isSideDrawerOpen}
+  //           transform={`translateX(${sideDrawerOpenWidth}px)`}
+  //           transition={AppTheme.transitions.sideDrawer}
+  //         >
+  //           <NavigationBar
+  //             isSideDrawerOpen={isSideDrawerOpen}
+  //             onClickSideDrawer={() => setSideDrawerOpen(!isSideDrawerOpen)}
+  //             navigationContent={data.navCategories}
+  //             siteLogo={data.siteLogo}
+  //           />
+  //           <Filtered
+  //             isActive={isSideDrawerOpen && filterChildrenWhenSideDrawerOpen}
+  //             filter={"grayscale(100%)"}
+  //             transition={AppTheme.transitions.sideDrawer}
+  //           >
+  //             {children}
+  //           </Filtered>
+  //           <Footer />
+  //         </Transformed>
+  //       </div>
+  //     </BackgroundBlackGradient>
+  //   </FullPageContainer>
+  // );
 };

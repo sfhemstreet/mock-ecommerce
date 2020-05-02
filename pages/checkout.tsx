@@ -2,17 +2,18 @@ import styled from "styled-components";
 import { GetStaticProps } from "next";
 import {
   getNavigationBarSideDrawerData,
-  NavigationBarSideDrawerData
+  NavigationBarSideDrawerData,
 } from "../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Txt } from "../components/Txt";
 import Head from "next/head";
 import { Contained } from "../components/Contained";
 import { CheckOutPageContent } from "../components/CheckOutPageContent/CheckOutPageContent";
+import { WhiteContainer } from "../components/WhiteContainer";
 
 const CheckOutContainer = styled.div`
-  background-color: ${props => props.theme.colors.white};
-  color: ${props => props.theme.colors.black};
+  background-color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.black};
 `;
 
 type CheckOutPageProps = {
@@ -20,33 +21,33 @@ type CheckOutPageProps = {
 };
 
 export default function CheckOutPage({
-  navigationBarSideDrawerData
+  navigationBarSideDrawerData,
 }: CheckOutPageProps) {
   return (
     <>
       <Head>
-        <title>Careers</title>
+        <title>Check Out</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="Description" content="Check Out Page"></meta>
       </Head>
       <NavigationBarSideDrawerLayout data={navigationBarSideDrawerData}>
-        <Txt alignCenter padding={"60px"} big bold>
-          Check Out
-        </Txt>
-        <Contained minHeight={"600px"}>
+        <WhiteContainer>
+          <Txt alignCenter padding={"30px 0px"} big bold>
+            Check Out
+          </Txt>
           <CheckOutPageContent />
-        </Contained>
+        </WhiteContainer>
       </NavigationBarSideDrawerLayout>
     </>
   );
 }
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
 
   return {
     props: {
-      navigationBarSideDrawerData
-    }
+      navigationBarSideDrawerData,
+    },
   };
 };

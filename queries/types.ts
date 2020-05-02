@@ -20,6 +20,16 @@ export type ProductPreview = {
   PreviewWebP: {
     url: string;
   }
+  Category: {
+    id: string;
+    slug: string;
+    Name: string;
+  }
+  Subcategory: {
+    id: string;
+    slug: string;
+    Name: string;
+  }
 }
 
 export const ProductPreviewQuery = `
@@ -43,6 +53,16 @@ export const ProductPreviewQuery = `
   }
   PreviewWebP {
     url
+  }
+  Category {
+    id
+    slug
+    Name
+  }
+  Subcategory {
+    id
+    slug
+    Name
   }
 `;
 
@@ -188,4 +208,8 @@ export type Brand = {
   Logo: {
     url: string;
   }
+}
+
+export interface BrandWithProducts extends Brand {
+  Products: ProductPreview[]
 }

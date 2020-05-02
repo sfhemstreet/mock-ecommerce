@@ -5,14 +5,14 @@ import { Padded } from "../components/Padded";
 
 import {
   getHomePageContent,
-  HomePageContent
+  HomePageContent,
 } from "../queries/page/getHomePageContent";
 import { mediaDevices } from "../components/DisplayAtMedia";
 import { Centered } from "../components/Centered";
 import { Txt } from "../components/Txt";
 import {
   getNavigationBarSideDrawerData,
-  NavigationBarSideDrawerData
+  NavigationBarSideDrawerData,
 } from "../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { ProductPreviewCardsList } from "../components/ProductPreviewCard/ProductPreviewCardsList";
 import { getTop4Products } from "../queries/product/getTop4Products";
@@ -23,6 +23,7 @@ import Head from "next/head";
 import { ProductHistoryBanner } from "../components/ProductHistoryBanner";
 import { PRODUCT_HISTORY, getProductHistory } from "../storage/storage";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 type CoverImgProps = {
   mobileSrc: string;
@@ -35,30 +36,30 @@ type CoverImgProps = {
 const CoverImg = styled.div<CoverImgProps>`
   width: 100%;
   height: 146px;
-  background-image: ${props => `url(${props.mobileSrc})`};
+  background-image: ${(props) => `url(${props.mobileSrc})`};
   background-attachment: local;
   background-repeat: no-repeat;
   background-position-x: center;
   background-size: cover;
 
-  border-bottom: solid 1px ${props => props.theme.colors.black};
+  border-bottom: solid 1px ${(props) => props.theme.colors.black};
 
   @media ${mediaDevices.mobileL} {
-    background-image: ${props => `url(${props.tabletSrc})`};
+    background-image: ${(props) => `url(${props.tabletSrc})`};
     background-attachment: local;
 
     height: 250px;
   }
 
   @media ${mediaDevices.tablet} {
-    background-image: ${props => `url(${props.tabletSrc})`};
+    background-image: ${(props) => `url(${props.tabletSrc})`};
     background-attachment: local;
 
     height: 250px;
   }
 
   @media ${mediaDevices.laptop} {
-    background-image: ${props => `url(${props.laptopSrc})`};
+    background-image: ${(props) => `url(${props.laptopSrc})`};
     background-attachment: fixed;
     background-position-x: center;
     background-position-y: top;
@@ -67,7 +68,7 @@ const CoverImg = styled.div<CoverImgProps>`
   }
 
   @media ${mediaDevices.laptopL} {
-    background-image: ${props => `url(${props.desktopSrc})`};
+    background-image: ${(props) => `url(${props.desktopSrc})`};
     background-attachment: fixed;
     background-position-x: center;
     background-position-y: -80px;
@@ -76,7 +77,7 @@ const CoverImg = styled.div<CoverImgProps>`
   }
 
   @media ${mediaDevices.desktop} {
-    background-image: ${props => `url(${props.hugeSrc})`};
+    background-image: ${(props) => `url(${props.hugeSrc})`};
     background-attachment: fixed;
     background-position-x: center;
     background-position-y: -180px;
@@ -88,16 +89,17 @@ const CoverImg = styled.div<CoverImgProps>`
 type HomeProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
   homePageContent: HomePageContent;
-  topFourProducts: ProductPreview[];
+  products: ProductPreview[];
   brands: Brand[];
 };
 
 const Home = ({
   navigationBarSideDrawerData,
   homePageContent,
-  topFourProducts,
-  brands
+  products,
+  brands,
 }: HomeProps): JSX.Element => {
+  const router = useRouter();
   const productHistory = useSWR(PRODUCT_HISTORY, getProductHistory);
 
   return (
@@ -109,8 +111,10 @@ const Home = ({
           name="Description"
           content={`${homePageContent.title} ${
             homePageContent.content
-          } ${topFourProducts
-            .map(prod => ` ${prod.Name}, by ${prod.Brand}, for ${prod.Price} `)
+          } ${products
+            .map(
+              (prod) => ` ${prod.Name}, by ${prod.Brand}, for ${prod.Price} `
+            )
             .join(" ")}`}
         ></meta>
       </Head>
@@ -137,19 +141,22 @@ const Home = ({
             {homePageContent.content}
           </Txt>
           <Centered>
-            <ProductPreviewCardsList products={topFourProducts} />
+            <ProductPreviewCardsList products={products} />
           </Centered>
         </Padded>
-        <Padded padTop={"50px"} padBottom={"50px"}>
-          <BrandsBanner brands={brands} onSelection={b => {}} />
-        </Padded>
         <ProductHistoryBanner products={productHistory.data?.products} />
+        <Padded padTop={"50px"} padBottom={"50px"}>
+          <BrandsBanner
+            brands={brands}
+            onSelection={(brand) => router.push(`/brand/${brand.slug}`)}
+          />
+        </Padded>
       </NavigationBarSideDrawerLayout>
     </>
   );
 };
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
   const topFourProducts = await getTop4Products();
   const homePageContent = await getHomePageContent();
@@ -158,10 +165,10 @@ export const getStaticProps: GetStaticProps = async context => {
   return {
     props: {
       navigationBarSideDrawerData,
-      topFourProducts,
+      products: topFourProducts,
       homePageContent,
-      brands
-    }
+      brands,
+    },
   };
 };
 

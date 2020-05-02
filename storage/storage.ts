@@ -15,9 +15,12 @@ import { modalsInitState } from './modals/modalConstants';
 import { searchHistoryInitState } from './searchHistory/searchHistoryConstants';
 import { shoppingCartInitState } from './shoppingCart/shoppingCartConstants';
 import { wishlistInitState } from './wishlist/wishListConstants';
+import { checkoutFormInitState } from './checkout/checkoutConstants';
+import { CheckOutForm, CheckOutFormActionTypes } from './checkout/checkoutTypes';
+import { checkoutReducer } from './checkout/checkoutReducer';
 
 /** Type of state stored in localStorage */ 
-type StorageStateType = ShoppingCart | WishList | SearchItemList | ModalsState | ProductHistoryState;
+type StorageStateType = ShoppingCart | WishList | SearchItemList | ModalsState | ProductHistoryState | CheckOutForm;
 
 /** key for getting and updating WishList state */
 export const WISHLIST = "WISHLIST";
@@ -34,12 +37,16 @@ export const MODAL = "MODAL";
 /** key for Product History state */
 export const PRODUCT_HISTORY = "PRODUCT_HISTORY";
 
+/** key for Checkout Form state */
+export const CHECKOUT_FORM = "CHECKOUT_FORM";
+
 export type KeyType = 
   typeof WISHLIST | 
   typeof SHOPPING_CART | 
   typeof SEARCH_HISTORY | 
   typeof MODAL |
-  typeof PRODUCT_HISTORY;
+  typeof PRODUCT_HISTORY |
+  typeof CHECKOUT_FORM;
 
 function getInitStateByKey(key: KeyType) {
   switch (key) {
@@ -48,6 +55,7 @@ function getInitStateByKey(key: KeyType) {
     case SEARCH_HISTORY: return searchHistoryInitState;
     case MODAL: return modalsInitState;
     case PRODUCT_HISTORY: return productHistoryInitState;
+    case CHECKOUT_FORM: return checkoutFormInitState;
     default: return undefined;
   }
 }
@@ -83,6 +91,38 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
   }
 }
 
+
+function getSessionStorageState(key: KeyType) {
+  if (typeof window !== 'undefined' && window) {
+    try {
+      const serializedState = sessionStorage.getItem(key);
+      if (!serializedState) {
+        return getInitStateByKey(key);
+      }
+      return JSON.parse(serializedState);
+    } catch (err) {
+      //console.log('ERROR: getLocalStorageState', err);
+      return getInitStateByKey(key);
+    }
+  } else {
+    //console.log("storage.ts : Cannot get local storage");
+    return getInitStateByKey(key);
+  }
+}
+
+function setSessionStorageState(state: StorageStateType, key: KeyType): void {
+  if (typeof window !== 'undefined' && window) {
+    try {
+      const serializedState = JSON.stringify(state);
+      sessionStorage.setItem(key, serializedState)
+    } catch (err) {
+      //console.log("ERROR: setLocalStorageState", err);
+    }
+  } else {
+    //console.log("storage.ts : Cannot set local stoage");
+  }
+}
+
 /** 
  * Function to access state saved in localStorage, supply to useSWR as second argument.
  * 
@@ -90,6 +130,16 @@ function setLocalStorageState(state: StorageStateType, key: KeyType): void {
 */
 export async function storage(key: KeyType): Promise<StorageStateType | undefined> {
   const data = getLocalStorageState(key);
+  return data;
+}
+
+/** 
+ * Function to access state saved in sessionStorage, supply to useSWR as second argument.
+ * 
+ * @param {KeyType} key Type of storage you want to get, use a key as defined by KeyType
+*/
+export async function tempstorage(key: KeyType): Promise<StorageStateType | undefined> {
+  const data = getSessionStorageState(key);
   return data;
 }
 
@@ -171,11 +221,27 @@ export async function updateModalsState(mutateFn: any, action: ModalActionTypes,
  */
 export async function updateProductHistory(mutateFn: any, action: ProductHistoryActionTypes, productHistory?: ProductHistoryState) {
   if (!productHistory) 
-  productHistory = await storage(PRODUCT_HISTORY) as ProductHistoryState;
+    productHistory = await storage(PRODUCT_HISTORY) as ProductHistoryState;
 
   const updatedProductHistoryState = productHistoryReducer(productHistory, action);
   setLocalStorageState(updatedProductHistoryState, PRODUCT_HISTORY);
   return mutateFn(PRODUCT_HISTORY, updatedProductHistoryState, false);
+}
+
+/** 
+ * Updates Checkout Form in sessionStorage and in SWR cache. Supply the mutate function from "swr" package.
+ * 
+ * @param {mutateFn} mutateFn mutate function from "swr" package
+ * @param {CheckOutFormActionTypes} action action from productHistoryActions.ts
+ * @param {ProductHistoryState} checkoutForm if you have the current state of Checkout Form supply it here
+ */
+export async function updateCheckoutForm(mutateFn: any, action: CheckOutFormActionTypes, checkoutForm?: CheckOutForm) {
+  if (!checkoutForm)
+    checkoutForm = await tempstorage(CHECKOUT_FORM) as CheckOutForm;
+
+  const updatedCheckoutForm = checkoutReducer(checkoutForm, action);
+  setSessionStorageState(updatedCheckoutForm, CHECKOUT_FORM);
+  return mutateFn(CHECKOUT_FORM, updatedCheckoutForm);
 }
 
 
@@ -224,4 +290,13 @@ export async function getModalsState(key: typeof MODAL): Promise<ModalsState> {
  */
 export async function getProductHistory(key: typeof PRODUCT_HISTORY): Promise<ProductHistoryState> {
   return await storage(key) as ProductHistoryState;
+}
+
+/** 
+ * Function to access Product History state saved in localStorage, supply to useSWR as second argument.
+ * 
+ * @param {CHECKOUT_FORM} key "CHECKOUT_FORM"
+ */
+export async function getCheckoutForm(key: typeof CHECKOUT_FORM): Promise<CheckOutForm> {
+  return await storage(key) as CheckOutForm;
 }

@@ -281,7 +281,7 @@ export const ProductPreviewCard = ({
       onKeyPress={accessibleEnterKeyPress(handleClick)}
       tabIndex={0}
       role="link"
-      aria-label={`Product for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}, priced at $${productInfo.Price}. Available in the following sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. `}
+      aria-label={`${productInfo.Subcategory.Name} for sale. ${productInfo.Name}, made by ${productInfo.Brand.Name}, priced at $${productInfo.Price}. Available in sizes, ${productInfo.AvailableSizes} and colors ${productInfo.AvailableColors}. `}
     >
       <Column justifyBetween>
         <picture>

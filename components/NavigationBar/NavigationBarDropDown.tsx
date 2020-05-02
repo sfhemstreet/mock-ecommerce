@@ -2,7 +2,6 @@ import { Transition } from "react-transition-group";
 import styled from "styled-components";
 import { NavigationBarDropDownItem } from "./NavigationBarDropDownItem";
 import { Category } from "../../queries/types";
-import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { useRef, useEffect } from "react";
 
 const NavigationBarDropDownContainer = styled.div<{ state: string }>`
@@ -10,48 +9,52 @@ const NavigationBarDropDownContainer = styled.div<{ state: string }>`
   top: 70px;
   left: 0;
   right: 0;
-  ${props => props.state !== "entered" && "bottom: -10px"};
+  ${(props) => props.state !== "entered" && "bottom: -10px"};
 
   overflow: hidden;
 
-  display: ${props => (props.state === "unmount" ? "none" : "block")};
-  opacity: ${props => (props.state === "entered" ? 1 : 1)};
+  display: ${(props) => (props.state === "unmount" ? "none" : "block")};
+  opacity: ${(props) => (props.state === "entered" ? 1 : 1)};
 
   transition: all 0.5s ease-in-out;
 
   width: auto;
-  height: ${props => (props.state === "entered" ? "160px" : "1px")};
+  height: ${(props) => (props.state === "entered" ? "160px" : "1px")};
 
-  padding: ${props => (props.state === "entered" ? "20px" : "0px")};
+  padding: ${(props) => (props.state === "entered" ? "20px" : "0px")};
 
-  background-color: ${props => props.theme.colors.black};
-  color: ${props => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.white};
 
   border-bottom-style: solid;
-  border-bottom-color: ${props => props.theme.colors.white};
+  border-bottom-color: ${(props) => props.theme.colors.white};
   border-bottom-width: 1px;
 `;
 
 type NavigationBarDropDownProps = {
+  giveFocus: boolean
   isActive: boolean;
   onMouseLeave: () => void;
   navigationContentItem?: Category;
 };
 
 /**
- * Drop down for the navigation bar
+ * Controls the Drop down for the navigation bar
+ * @param {boolean} getsFocus
  * @param {boolean} isActive
  * @param {() => void} onMouseLeave
  * @param {NavigationContentItem} navigationContentItem
  */
 export const NavigationBarDropDown = ({
+  giveFocus,
   isActive,
   onMouseLeave,
-  navigationContentItem
+  navigationContentItem,
 }: NavigationBarDropDownProps): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Close DropDown if user clicks or hits enter key outside of dropdown.
+  // Trigger onMouseLeave if user clicks or hits enter key outside of dropdown.
+  // We cannot use the useOutsideClick hook in this situation.
   useEffect(() => {
     function handleOutsideClick(evt: globalThis.MouseEvent) {
       if (ref.current && evt.composedPath().includes(ref.current)) {
@@ -75,7 +78,11 @@ export const NavigationBarDropDown = ({
     document.addEventListener("keypress", handleOutsideEnterKeyPress, false);
     return () => {
       document.removeEventListener("click", handleOutsideClick, false);
-      document.removeEventListener("keypress", handleOutsideEnterKeyPress,false);
+      document.removeEventListener(
+        "keypress",
+        handleOutsideEnterKeyPress,
+        false
+      );
     };
   }, [isActive]);
 
@@ -86,13 +93,14 @@ export const NavigationBarDropDown = ({
       unmountOnExit
       timeout={{ appear: 0, enter: 10, exit: 500 }}
     >
-      {state => (
+      {(state) => (
         <NavigationBarDropDownContainer
           ref={ref}
           onMouseLeave={onMouseLeave}
           state={state}
         >
           <NavigationBarDropDownItem
+            giveFocus={giveFocus}
             navigationContentItem={navigationContentItem}
           />
         </NavigationBarDropDownContainer>

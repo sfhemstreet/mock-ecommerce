@@ -4,39 +4,32 @@ import {
 } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Category, ProductPreview } from "../../queries/types";
+import { Category, ProductPreview, BrandWithProducts } from "../../queries/types";
 import { getAllCategoryIdsSlugs } from "../../queries/categories/getAllCategoryIdsSlugs";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
 import { getCategoryBySlug } from "../../queries/categories/getCategoryBySlug";
 import { getTopProductsByCategorySlug } from "../../queries/product/getTopProductsByCategorySlug";
 import Head from "next/head";
+import { getAllBrands } from "../../queries/brand/getAllBrands";
+import { getBrandWithProductsBySlug } from "../../queries/brand/getBrandWithProductsBySlug";
 
 type CategoryPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;
-  category: Category;
-  products: ProductPreview[];
+  brand: BrandWithProducts;
 };
 
-export default function CategoryPage({
-  products,
-  category,
+export default function BrandPage({
+  brand,
   navigationBarSideDrawerData
 }: CategoryPageProps): JSX.Element {
   return (
     <>
       <Head>
-        <title>{category.Name}</title>
+        <title>{brand.Name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           name="Description"
-          content={`${category.Name}, ${category.SubCategories?.map(
-            cat => `${cat.Name}`
-          ).join(" ")} products for sale. ${products
-            .map(
-              prod =>
-                `${prod.Name} made by ${prod.Brand.Name}, for ${prod.Price} US dollars, available in ${prod.AvailableSizes} sizes and ${prod.AvailableColors} colors.`
-            )
-            .join(" ")}`}
+          content={`${brand.Name}`}
         ></meta>
       </Head>
       <NavigationBarSideDrawerLayout
@@ -44,8 +37,9 @@ export default function CategoryPage({
         filterChildrenWhenSideDrawerOpen
       >
         <ProductsPageContent
-          title={category.Name}
-          products={products}
+          title={brand.Name}
+          products={brand.Products}
+          displayCategoryFilter
           displaySubcategoryFilter
         />
       </NavigationBarSideDrawerLayout>
@@ -54,7 +48,7 @@ export default function CategoryPage({
 }
 
 export const getStaticProps: GetStaticProps = async context => {
-  const slug = context.params?.categorySlug;
+  const slug = context.params?.brandSlug;
 
   if (typeof slug !== "string") {
     console.log("slug from params was not a string, which is bad.");
@@ -62,22 +56,20 @@ export const getStaticProps: GetStaticProps = async context => {
   }
 
   const navigationBarSideDrawerData = await getNavigationBarSideDrawerData();
-  const category = await getCategoryBySlug(slug);
-  const products = await getTopProductsByCategorySlug(slug);
+  const brand = await getBrandWithProductsBySlug(slug);
 
   return {
     props: {
       navigationBarSideDrawerData,
-      category,
-      products
+      brand,
     }
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await getAllCategoryIdsSlugs();
-  const paths = ids.map(id => ({
-    params: { categorySlug: id.slug }
+  const brands = await getAllBrands();
+  const paths = brands.map(brand => ({
+    params: { brandSlug: brand.slug }
   }));
 
   return {
@@ -85,3 +77,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
     fallback: false
   };
 };
+

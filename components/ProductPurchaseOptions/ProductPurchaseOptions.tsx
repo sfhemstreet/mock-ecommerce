@@ -116,7 +116,7 @@ export const ProductPurchaseOptions = ({
       Size: selectedSize,
       Color: selectedColor,
       Quantity: parseInt(selectedQuantity, 10),
-      Preview: { url: product.Thumbnails[0].url }
+      Preview: product.Preview
     };
     updateShoppingCart(mutate, addItemToShoppingCart(item));
     updateModalsState(mutate, openShoppingCartModal()); 

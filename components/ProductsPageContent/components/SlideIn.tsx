@@ -12,18 +12,10 @@ export const SlideIn = styled.div<{ state: TransitionStatus }>`
   transform: ${props =>
     props.state === ENTERED ? "none" : "translateX(100%)"};
 
-  transform: ${props =>
-    props.state === ENTERED
-      ? "scale(0.9) translateY(-40px)"
-      : "translateX(100%) scale(0.9) "};
-
   ${props => props.state === EXITED && "display: none"};
 
   @media ${mediaDevices.mobileM} {
     padding-right: 15px;
-
-    transform: ${props =>
-      props.state === ENTERED ? "none" : "translateX(100%)"};
   }
 `;
 
@@ -32,11 +24,11 @@ export const SlideIn = styled.div<{ state: TransitionStatus }>`
  */
 export const SlideInChild = styled.div`
   position: absolute;
-  top: 20px;
-  right: 0px;
+  top: -70px;
+  right: -10px;
 
   transition: all 0.3s ease-in-out;
-  transform: scale(0.9);
+  transform: scale(0.8);
 
   @media ${mediaDevices.mobileM} {
     transform: none;

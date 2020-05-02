@@ -8,6 +8,8 @@ import { Row } from "../../Row";
 import { useState } from "react";
 import { Column } from "../../Column";
 import { accessibleEnterKeyPress } from "../../../util/accessibleEnterKeyPress";
+import { FlexBox } from "../../FlexBox";
+import { Centered } from "../../Centered";
 
 const CheckBox = styled.input`
   width: 50px;
@@ -28,20 +30,20 @@ type LabelProps = {
 const CheckBoxLabel = styled.label<LabelProps>`
   display: inline-block;
 
-  width: ${props => (props.doNotPad ? "163px" : "135px")};
+  width: ${(props) => (props.doNotPad ? "163px" : "135px")};
   border-radius: 2px;
 
-  padding: ${props =>
+  padding: ${(props) =>
     props.doNotPad ? "3px 3px 3px 3px" : "3px 3px 3px 20px"};
 
-  font-weight: ${props => (props.bold ? "500" : "400")};
-  font-size: ${props =>
+  font-weight: ${(props) => (props.bold ? "500" : "400")};
+  font-size: ${(props) =>
     props.big
       ? props.theme.typography.bigFontSize
       : props.small
       ? props.theme.typography.smallFontSize
       : props.theme.typography.fontSize};
-  text-decoration: ${props => {
+  text-decoration: ${(props) => {
     let text = "";
     if (props.underline) text += "underline ";
     if (props.overline) text += "overline ";
@@ -54,9 +56,44 @@ const CheckBoxLabel = styled.label<LabelProps>`
 
   cursor: pointer;
 
-  background: ${props =>
+  background: ${(props) =>
     props.isHighlighted ? props.theme.colors.white : "none"};
-  color: ${props =>
+  color: ${(props) =>
+    props.isHighlighted ? props.theme.colors.black : props.theme.colors.white};
+`;
+
+const SizeCheckBoxLabel = styled.label<LabelProps>`
+  display: inline-block;
+
+  width: 35px;
+  height: 35px;
+  border-radius: 2px;
+
+  padding: 3px 3px 3px 3px;
+
+  font-weight: ${(props) => (props.bold ? "500" : "400")};
+  font-size: ${(props) =>
+    props.big
+      ? props.theme.typography.bigFontSize
+      : props.small
+      ? props.theme.typography.smallFontSize
+      : props.theme.typography.fontSize};
+  text-decoration: ${(props) => {
+    let text = "";
+    if (props.underline) text += "underline ";
+    if (props.overline) text += "overline ";
+    if (props.linethru) text += "line-through ";
+    if (text === "") return "none";
+    else return text;
+  }};
+
+  transition: all 0.2s ease-in-out;
+
+  cursor: pointer;
+
+  background: ${(props) =>
+    props.isHighlighted ? props.theme.colors.white : "none"};
+  color: ${(props) =>
     props.isHighlighted ? props.theme.colors.black : props.theme.colors.white};
 `;
 
@@ -69,6 +106,8 @@ export type FilterOptionsObj = {
   Color: string[];
   Size: string[];
   Discount: boolean | undefined;
+  Category: string[];
+  Subcategory: string[];
 };
 
 export type FilterKeyObj = {
@@ -90,7 +129,9 @@ export function createFilterOptions(
     Brand: Array<string>(),
     Color: Array<string>(),
     Size: Array<string>(),
-    Discount: undefined
+    Category: Array<string>(),
+    Subcategory: Array<string>(),
+    Discount: undefined,
   };
 
   // Track highest and lowest price of products.
@@ -101,8 +142,10 @@ export function createFilterOptions(
   const colors: FilterKeyObj = {};
   const sizes: FilterKeyObj = {};
   const brands: FilterKeyObj = {};
+  const categories: FilterKeyObj = {};
+  const subcategories: FilterKeyObj = {};
 
-  products.forEach(product => {
+  products.forEach((product) => {
     // Discount filter is not displayed if no products
     // have a discount and is left as undefined.
     if (product.Discount > 0) filterOptions.Discount = false;
@@ -113,12 +156,14 @@ export function createFilterOptions(
 
     // We need all the colors, sizes and brands without duplicates.
     product.AvailableColors.split(",").forEach(
-      color => (colors[color.trim()] = true)
+      (color) => (colors[color.trim()] = true)
     );
     product.AvailableSizes.split(",").forEach(
-      size => (sizes[size.trim()] = true)
+      (size) => (sizes[size.trim()] = true)
     );
     brands[product.Brand.Name] = true;
+    categories[product.Category.Name] = true;
+    subcategories[product.Subcategory.Name] = true;
   });
 
   // Remove 10 from lowest price so that slider is easier to use
@@ -132,6 +177,8 @@ export function createFilterOptions(
   filterOptions.Price.High = highestPrice + 10;
   filterOptions.Brand = Object.keys(brands);
   filterOptions.Color = Object.keys(colors);
+  filterOptions.Category = Object.keys(categories);
+  filterOptions.Subcategory = Object.keys(subcategories);
 
   // Sort letter sizes
   const letterSizes = Array<string>();
@@ -156,25 +203,36 @@ export function createFilterOptions(
 type FilterBoxProps = {
   onChange: (filter: FilterOptionsObj) => void;
   filterOptions: FilterOptionsObj;
+  showCategories?: boolean;
+  showSubcategories?: boolean;
 };
 
 /**
  * Displays a box of all possible filter options and checkboxes to select them.
  * @param onChange
  * @param filterOptions
+ * @param showCategories
+ * @param showSubcategories
  */
-export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
+export const FilterBox = ({
+  onChange,
+  filterOptions,
+  showCategories,
+  showSubcategories,
+}: FilterBoxProps) => {
   const keys = Object.keys(filterOptions);
 
   const [filter, setFilter] = useState<FilterOptionsObj>({
     Price: {
       Low: filterOptions.Price.Low,
-      High: filterOptions.Price.High
+      High: filterOptions.Price.High,
     },
     Brand: Array<string>(),
     Color: Array<string>(),
     Size: Array<string>(),
-    Discount: filterOptions.Discount
+    Category: Array<string>(),
+    Subcategory: Array<string>(),
+    Discount: filterOptions.Discount,
   });
 
   const handlePriceChange = (low: number, high: number) => {
@@ -189,15 +247,15 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
       ...filter,
       Price: {
         Low: l,
-        High: h
-      }
+        High: h,
+      },
     });
     onChange({
       ...filter,
       Price: {
         Low: l,
-        High: h
-      }
+        High: h,
+      },
     });
   };
 
@@ -206,7 +264,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
       ...filter,
       Brand: checked
         ? [...filter.Brand, brand]
-        : [...filter.Brand.filter(b => b !== brand)]
+        : [...filter.Brand.filter((b) => b !== brand)],
     };
     setFilter(f);
     onChange(f);
@@ -217,7 +275,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
       ...filter,
       Size: checked
         ? [...filter.Size, size]
-        : [...filter.Size.filter(s => s !== size)]
+        : [...filter.Size.filter((s) => s !== size)],
     };
     setFilter(f);
     onChange(f);
@@ -228,7 +286,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
       ...filter,
       Color: checked
         ? [...filter.Color, color]
-        : [...filter.Color.filter(c => c !== color)]
+        : [...filter.Color.filter((c) => c !== color)],
     };
     setFilter(f);
     onChange(f);
@@ -237,7 +295,29 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
   const handleDiscountChange = (checked: boolean) => {
     const f: FilterOptionsObj = {
       ...filter,
-      Discount: checked
+      Discount: checked,
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleCategoryChange = (checked: boolean, category: string) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Category: checked
+        ? [...filter.Category, category]
+        : [...filter.Category.filter((c) => c !== category)],
+    };
+    setFilter(f);
+    onChange(f);
+  };
+
+  const handleSubcategoryChange = (checked: boolean, subcategory: string) => {
+    const f: FilterOptionsObj = {
+      ...filter,
+      Subcategory: checked
+        ? [...filter.Subcategory, subcategory]
+        : [...filter.Subcategory.filter((sc) => sc !== subcategory)],
     };
     setFilter(f);
     onChange(f);
@@ -266,7 +346,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                 On Sale
                 <CheckBox
                   type="checkbox"
-                  onChange={evt => handleDiscountChange(evt.target.checked)}
+                  onChange={(evt) => handleDiscountChange(evt.target.checked)}
                 />
               </CheckBoxLabel>
             );
@@ -293,7 +373,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
               <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
                 <Column justifyEvenly>
                   <Txt>Brand: </Txt>
-                  {filterOptions.Brand.map(brand => {
+                  {filterOptions.Brand.map((brand) => {
                     const isInList = filter.Brand.includes(brand);
                     const hasLineThru = filter.Brand.length > 0 && !isInList;
 
@@ -316,7 +396,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                         {brand}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt =>
+                          onChange={(evt) =>
                             handleBrandChange(evt.target.checked, brand)
                           }
                         />
@@ -332,7 +412,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
               <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
                 <Column justifyEvenly>
                   <Txt>Color: </Txt>
-                  {filterOptions.Color.map(color => {
+                  {filterOptions.Color.map((color) => {
                     const isInList = filter.Color.includes(color);
                     const hasLineThru = filter.Color.length > 0 && !isInList;
 
@@ -355,7 +435,7 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                         {color}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt =>
+                          onChange={(evt) =>
                             handleColorChange(evt.target.checked, color)
                           }
                         />
@@ -371,9 +451,54 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
               <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
                 <Column justifyEvenly>
                   <Txt>Size: </Txt>
-                  {filterOptions.Size.map(size => {
-                    const isInList = filter.Size.includes(size);
-                    const hasLineThru = filter.Size.length > 0 && !isInList;
+                  <Padded padLeft={"17px"}>
+                    <FlexBox>
+                      {filterOptions.Size.map((size) => {
+                        const isInList = filter.Size.includes(size);
+                        const hasLineThru = filter.Size.length > 0 && !isInList;
+
+                        return (
+                          <SizeCheckBoxLabel
+                            small
+                            isHighlighted={isInList}
+                            linethru={hasLineThru}
+                            onKeyPress={accessibleEnterKeyPress(() =>
+                              handleSizeChange(!isInList, size)
+                            )}
+                            tabIndex={0}
+                            aria-label={
+                              isInList
+                                ? `Remove size ${size} from products filter`
+                                : `Add size ${size} to products filter`
+                            }
+                            key={`filterOption${key}${size}`}
+                          >
+                            <Column alignCenter justifyCenter>{size}</Column>
+                            <CheckBox
+                              type="checkbox"
+                              onChange={(evt) =>
+                                handleSizeChange(evt.target.checked, size)
+                              }
+                            />
+                          </SizeCheckBoxLabel>
+                        );
+                      })}
+                    </FlexBox>
+                  </Padded>
+                </Column>
+              </Padded>
+            );
+
+          case "Category":
+            if (showCategories === undefined) return null;
+
+            return (
+              <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                <Column justifyEvenly>
+                  <Txt>Category: </Txt>
+                  {filterOptions.Category.map((category) => {
+                    const isInList = filter.Category.includes(category);
+                    const hasLineThru = filter.Category.length > 0 && !isInList;
 
                     return (
                       <CheckBoxLabel
@@ -381,21 +506,63 @@ export const FilterBox = ({ onChange, filterOptions }: FilterBoxProps) => {
                         isHighlighted={isInList}
                         linethru={hasLineThru}
                         onKeyPress={accessibleEnterKeyPress(() =>
-                          handleSizeChange(!isInList, size)
+                          handleCategoryChange(!isInList, category)
                         )}
                         tabIndex={0}
                         aria-label={
                           isInList
-                            ? `Remove size ${size} from products filter`
-                            : `Add size ${size} to products filter`
+                            ? `Remove category ${category} from products filter`
+                            : `Add category ${category} to products filter`
                         }
-                        key={`filterOption${key}${size}`}
+                        key={`filterOption${key}${category}`}
                       >
-                        {size}
+                        {category}
                         <CheckBox
                           type="checkbox"
-                          onChange={evt =>
-                            handleSizeChange(evt.target.checked, size)
+                          onChange={(evt) =>
+                            handleCategoryChange(evt.target.checked, category)
+                          }
+                        />
+                      </CheckBoxLabel>
+                    );
+                  })}
+                </Column>
+              </Padded>
+            );
+
+          case "Subcategory":
+            if (showSubcategories === undefined) return null;
+
+            return (
+              <Padded padding={"10px 0px 0px 5px"} key={`filterOption${key}`}>
+                <Column justifyEvenly>
+                  <Txt>Subcategory: </Txt>
+                  {filterOptions.Subcategory.map((sc) => {
+                    const isInList = filter.Subcategory.includes(sc);
+                    const hasLineThru =
+                      filter.Subcategory.length > 0 && !isInList;
+
+                    return (
+                      <CheckBoxLabel
+                        small
+                        isHighlighted={isInList}
+                        linethru={hasLineThru}
+                        onKeyPress={accessibleEnterKeyPress(() =>
+                          handleSubcategoryChange(!isInList, sc)
+                        )}
+                        tabIndex={0}
+                        aria-label={
+                          isInList
+                            ? `Remove subcategory ${sc} from products filter`
+                            : `Add subcategory ${sc} to products filter`
+                        }
+                        key={`filterOption${key}${sc}`}
+                      >
+                        {sc}
+                        <CheckBox
+                          type="checkbox"
+                          onChange={(evt) =>
+                            handleSubcategoryChange(evt.target.checked, sc)
                           }
                         />
                       </CheckBoxLabel>

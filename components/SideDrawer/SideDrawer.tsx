@@ -318,7 +318,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
       {isVisible && (
         <>
           <SideDrawerContainer
-            style={{ right: sideDrawerPosition }}
+            style={{ right: sideDrawerPosition, pointerEvents: open ? "auto" : "none"}}
             drawerHeight={drawerHeight}
             drawerWidth={maxWidth}
             zIndex={zIndex}

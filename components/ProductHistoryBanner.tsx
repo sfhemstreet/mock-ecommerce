@@ -89,7 +89,9 @@ export const ProductHistoryBanner = ({
       Ranking: product.Ranking,
       Brand: product.Brand,
       Preview: product.Preview,
-      PreviewWebP: product.PreviewWebP
+      PreviewWebP: product.PreviewWebP,
+      Category: product.Category,
+      Subcategory: product.Subcategory
     }));
 
   return (

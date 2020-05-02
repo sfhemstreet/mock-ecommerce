@@ -6,6 +6,7 @@ export async function getAllBrands() {
     {
       brands {
         id
+        slug
         Name
         Logo {
           url

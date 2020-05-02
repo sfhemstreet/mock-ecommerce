@@ -6,17 +6,16 @@ import { FilterIcon } from "./components/FilterIcon";
 import { Txt } from "../Txt";
 import { Contained } from "../Contained";
 import { ProductPreviewCardsList } from "../ProductPreviewCard/ProductPreviewCardsList";
-import { ProductPreview, Category } from "../../queries/types";
+import { ProductPreview } from "../../queries/types";
 import { Column } from "../Column";
 import {
   FilterOptionsObj,
   FilterBox,
   createFilterOptions,
-  FilterKeyObj
+  FilterKeyObj,
 } from "./components/FilterBox";
 import { SortBox } from "./components/SortBox";
 import { Centered } from "../Centered";
-import { SubCategoriesBox } from "./components/SubCategoriesBox";
 import Transition from "react-transition-group/Transition";
 import { Positioned } from "../Positioned";
 import { SlideIn, SlideInChild } from "./components/SlideIn";
@@ -39,7 +38,7 @@ export const sortOptions = [
   SORT_MOST_RECENT,
   SORT_RANKING_HI_LO,
   SORT_PRICE_LO_HI,
-  SORT_PRICE_HI_LO
+  SORT_PRICE_HI_LO,
 ] as SortOptionTypes[];
 
 const ProductsAndFilterContainer = styled.div`
@@ -60,8 +59,9 @@ const ProductsAndFilterContainer = styled.div`
 
 type ProductsPageContentProps = {
   title: string;
-  subcategories?: Category[];
   products: ProductPreview[];
+  displayCategoryFilter?: boolean;
+  displaySubcategoryFilter?: boolean;
 };
 
 /**
@@ -70,12 +70,14 @@ type ProductsPageContentProps = {
  *
  * @param title
  * @param products
- * @param subcategories
+ * @param displayCategoryFilter
+ * @param displaySubcategoryFilter
  */
 export const ProductsPageContent = ({
   title,
   products,
-  subcategories
+  displayCategoryFilter,
+  displaySubcategoryFilter,
 }: ProductsPageContentProps) => {
   const filterOptions = createFilterOptions(products);
 
@@ -91,7 +93,7 @@ export const ProductsPageContent = ({
             (a, b) =>
               // Well this is what we will do for now
               b.Ranking - a.Ranking
-          )
+          ),
         ];
 
       case SORT_RANKING_HI_LO:
@@ -108,7 +110,7 @@ export const ProductsPageContent = ({
   const handleFilter = (filter: FilterOptionsObj) => {
     // Go thru all products and remove products
     // that don't have properties of filter.
-    const p = products.filter(product => {
+    const p = products.filter((product) => {
       // Go thru each filter key in filter
       for (const key in filter) {
         // SIZE
@@ -181,6 +183,14 @@ export const ProductsPageContent = ({
           // Checks if product has a discount, as filter is active down here.
           if (product.Discount > 0) continue;
           else return false;
+        } else if (key === "Category") {
+          if (filter.Category.length === 0) continue;
+          if (filter.Category.includes(product.Category.Name)) continue;
+          else return false;
+        } else if (key === "Subcategory") {
+          if (filter.Subcategory.length === 0) continue;
+          if (filter.Subcategory.includes(product.Subcategory.Name)) continue;
+          else return false;
         }
       }
       return true;
@@ -228,26 +238,30 @@ export const ProductsPageContent = ({
                   <Txt bold>Sort</Txt>
                   <SortBox
                     options={sortOptions}
-                    onSelect={option =>
+                    onSelect={(option) =>
                       handleSortChange(option as SortOptionTypes)
                     }
                   />
                   <Padded padding={"40px 0px"}>
                     <Txt bold>Filter</Txt>
                     <FilterBox
+                      showCategories={displayCategoryFilter}
+                      showSubcategories={displaySubcategoryFilter}
                       filterOptions={filterOptions}
                       onChange={(f: FilterOptionsObj) => handleFilter(f)}
                     />
                   </Padded>
-                  {subcategories && (
-                    <SubCategoriesBox subcategories={subcategories} />
-                  )}
                 </Column>
               </Padded>
             </DisplayAtMedia>
 
             {/* Filtered Products */}
             <ProductPreviewCardsList products={filteredProducts} />
+            {filteredProducts.length === 0 && (
+              <Txt alignCenter bold padding={"100px"}>
+                No Products Match Your Filter
+              </Txt>
+            )}
 
             {/* On Mobile and Tablet Filter and Sort Boxes
                     slide in from right off screen */}
@@ -256,29 +270,30 @@ export const ProductsPageContent = ({
                 in={isShowingSortFilter}
                 timeout={{
                   enter: 10,
-                  exit: 300
+                  exit: 300,
                 }}
                 mountOnEnter
               >
-                {state => (
+                {(state) => (
                   <SlideIn state={state}>
                     <SlideInChild>
                       <Column>
+                        <Txt bold>Sort</Txt>
                         <SortBox
                           options={sortOptions}
-                          onSelect={option =>
+                          onSelect={(option) =>
                             handleSortChange(option as SortOptionTypes)
                           }
                         />
                         <Padded padding={"20px 0px"}>
+                          <Txt bold>Filter</Txt>
                           <FilterBox
+                            showCategories={displayCategoryFilter}
+                            showSubcategories={displaySubcategoryFilter}
                             filterOptions={filterOptions}
                             onChange={(f: FilterOptionsObj) => handleFilter(f)}
                           />
                         </Padded>
-                        {subcategories && (
-                          <SubCategoriesBox subcategories={subcategories} />
-                        )}
                       </Column>
                     </SlideInChild>
                   </SlideIn>

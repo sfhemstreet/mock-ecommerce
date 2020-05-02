@@ -1,11 +1,13 @@
 import styled from 'styled-components';
-import { accessibleEnterKeyPress } from '../../../util/accessibleEnterKeyPress';
-import { Transformed } from '../../Transformed';
+import { Transformed } from '../Transformed';
+import { accessibleEnterKeyPress } from '../../util/accessibleEnterKeyPress';
+
+
 
 const SelectBoxContainer = styled.label<{ isSelected: boolean }>`
   display: inline-block;
-  width: 26px;
-  height: 26px;
+  width: 20px;
+  height: 20px;
   border-radius: 2px;
   margin-left: 5px;
 
@@ -17,28 +19,31 @@ const SelectBoxContainer = styled.label<{ isSelected: boolean }>`
 
   transition: all 0.3s ease-in-out;
 
+  cursor: pointer;
+
   background-color: ${props =>
     props.isSelected ? props.theme.colors.green : "#DDD"};
 `;
 
 const CheckMarkSVG = styled.svg`
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
 `;
 
 type SelectBoxProps = {
+  label?: string;
   onClick: () => void;
   isSelected: boolean;
 };
 
-export const SelectBox = ({ onClick, isSelected }: SelectBoxProps) => {
+export const SelectBox = ({label, onClick, isSelected }: SelectBoxProps) => {
   return (
     <SelectBoxContainer
       isSelected={isSelected}
       onKeyPress={accessibleEnterKeyPress(onClick)}
       tabIndex={0}
       onClick={onClick}
-      title={"Select to add to Shopping Cart"}
+      title={label ?? "Select option"}
     >
       <Transformed
         isTransformed={!isSelected}

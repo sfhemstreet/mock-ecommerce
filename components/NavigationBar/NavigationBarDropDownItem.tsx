@@ -26,6 +26,12 @@ type NavigationBarDropDownItemProps = {
   giveFocus?: boolean;
 };
 
+/**
+ * Displays the navigtion content inside the Navigation Drop Down.
+ *  
+ * @param navigationContentItem 
+ * @param giveFocus
+ */
 export const NavigationBarDropDownItem = ({
   navigationContentItem,
   giveFocus
