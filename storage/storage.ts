@@ -101,11 +101,11 @@ function getSessionStorageState(key: KeyType) {
       }
       return JSON.parse(serializedState);
     } catch (err) {
-      //console.log('ERROR: getLocalStorageState', err);
+      console.log('ERROR: getSessionStorageState', err);
       return getInitStateByKey(key);
     }
   } else {
-    //console.log("storage.ts : Cannot get local storage");
+    console.log("storage.ts : Cannot get session storage");
     return getInitStateByKey(key);
   }
 }
@@ -116,10 +116,10 @@ function setSessionStorageState(state: StorageStateType, key: KeyType): void {
       const serializedState = JSON.stringify(state);
       sessionStorage.setItem(key, serializedState)
     } catch (err) {
-      //console.log("ERROR: setLocalStorageState", err);
+      console.log("ERROR: setSessionStorageState", err);
     }
   } else {
-    //console.log("storage.ts : Cannot set local stoage");
+    console.log("storage.ts : Cannot set session stoage");
   }
 }
 
@@ -298,5 +298,5 @@ export async function getProductHistory(key: typeof PRODUCT_HISTORY): Promise<Pr
  * @param {CHECKOUT_FORM} key "CHECKOUT_FORM"
  */
 export async function getCheckoutForm(key: typeof CHECKOUT_FORM): Promise<CheckOutForm> {
-  return await storage(key) as CheckOutForm;
+  return await tempstorage(key) as CheckOutForm;
 }

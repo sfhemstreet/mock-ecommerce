@@ -166,7 +166,7 @@ export const ShoppingCartListView = ({
                     width={`${width - 4}px`}
                     height={`${height - 245}px`}
                   >
-                    {items.products.map(item => (
+                    {items.products.sort((a,b) => b.timeAdded - a.timeAdded).map(item => (
                       <Transformed
                         key={`${item.id}${item.timeAdded}`}
                         isTransformed={item.timeAdded === removeItemId}
