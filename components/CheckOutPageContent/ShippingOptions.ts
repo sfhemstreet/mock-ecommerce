@@ -3,3 +3,8 @@ export const SHIPPING_OPTIONS = [
   { text: "Two Business Days", price: 19.95 },
   { text: "One Business Day", price: 29.95 },
 ];
+
+export type ShippingOption = {
+  text: string;
+  price: number;
+}

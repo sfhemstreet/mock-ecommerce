@@ -1,6 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { mediaDevices } from "../DisplayAtMedia";
-import { ShoppingCart, ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import {
+  ShoppingCart,
+  ShoppingCartProduct,
+} from "../../storage/shoppingCart/shoppingCartTypes";
 import { Contained } from "../Contained";
 import { Row } from "../Row";
 import { Txt } from "../Txt";
@@ -9,24 +12,31 @@ import { Column } from "../Column";
 import { EditIcon } from "../EditIcon";
 import { RemoveIcon } from "../RemoveIcon";
 
-const CartItem = styled.div<{ hasBorderTop: boolean }>`
+const CartItem = styled.div<{ hasBorderTop: boolean; hasEditArea: boolean }>`
   width: 100%;
+  display: grid;
 
   background-color: white;
   color: ${(props) => props.theme.colors.black};
 
-  ${(props) =>
-    props.hasBorderTop &&
-    `border-top: solid 1px ${props.theme.colors.transparentBlack};`};
-  border-bottom: solid 1px ${(props) => props.theme.colors.transparentBlack};
+  border-bottom: ${props => `solid 1px ${props.theme.colors.transparentBlack}`};
 
-  margin: 2px 0px;
+  ${props =>
+    props.hasBorderTop && `border-top: solid 1px ${props.theme.colors.transparentBlack};`};
 
-  display: grid;
-  grid-template-columns: 50px 1fr 100px 40px;
+  ${props => 
+    props.hasEditArea
+      ? css `
+          grid-template-columns: 50px 1fr 1fr 40px;
+          grid-template-areas: "pic item price edit";
+        `
+      : css `
+          grid-template-columns: 50px 1fr 1fr;
+          grid-template-areas: "pic item price";
+        `};
+
   grid-template-rows: 1fr;
-  gap: 3px 3px;
-  grid-template-areas: "pic item price edit";
+  gap: 8px 8px;
 
   transform: scale(0.9);
 
@@ -36,12 +46,32 @@ const CartItem = styled.div<{ hasBorderTop: boolean }>`
 
   @media ${mediaDevices.tablet} {
     max-width: 450px;
-    grid-template-columns: 100px 1fr 100px 40px;
+
+    ${props =>
+      props.hasEditArea
+        ? css `
+            grid-template-columns: 100px 1fr 1fr 40px;
+            grid-template-areas: "pic item price edit";
+          `
+        : css `
+            grid-template-columns: 100px 1fr 1fr;
+            grid-template-areas: "pic item price";
+          `};
   }
 
   @media ${mediaDevices.laptopL} {
     max-width: 550px;
-    grid-template-columns: 200px 1fr 100px 40px;
+
+    ${props =>
+      props.hasEditArea
+        ? css `
+            grid-template-columns: 130px 1fr 1fr 40px;
+            grid-template-areas: "pic item price edit";
+          `
+        : css `
+            grid-template-columns: 130px 1fr 1fr;
+            grid-template-areas: "pic item price";
+          `};
   }
 `;
 
@@ -58,7 +88,7 @@ const ImageArea = styled.div`
   }
 
   @media ${mediaDevices.laptopL} {
-    width: 200px;
+    width: 130px;
   }
 `;
 
@@ -83,7 +113,7 @@ const ProductImg = styled.img`
   }
 
   @media ${mediaDevices.laptopL} {
-    width: 200px;
+    width: 130px;
   }
 `;
 
@@ -102,6 +132,7 @@ export const CheckOutShoppingCart = ({
     <>
       {cart?.products.map((product, index) => (
         <CartItem
+          hasEditArea={onEdit !== undefined}
           hasBorderTop={index === 0}
           key={`checkout-item-${product.timeAdded}`}
         >
@@ -114,9 +145,9 @@ export const CheckOutShoppingCart = ({
           <ItemArea>
             <Contained padding={"10px 0px 0px 0px"}>
               <Row alignCenter>
-                <Txt small padding={"0px 6px 0px 0px"}>
+                {/* <Txt small padding={"0px 6px 0px 0px"}>
                   {product.Brand.Name}
-                </Txt>
+                </Txt> */}
                 <BrandLogo
                   src={process.env.BACKEND_URL + product.Brand.Logo.url}
                   alt={product.Brand.Name}
@@ -135,7 +166,7 @@ export const CheckOutShoppingCart = ({
           <PriceArea>
             <Column justifyCenter>
               {product.Quantity > 1 && <Txt small>${product.Price} each</Txt>}
-              <Txt big bold>
+              <Txt big={onEdit !== undefined} bold>
                 ${(product.Price * product.Quantity).toFixed(2)}
               </Txt>
             </Column>

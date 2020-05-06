@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Txt } from "../Txt";
 import { BackArrowButton } from "../BackArrowButton";
-import { mediaDevices } from "../DisplayAtMedia";
+import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
 import { CheckOutForm } from "../../storage/checkout/checkoutTypes";
 import { useState, useEffect } from "react";
 import { Column } from "../Column";
@@ -15,6 +15,21 @@ import { Contained } from "../Contained";
 import { updateCheckoutForm } from "../../storage/storage";
 import { CheckOutShoppingCart } from "./CheckOutShoppingCart";
 import { ShoppingCart } from "../../storage/shoppingCart/shoppingCartTypes";
+import {
+  CreditCardInfo,
+  initCreditCardInfo,
+  CreditCardInfoKeys,
+  CREDIT_CARD_OPTIONS,
+} from "./CreditCardOptions";
+import { ShippingOptionsSelectionBox } from "./ShippingOptionsSelectionBox";
+import { OrderSummaryBox } from "./OrderSummaryBox";
+import { OptionsContainer } from "./OptionsContainer";
+import { ProductOptionSelectBox } from "../ProductPurchaseOptions/ProductOptionSelectBox";
+import { STATES_TAXES } from "./StatesTaxes";
+import { StateSelectionBox } from "./StateSelectionBox";
+import { SubmitButton } from "./SubmitButton";
+import { MiniCartView } from "./MiniCartView";
+import { validateCreditCardNumber } from "../../util/validateCreditCardNumber";
 
 const FormContainer = styled.div`
   max-width: 800px;
@@ -88,11 +103,14 @@ const CheckOutInput = styled.input<{ small?: boolean }>`
   :focus {
     border-bottom: solid 2px ${(props) => props.theme.colors.green};
   }
-`;
 
-const FormSection = styled.form`
-  width: 320px;
-  padding: 20px 0px;
+  @media ${mediaDevices.mobileM} {
+    width: ${(props) => (props.small ? "60px" : "290px")};
+  }
+
+  @media ${mediaDevices.tablet} {
+    width: ${(props) => (props.small ? "60px" : "250px")};
+  }
 `;
 
 const FormsAndMiniCart = styled.div`
@@ -102,6 +120,7 @@ const FormsAndMiniCart = styled.div`
 
   @media ${mediaDevices.tablet} {
     flex-direction: row;
+    justify-content: center;
     align-items: flex-start;
   }
 `;
@@ -121,41 +140,27 @@ function checkBillingSameAsShipping(form: CheckOutForm): boolean {
   return true;
 }
 
+function getTaxEstimate(state: string, subtotal: number): number | undefined {
+  if (state === "") return undefined;
+
+  const taxPercentage = STATES_TAXES.find((s) => s.state === state)?.tax;
+
+  if (taxPercentage === undefined) return undefined;
+
+  const taxDecimal = taxPercentage / 100;
+
+  return subtotal * taxDecimal;
+}
+
 const CreditCardImg = styled.img`
   width: 40px;
   height: auto;
 `;
 
-const initCreditCardInfo = {
-  cardNumber: "",
-  cardSecurityCode: "",
-  expiration: {
-    month: (new Date().getMonth() + 1).toString(),
-    year: new Date().getFullYear().toString(),
-  },
-};
-
-type CreditCardInfo = typeof initCreditCardInfo;
-type CreditCardInfoKeys = keyof CreditCardInfo;
-
-const CREDIT_CARD_OPTIONS = [
-  {
-    name: "VISA",
-    image: "/images/visa.png",
-  },
-  {
-    name: "MasterCard",
-    image: "/images/mastercard.png",
-  },
-  {
-    name: "American Express",
-    image: "/images/americanexpress.png",
-  },
-];
-
 type CheckOutFormProps = {
   form: CheckOutForm;
   cart: ShoppingCart;
+  subtotal: number;
   onEdit: (form: CheckOutForm) => void;
   onGoBack: () => void;
 };
@@ -163,6 +168,7 @@ type CheckOutFormProps = {
 export const CheckOutFormSheet = ({
   form,
   cart,
+  subtotal,
   onEdit,
   onGoBack,
 }: CheckOutFormProps) => {
@@ -174,6 +180,30 @@ export const CheckOutFormSheet = ({
     boolean
   >(checkBillingSameAsShipping(form));
 
+  const [estimatedTax, setEstmatedTax] = useState<number | undefined>(
+    getTaxEstimate(form.billing.state, subtotal)
+  );
+
+  const handleSubmit = () => {
+    console.log("START VALIDATE", validateCreditCardNumber(creditInfo.cardNumber));
+  }
+
+  // If user selects Same as Billing option
+  // this makes Shipping address same as Billing
+  useEffect(() => {
+    if (isBillingSameAsShipping) {
+      const s = { ...form.shippingAddress };
+      for (const k in form.shippingAddress) {
+        const key = k as BillingShippingSharedKeys;
+        s[key] = localForm.billing[key];
+      }
+      setLocalForm({
+        ...localForm,
+        shippingAddress: s,
+      });
+    }
+  }, [isBillingSameAsShipping]);
+
   const billingForm = Object.keys(localForm.billing).map((k) => {
     const key = k as BillingKeys;
     const title = formatCamelCaseToRegularString(key);
@@ -182,33 +212,57 @@ export const CheckOutFormSheet = ({
         <CheckoutLabel title={title} htmlFor={`billing-${key}`}>
           {title}
         </CheckoutLabel>
-        <CheckOutInput
-          id={`billing-${key}`}
-          name={`billing-${key}`}
-          title={title}
-          type={key === "email" ? "email" : "text"}
-          value={localForm.billing[key]}
-          onBlur={(evt) => {
-            onEdit(localForm);
-          }}
-          onChange={(evt) => {
-            if (key !== "email" && isBillingSameAsShipping) {
-              setLocalForm({
-                ...localForm,
-                billing: { ...localForm.billing, [key]: evt.target.value },
-                shippingAddress: {
-                  ...localForm.shippingAddress,
-                  [key]: evt.target.value,
-                },
-              });
-            } else {
-              setLocalForm({
-                ...localForm,
-                billing: { ...localForm.billing, [key]: evt.target.value },
-              });
-            }
-          }}
-        />
+        {key === "state" ? (
+          <StateSelectionBox
+            onSelect={(state) => {
+              const f: CheckOutForm = isBillingSameAsShipping
+                ? {
+                    ...localForm,
+                    billing: { ...localForm.billing, [key]: state },
+                    shippingAddress: {
+                      ...localForm.shippingAddress,
+                      [key]: state,
+                    },
+                  }
+                : {
+                    ...localForm,
+                    billing: { ...localForm.billing, [key]: state },
+                  };
+              setLocalForm(f);
+              onEdit(f);
+              setEstmatedTax(getTaxEstimate(state, subtotal));
+            }}
+            currentSelection={localForm.billing.state}
+          />
+        ) : (
+          <CheckOutInput
+            id={`billing-${key}`}
+            name={`billing-${key}`}
+            title={title}
+            type={key === "email" ? "email" : "text"}
+            value={localForm.billing[key]}
+            onBlur={(evt) => {
+              onEdit(localForm);
+            }}
+            onChange={(evt) => {
+              if (key !== "email" && isBillingSameAsShipping) {
+                setLocalForm({
+                  ...localForm,
+                  billing: { ...localForm.billing, [key]: evt.target.value },
+                  shippingAddress: {
+                    ...localForm.shippingAddress,
+                    [key]: evt.target.value,
+                  },
+                });
+              } else {
+                setLocalForm({
+                  ...localForm,
+                  billing: { ...localForm.billing, [key]: evt.target.value },
+                });
+              }
+            }}
+          />
+        )}
       </Padded>
     );
   });
@@ -217,29 +271,46 @@ export const CheckOutFormSheet = ({
     const key = k as ShippingAddressKeys;
     const title = formatCamelCaseToRegularString(key);
     return (
-      <Padded padding={"10px"} key={`shipping-${key}`}>
+      <Padded padding={"10px"} key={`shipping-${key}-key`}>
         <CheckoutLabel title={title} htmlFor={`shipping-${key}`}>
           {title}
         </CheckoutLabel>
-        <CheckOutInput
-          id={`shipping-${key}`}
-          name={`shipping-${key}`}
-          title={title}
-          type={"text"}
-          value={localForm.shippingAddress[key]}
-          onBlur={(evt) => {
-            onEdit(localForm);
-          }}
-          onChange={(evt) => {
-            setLocalForm({
-              ...localForm,
-              shippingAddress: {
-                ...localForm.shippingAddress,
-                [key]: evt.target.value,
-              },
-            });
-          }}
-        />
+        {key === "state" ? (
+          <StateSelectionBox
+            onSelect={(state) => {
+              const f: CheckOutForm = {
+                ...localForm,
+                shippingAddress: {
+                  ...localForm.shippingAddress,
+                  [key]: state,
+                },
+              };
+              setLocalForm(f);
+              onEdit(f);
+            }}
+            currentSelection={localForm.shippingAddress.state}
+          />
+        ) : (
+          <CheckOutInput
+            id={`shipping-${key}`}
+            name={`shipping-${key}`}
+            title={title}
+            type={"text"}
+            value={localForm.shippingAddress[key]}
+            onBlur={(evt) => {
+              onEdit(localForm);
+            }}
+            onChange={(evt) => {
+              setLocalForm({
+                ...localForm,
+                shippingAddress: {
+                  ...localForm.shippingAddress,
+                  [key]: evt.target.value,
+                },
+              });
+            }}
+          />
+        )}
       </Padded>
     );
   });
@@ -322,41 +393,28 @@ export const CheckOutFormSheet = ({
     );
   });
 
-  // If user selects Same as Billing option
-  // this makes Shipping address same as Billing
-  useEffect(() => {
-    if (isBillingSameAsShipping) {
-      const s = { ...form.shippingAddress };
-      for (const k in form.shippingAddress) {
-        const key = k as BillingShippingSharedKeys;
-        s[key] = localForm.billing[key];
-      }
-      setLocalForm({
-        ...localForm,
-        shippingAddress: s,
-      });
-    }
-  }, [isBillingSameAsShipping]);
-
   return (
     <FormContainer>
       <BackButton onClick={onGoBack}>Back to Cart</BackButton>
       <FormsAndMiniCart>
-        <div>
+        <Contained >
           {/* BILLING ADDRESS */}
-          <FormSection title={"Billing Address"} name={"Billing Address"}>
-            <Txt big bold underline padding={"0px 4px"}>
+          <OptionsContainer title={"Billing Address"} name={"Billing Address"}>
+            <Txt big bold padding={"0px 4px"}>
               Billing Address
             </Txt>
             {billingForm}
-          </FormSection>
+          </OptionsContainer>
 
           {/* SHIPPING ADDRESS */}
-          <FormSection title={"Shipping Address"} name={"Shipping Address"}>
-            <Txt big bold underline padding={"0px 4px"}>
+          <OptionsContainer
+            title={"Shipping Address"}
+            name={"Shipping Address"}
+          >
+            <Txt big bold padding={"0px 4px"}>
               Shipping Address
             </Txt>
-            <Padded padding={"4px 6px"}>
+            <Padded padding={"4px 4px"}>
               <Row alignCenter>
                 <SelectBox
                   label={`Ship to My Billing Address`}
@@ -368,7 +426,7 @@ export const CheckOutFormSheet = ({
                 </Txt>
               </Row>
             </Padded>
-            <Padded padding={"2px 6px"}>
+            <Padded padding={"2px 4px"}>
               <Row alignCenter>
                 <SelectBox
                   label={`Ship to Different Address`}
@@ -381,54 +439,26 @@ export const CheckOutFormSheet = ({
               </Row>
             </Padded>
             {!isBillingSameAsShipping && shippingForm}
-          </FormSection>
+          </OptionsContainer>
 
           {/* SHIPPING OPTION */}
-          <FormSection title={"Shipping Option"} name={"Shipping Option"}>
-            <Txt big bold underline padding={"0px 4px 4px 4px"}>
-              Shipping Option
-            </Txt>
-            {SHIPPING_OPTIONS.map((option, index) => (
-              <Contained
-                maxWidth={"290px"}
-                padding={"0px 0px 4px 6px"}
-                key={`ShippingOption-${option.text}`}
-              >
-                <Row alignCenter justifyBetween>
-                  <Row alignCenter justifyStart>
-                    <SelectBox
-                      label={`Shipping option, ${option.text}, priced at $${option.price}`}
-                      onClick={() => {
-                        onEdit({
-                          ...localForm,
-                          shippingOption: SHIPPING_OPTIONS[index],
-                        });
-                        setLocalForm({
-                          ...localForm,
-                          shippingOption: SHIPPING_OPTIONS[index],
-                        });
-                      }}
-                      isSelected={
-                        localForm.shippingOption.text ===
-                        SHIPPING_OPTIONS[index].text
-                      }
-                    />
-                    <Txt small padding={"2px 6px"}>
-                      {option.text}
-                    </Txt>
-                  </Row>
-
-                  <Txt small bold>
-                    {`$${option.price}`}
-                  </Txt>
-                </Row>
-              </Contained>
-            ))}
-          </FormSection>
+          <ShippingOptionsSelectionBox
+            onSelect={(option) => {
+              onEdit({
+                ...localForm,
+                shippingOption: option,
+              });
+              setLocalForm({
+                ...localForm,
+                shippingOption: option,
+              });
+            }}
+            shippingOption={localForm.shippingOption}
+          />
 
           {/* IS GIFT OPTION */}
-          <FormSection title={"Gift Option"} name={"Gift Option"}>
-            <Txt big bold underline padding={"0px 4px 4px 4px"}>
+          <OptionsContainer title={"Gift Option"} name={"Gift Option"}>
+            <Txt big bold padding={"0px 4px 4px 4px"}>
               Gift Option
             </Txt>
             <Padded padding={"0px 0px 4px 6px"}>
@@ -453,10 +483,13 @@ export const CheckOutFormSheet = ({
                 </Txt>
               </Row>
             </Padded>
-          </FormSection>
+          </OptionsContainer>
 
-          <FormSection title={"Credit Card Info"} name={"Credit Card Info"}>
-            <Txt big bold underline padding={"0px 4px 4px 4px"}>
+          <OptionsContainer
+            title={"Credit Card Info"}
+            name={"Credit Card Info"}
+          >
+            <Txt big bold padding={"0px 4px 4px 4px"}>
               Payment
             </Txt>
             <Row alignCenter>
@@ -468,15 +501,31 @@ export const CheckOutFormSheet = ({
               ))}
             </Row>
             {creditCardForm}
-          </FormSection>
+          </OptionsContainer>
 
-          <div>
-            <Txt big bold underline padding={"0px 4px 4px 4px"}>
+          <Contained padding={"15px "}>
+            <Txt big bold padding={"0px 4px 4px 4px"}>
               Review Your Order
             </Txt>
             <CheckOutShoppingCart cart={cart} />
-          </div>
-        </div>
+          </Contained>
+
+          <Contained padding={"30px 5px 0px 5px"}>
+            <OrderSummaryBox
+              subtotal={subtotal}
+              shippingOption={localForm.shippingOption}
+              tax={estimatedTax}
+            />
+          </Contained>
+          <Contained>
+            <Row justifyCenter>
+              <SubmitButton onClick={handleSubmit}>Submit Your Order</SubmitButton>
+            </Row>
+          </Contained>
+        </Contained>
+       
+          <MiniCartView cart={cart} />
+        
       </FormsAndMiniCart>
     </FormContainer>
   );

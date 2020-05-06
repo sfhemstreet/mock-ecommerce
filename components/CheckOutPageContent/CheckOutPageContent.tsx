@@ -14,12 +14,8 @@ import { Txt } from "../Txt";
 import { Contained } from "../Contained";
 import { mediaDevices } from "../DisplayAtMedia";
 import { Row } from "../Row";
-import { SelectBox } from "./SelectBox";
-import { Positioned } from "../Positioned";
 import { useState } from "react";
-import {
-  ShoppingCartProduct,
-} from "../../storage/shoppingCart/shoppingCartTypes";
+import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { FadeIn } from "../../keyframes/FadeIn";
 import { FlexBox } from "../FlexBox";
@@ -36,8 +32,10 @@ import {
 } from "../../storage/checkout/checkoutActions";
 import { CheckOutFormSheet } from "./CheckOutFormSheet";
 import { CheckOutForm } from "../../storage/checkout/checkoutTypes";
-import { SHIPPING_OPTIONS } from "./ShippingOptions";
 import { CheckOutShoppingCart } from "./CheckOutShoppingCart";
+import { ShippingOptionsSelectionBox } from "./ShippingOptionsSelectionBox";
+import { OrderSummaryBox } from "./OrderSummaryBox";
+import { SubmitButton } from "./SubmitButton";
 
 const CartContainer = styled.div`
   display: flex;
@@ -57,44 +55,7 @@ const CartContainer = styled.div`
   }
 `;
 
-const OptionsContainer = styled.div`
-  margin: 15px 0px;
 
-  width: 99%;
-  height: auto;
-
-  @media ${mediaDevices.tablet} {
-    margin: 2px 2px 30px 2px;
-    width: 300px;
-  }
-`;
-
-const ProceedButton = styled.button`
-  margin: 25px 0px;
-
-  width: 250px;
-  height: 60px;
-
-  cursor: pointer;
-
-  font-size: ${(props) => props.theme.typography.bigFontSize};
-  font-weight: 500;
-
-  border: solid 1px ${(props) => props.theme.colors.black};
-  border-radius: 3px;
-
-  color: ${(props) => props.theme.colors.white};
-  background-color: ${(props) => props.theme.colors.green};
-
-  transition: all 0.3s ease-in-out;
-
-  :hover {
-    transform: scale(1.1);
-  }
-  :active {
-    transform: scale(0.5);
-  }
-`;
 
 const EditModalBackGround = styled.div`
   position: fixed;
@@ -119,8 +80,11 @@ const EditModalBackGround = styled.div`
   }
 `;
 
-
-
+/**
+ * CheckOutPageContent
+ * 
+ * Holds all CheckOut Page content
+ */
 export const CheckOutPageContent = () => {
   const shoppingCart = useSWR(SHOPPING_CART, getShoppingCart);
   const checkoutForm = useSWR(CHECKOUT_FORM, getCheckoutForm);
@@ -186,94 +150,36 @@ export const CheckOutPageContent = () => {
           <>
             <FlexBox justifyCenter alignCenter>
               <CartContainer>
-                <Contained maxWidth={"600px"} width={"100%"}>
+                <Contained maxWidth={"600px"} width={"100%"} padding={"5px"}>
                   <Txt big bold padding={"2px 0px 5px 2px"}>
                     Your Cart
                   </Txt>
                   <CheckOutShoppingCart
                     cart={shoppingCart.data}
-                    onEdit={handleEditCartProduct}
+                    onEdit={(item) => setEditProduct(item)}
                     onRemove={handleRemoveCartProduct}
                   />
                 </Contained>
                 <Contained>
-                  <OptionsContainer>
-                    <Txt big bold padding={"2px 0px 5px 2px"}>
-                      Shipping Options
-                    </Txt>
-                    {SHIPPING_OPTIONS.map((option, index) => (
-                      <Contained
-                        padding={"0px 0px 5px 0px"}
-                        key={`ShippingOption-${option.text}`}
-                      >
-                        <Row alignCenter>
-                          <SelectBox
-                            label={`Shipping option, ${option.text}, priced at $${option.price}`}
-                            onClick={() => {
-                              if (checkoutForm.data)
-                                updateCheckoutForm(
-                                  mutate,
-                                  editCheckOutForm({
-                                    ...checkoutForm.data,
-                                    shippingOption: SHIPPING_OPTIONS[index],
-                                  })
-                                );
-                            }}
-                            isSelected={
-                              SHIPPING_OPTIONS[index].text ===
-                              checkoutForm.data?.shippingOption.text
-                            }
-                          />
-                          <Txt small padding={"0px 4px"}>
-                            {option.text}
-                          </Txt>
-                          <Positioned absolute right={"5px"}>
-                            <Txt small bold>
-                              {option.price === 0
-                                ? "Free!"
-                                : `$${option.price}`}
-                            </Txt>
-                          </Positioned>
-                        </Row>
-                      </Contained>
-                    ))}
-                  </OptionsContainer>
-                  <OptionsContainer>
-                    <Txt big bold padding={"2px 0px 5px 2px"}>
-                      Order Summary
-                    </Txt>
-                    <Row justifyBetween alignCenter>
-                      <Txt padding={"0px 4px"}>Subtotal</Txt>{" "}
-                      <Txt bold padding={"0px 4px"}>
-                        ${subtotalCost.toFixed(2)}
-                      </Txt>
-                    </Row>
-                    <Row justifyBetween alignCenter>
-                      <Txt padding={"4px 4px 0px 4px"}>Shipping</Txt>{" "}
-                      <Txt bold padding={"4px 4px 0px 4px"}>
-                        ${checkoutForm.data.shippingOption.price}
-                      </Txt>
-                    </Row>
-                    <Row justifyBetween alignEnd>
-                      <Txt padding={"4px 4px 0px 4px"}>Estimated Tax</Txt>{" "}
-                      <Txt small padding={"4px 4px 0px 4px"}>
-                        Calculated at Next Step
-                      </Txt>
-                    </Row>
-                    <Row justifyBetween alignCenter>
-                      <Txt big bold padding={"6px 4px 0px 4px"}>
-                        Estimated Total
-                      </Txt>
-                      <Txt big bold padding={"6px 4px 0px 4px"}>
-                        $
-                        {(
-                          subtotalCost + checkoutForm.data.shippingOption.price
-                        ).toFixed(2)}
-                      </Txt>
-                    </Row>
-                  </OptionsContainer>
+                  <ShippingOptionsSelectionBox
+                    onSelect={(option) => {
+                      if (checkoutForm.data)
+                        updateCheckoutForm(
+                          mutate,
+                          editCheckOutForm({
+                            ...checkoutForm.data,
+                            shippingOption: option,
+                          })
+                        );
+                    }}
+                    shippingOption={checkoutForm.data.shippingOption}
+                  />
+                  <OrderSummaryBox
+                    subtotal={subtotalCost}
+                    shippingOption={checkoutForm.data.shippingOption}
+                  />
                   <Row justifyCenter alignCenter>
-                    <ProceedButton
+                    <SubmitButton
                       onClick={() => {
                         if (checkoutForm.data) {
                           updateCheckoutForm(
@@ -297,7 +203,7 @@ export const CheckOutPageContent = () => {
                       ).toFixed(2)}, estimated tax is calculated at next step.`}
                     >
                       Proceed with Order
-                    </ProceedButton>
+                    </SubmitButton>
                   </Row>
                 </Contained>
               </CartContainer>
@@ -328,6 +234,7 @@ export const CheckOutPageContent = () => {
             <CheckOutFormSheet
               cart={shoppingCart.data}
               form={checkoutForm.data}
+              subtotal={subtotalCost}
               onEdit={(f: CheckOutForm) => {
                 if (checkoutForm.data) {
                   updateCheckoutForm(

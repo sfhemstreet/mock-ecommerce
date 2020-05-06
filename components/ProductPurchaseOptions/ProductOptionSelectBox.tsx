@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Transition } from "react-transition-group";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
