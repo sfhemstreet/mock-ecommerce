@@ -7,12 +7,12 @@ const MiniCartContainer = styled.div`
   position: sticky;
   top: 20px;
 
-  width: 330px;
+  width: 290px;
   border: solid 1px ${(props) => props.theme.colors.black};
   border-radius: 3px;
 
   padding: 5px;
-  margin: 10px 20px 1000px 0px;
+  margin: 10px 20px 1500px 0px;
 
   display: none;
 
@@ -23,10 +23,10 @@ const MiniCartContainer = styled.div`
 
 const MiniCartItem = styled.div<{ hasBottomLine?: boolean }>`
   display: grid;
-  grid-template-columns: 50px 1fr 1fr;
+  grid-template-columns: 50px 1fr 0.7fr;
   grid-template-areas: "pic item details";
   grid-template-rows: 1fr;
-  gap: 3px 7px;
+  gap: 3px 4px;
 
   padding: 5px 0px;
 
@@ -48,7 +48,7 @@ const ItemArea = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  
 `;
 
 const DetailsArea = styled.div`
@@ -56,7 +56,7 @@ const DetailsArea = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  
 `;
 
 const MiniCartImg = styled.img`
@@ -70,7 +70,7 @@ type MiniCartViewProps = {
 
 export const MiniCartView = ({ cart }: MiniCartViewProps) => (
   <MiniCartContainer>
-    <Txt bold underline>
+    <Txt bold underline alignCenter>
       Cart
     </Txt>
     {cart.products.map((product, index) => (

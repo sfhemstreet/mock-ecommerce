@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { STATES_TAXES } from "./StatesTaxes";
+import { STATES_TAXES } from "../../util/checkout/StatesTaxes";
 import { mediaDevices } from "../DisplayAtMedia";
 
 const StateInput = styled.select`
@@ -46,6 +46,7 @@ export const StateSelectionBox = ({
     onChange={(evt) => onSelect(evt.target.value)}
     value={currentSelection}
   >
+    <option value="" >Select State</option>
     {STATES_TAXES.map((s) => (
       <option value={s.state} key={`state-option-${s.state}`}>
         {s.state}

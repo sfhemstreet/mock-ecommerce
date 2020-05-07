@@ -1,35 +1,38 @@
 import styled from "styled-components";
 import { Txt } from "../Txt";
-import { BackArrowButton } from "../BackArrowButton";
-import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
+import { mediaDevices } from "../DisplayAtMedia";
 import { CheckOutForm } from "../../storage/checkout/checkoutTypes";
 import { useState, useEffect } from "react";
-import { Column } from "../Column";
-import { formatCamelCaseToRegularString } from "../../util/formatCamelCaseToRegularString";
 import { Padded } from "../Padded";
-import { Positioned } from "../Positioned";
 import { Row } from "../Row";
 import { SelectBox } from "./SelectBox";
-import { SHIPPING_OPTIONS } from "./ShippingOptions";
 import { Contained } from "../Contained";
-import { updateCheckoutForm } from "../../storage/storage";
 import { CheckOutShoppingCart } from "./CheckOutShoppingCart";
 import { ShoppingCart } from "../../storage/shoppingCart/shoppingCartTypes";
 import {
-  CreditCardInfo,
   initCreditCardInfo,
-  CreditCardInfoKeys,
   CREDIT_CARD_OPTIONS,
-} from "./CreditCardOptions";
+} from "../../util/checkout/CreditCardOptions";
 import { ShippingOptionsSelectionBox } from "./ShippingOptionsSelectionBox";
 import { OrderSummaryBox } from "./OrderSummaryBox";
 import { OptionsContainer } from "./OptionsContainer";
-import { ProductOptionSelectBox } from "../ProductPurchaseOptions/ProductOptionSelectBox";
-import { STATES_TAXES } from "./StatesTaxes";
-import { StateSelectionBox } from "./StateSelectionBox";
+import { STATES_TAXES } from "../../util/checkout/StatesTaxes";
 import { SubmitButton } from "./SubmitButton";
 import { MiniCartView } from "./MiniCartView";
-import { validateCreditCardNumber } from "../../util/validateCreditCardNumber";
+import { CreditCardForm } from "./CreditCardForm";
+import { BillingForm } from "./BillingForm";
+import { ShippingAddressForm } from "./ShippingAddressForm";
+import {
+  BillingShippingSharedKeys,
+  CreditCardInfo,
+  BillingKeys,
+  ShippingAddressKeys,
+} from "../../util/checkout/CheckOutFormTypes";
+import { validateCreditCard } from "../../util/checkout/validateCreditCard";
+import { Column } from "../Column";
+import { ErrorTxt } from "./ErrorTxt";
+import { validateFieldReducer } from "../../util/checkout/validateFieldReducer";
+import { formatCamelCaseToRegularString } from "../../util/formatCamelCaseToRegularString";
 
 const FormContainer = styled.div`
   max-width: 800px;
@@ -81,38 +84,6 @@ const BackButton = styled.button`
   }
 `;
 
-const CheckoutLabel = styled.label`
-  display: block;
-`;
-
-const CheckOutInput = styled.input<{ small?: boolean }>`
-  width: ${(props) => (props.small ? "60px" : "250px")};
-  height: 35px;
-
-  border: none;
-  border-radius: 4px 4px 0px 0px;
-
-  border-bottom: solid 2px ${(props) => props.theme.colors.black};
-
-  background-color: ${(props) => props.theme.colors.white};
-
-  font-size: ${(props) => props.theme.typography.fontSize};
-
-  padding: 0px 20px;
-
-  :focus {
-    border-bottom: solid 2px ${(props) => props.theme.colors.green};
-  }
-
-  @media ${mediaDevices.mobileM} {
-    width: ${(props) => (props.small ? "60px" : "290px")};
-  }
-
-  @media ${mediaDevices.tablet} {
-    width: ${(props) => (props.small ? "60px" : "250px")};
-  }
-`;
-
 const FormsAndMiniCart = styled.div`
   display: flex;
   flex-direction: column;
@@ -124,10 +95,6 @@ const FormsAndMiniCart = styled.div`
     align-items: flex-start;
   }
 `;
-
-type BillingKeys = keyof CheckOutForm["billing"];
-type ShippingAddressKeys = keyof CheckOutForm["shippingAddress"];
-type BillingShippingSharedKeys = BillingKeys & ShippingAddressKeys;
 
 function checkBillingSameAsShipping(form: CheckOutForm): boolean {
   for (const k in form.shippingAddress) {
@@ -172,7 +139,9 @@ export const CheckOutFormSheet = ({
   onEdit,
   onGoBack,
 }: CheckOutFormProps) => {
+  // The localForm is a copy of the CheckOutForm saved in sessionStorage.
   const [localForm, setLocalForm] = useState<CheckOutForm>({ ...form });
+  // We do not save credit card info in storage, it is only here.
   const [creditInfo, setCreditInfo] = useState<CreditCardInfo>(
     initCreditCardInfo
   );
@@ -184,9 +153,62 @@ export const CheckOutFormSheet = ({
     getTaxEstimate(form.billing.state, subtotal)
   );
 
+  const [showInvalidFields, setShowInvalidFields] = useState(false);
+  const [invalidFields, setInvalidFields] = useState<string[]>([]);
+
   const handleSubmit = () => {
-    console.log("START VALIDATE", validateCreditCardNumber(creditInfo.cardNumber));
-  }
+    setShowInvalidFields(true);
+
+    let allGood = true;
+    // chek track of invalid field names
+    const invalidFs = new Array<string>();
+
+    // Go through all fields in billing section
+    // and see if they are valid.
+    for (const k in localForm.billing) {
+      const key = k as BillingKeys;
+      const isValid = validateFieldReducer(key, localForm.billing[key]);
+      if (!isValid) {
+        allGood = false;
+        invalidFs.push("Billing " + formatCamelCaseToRegularString(key));
+      }
+    }
+
+    // Go through all fields in shipping address section
+    // and see if they are valid IF we are shipping to 
+    // an address other than the billing address.
+    if (!isBillingSameAsShipping) {
+      for (const k in localForm.shippingAddress) {
+        const key = k as ShippingAddressKeys;
+        const isValid = validateFieldReducer(
+          key,
+          localForm.shippingAddress[key]
+        );
+        if (!isValid) {
+          allGood = false;
+          invalidFs.push("Shipping " + formatCamelCaseToRegularString(key));
+        }
+      }
+    }
+
+    // Go through all fields in credit card section
+    // and see if they are valid.
+    const creditCardValidObj = validateCreditCard(creditInfo);
+    Object.keys(creditCardValidObj).forEach((k) => {
+      // Typescript... maybe I am just ignorant
+      const key = k as keyof typeof creditCardValidObj;
+      if (!creditCardValidObj[key]) {
+        allGood = false;
+        invalidFs.push(formatCamelCaseToRegularString(key));
+      }
+    });
+
+    setInvalidFields(invalidFs);
+
+    if (allGood && invalidFs.length === 0) {
+      // TODO 
+    } 
+  };
 
   // If user selects Same as Billing option
   // this makes Shipping address same as Billing
@@ -204,206 +226,44 @@ export const CheckOutFormSheet = ({
     }
   }, [isBillingSameAsShipping]);
 
-  const billingForm = Object.keys(localForm.billing).map((k) => {
-    const key = k as BillingKeys;
-    const title = formatCamelCaseToRegularString(key);
-    return (
-      <Padded padding={"10px"} key={`billing-${key}`}>
-        <CheckoutLabel title={title} htmlFor={`billing-${key}`}>
-          {title}
-        </CheckoutLabel>
-        {key === "state" ? (
-          <StateSelectionBox
-            onSelect={(state) => {
-              const f: CheckOutForm = isBillingSameAsShipping
-                ? {
-                    ...localForm,
-                    billing: { ...localForm.billing, [key]: state },
-                    shippingAddress: {
-                      ...localForm.shippingAddress,
-                      [key]: state,
-                    },
-                  }
-                : {
-                    ...localForm,
-                    billing: { ...localForm.billing, [key]: state },
-                  };
-              setLocalForm(f);
-              onEdit(f);
-              setEstmatedTax(getTaxEstimate(state, subtotal));
-            }}
-            currentSelection={localForm.billing.state}
-          />
-        ) : (
-          <CheckOutInput
-            id={`billing-${key}`}
-            name={`billing-${key}`}
-            title={title}
-            type={key === "email" ? "email" : "text"}
-            value={localForm.billing[key]}
-            onBlur={(evt) => {
-              onEdit(localForm);
-            }}
-            onChange={(evt) => {
-              if (key !== "email" && isBillingSameAsShipping) {
-                setLocalForm({
-                  ...localForm,
-                  billing: { ...localForm.billing, [key]: evt.target.value },
-                  shippingAddress: {
-                    ...localForm.shippingAddress,
-                    [key]: evt.target.value,
-                  },
-                });
-              } else {
-                setLocalForm({
-                  ...localForm,
-                  billing: { ...localForm.billing, [key]: evt.target.value },
-                });
-              }
-            }}
-          />
-        )}
-      </Padded>
-    );
-  });
-
-  const shippingForm = Object.keys(localForm.shippingAddress).map((k) => {
-    const key = k as ShippingAddressKeys;
-    const title = formatCamelCaseToRegularString(key);
-    return (
-      <Padded padding={"10px"} key={`shipping-${key}-key`}>
-        <CheckoutLabel title={title} htmlFor={`shipping-${key}`}>
-          {title}
-        </CheckoutLabel>
-        {key === "state" ? (
-          <StateSelectionBox
-            onSelect={(state) => {
-              const f: CheckOutForm = {
-                ...localForm,
-                shippingAddress: {
-                  ...localForm.shippingAddress,
-                  [key]: state,
-                },
-              };
-              setLocalForm(f);
-              onEdit(f);
-            }}
-            currentSelection={localForm.shippingAddress.state}
-          />
-        ) : (
-          <CheckOutInput
-            id={`shipping-${key}`}
-            name={`shipping-${key}`}
-            title={title}
-            type={"text"}
-            value={localForm.shippingAddress[key]}
-            onBlur={(evt) => {
-              onEdit(localForm);
-            }}
-            onChange={(evt) => {
-              setLocalForm({
-                ...localForm,
-                shippingAddress: {
-                  ...localForm.shippingAddress,
-                  [key]: evt.target.value,
-                },
-              });
-            }}
-          />
-        )}
-      </Padded>
-    );
-  });
-
-  const creditCardForm = Object.keys(creditInfo).map((k) => {
-    const key = k as CreditCardInfoKeys;
-    const title = formatCamelCaseToRegularString(key);
-    return (
-      <Padded padding={"10px"} key={`creditcard-${key}`}>
-        <CheckoutLabel title={title} htmlFor={`creditcard-${key}`}>
-          {title}
-        </CheckoutLabel>
-        {(key === "cardNumber" || key === "cardSecurityCode") && (
-          <CheckOutInput
-            small={key === "cardSecurityCode"}
-            id={`creditcard-${key}`}
-            name={`creditcard-${key}`}
-            title={title}
-            type={"text"}
-            value={creditInfo[key]}
-            onChange={(evt) => {
-              setCreditInfo({
-                ...creditInfo,
-                [key]: evt.target.value,
-              });
-            }}
-          />
-        )}
-        {key === "expiration" && (
-          <Row alignCenter>
-            <Contained padding={"2px 4px 2px 0px"}>
-              <CheckoutLabel title={title} htmlFor={`creditcard-${key}-month`}>
-                Month
-              </CheckoutLabel>
-              <CheckOutInput
-                small
-                id={`creditcard-${key}-month`}
-                name={`creditcard-${key}-month`}
-                title={title + " Month"}
-                type={"text"}
-                maxLength={2}
-                value={creditInfo[key].month}
-                onChange={(evt) => {
-                  setCreditInfo({
-                    ...creditInfo,
-                    expiration: {
-                      ...creditInfo.expiration,
-                      month: evt.target.value,
-                    },
-                  });
-                }}
-              />
-            </Contained>
-            <Contained padding={"2px 0px 2px 0px"}>
-              <CheckoutLabel title={title} htmlFor={`creditcard-${key}-year`}>
-                Year
-              </CheckoutLabel>
-              <CheckOutInput
-                small
-                id={`creditcard-${key}-year`}
-                name={`creditcard-${key}-year`}
-                title={title + " Year"}
-                type={"text"}
-                maxLength={4}
-                value={creditInfo[key].year}
-                onChange={(evt) => {
-                  setCreditInfo({
-                    ...creditInfo,
-                    expiration: {
-                      ...creditInfo.expiration,
-                      year: evt.target.value,
-                    },
-                  });
-                }}
-              />
-            </Contained>
-          </Row>
-        )}
-      </Padded>
-    );
-  });
-
   return (
     <FormContainer>
       <BackButton onClick={onGoBack}>Back to Cart</BackButton>
       <FormsAndMiniCart>
-        <Contained >
+        <Contained>
           {/* BILLING ADDRESS */}
           <OptionsContainer title={"Billing Address"} name={"Billing Address"}>
             <Txt big bold padding={"0px 4px"}>
               Billing Address
             </Txt>
-            {billingForm}
+            <BillingForm
+              billing={localForm.billing}
+              onChange={(key, value) => {
+                if (key !== "email" && isBillingSameAsShipping) {
+                  setLocalForm({
+                    ...localForm,
+                    billing: {
+                      ...localForm.billing,
+                      [key]: value,
+                    },
+                    shippingAddress: {
+                      ...localForm.shippingAddress,
+                      [key]: value,
+                    },
+                  });
+                } else {
+                  setLocalForm({
+                    ...localForm,
+                    billing: {
+                      ...localForm.billing,
+                      [key]: value,
+                    },
+                  });
+                }
+              }}
+              onBlur={() => onEdit(localForm)}
+              showInvalidFields={showInvalidFields}
+            />
           </OptionsContainer>
 
           {/* SHIPPING ADDRESS */}
@@ -438,7 +298,22 @@ export const CheckOutFormSheet = ({
                 </Txt>
               </Row>
             </Padded>
-            {!isBillingSameAsShipping && shippingForm}
+            {!isBillingSameAsShipping && (
+              <ShippingAddressForm
+                shippingAddress={localForm.shippingAddress}
+                onChange={(key, value) =>
+                  setLocalForm({
+                    ...localForm,
+                    shippingAddress: {
+                      ...localForm.shippingAddress,
+                      [key]: value,
+                    },
+                  })
+                }
+                onBlur={() => onEdit(localForm)}
+                showInvalidFields={showInvalidFields}
+              />
+            )}
           </OptionsContainer>
 
           {/* SHIPPING OPTION */}
@@ -456,7 +331,7 @@ export const CheckOutFormSheet = ({
             shippingOption={localForm.shippingOption}
           />
 
-          {/* IS GIFT OPTION */}
+          {/* GIFT OPTION */}
           <OptionsContainer title={"Gift Option"} name={"Gift Option"}>
             <Txt big bold padding={"0px 4px 4px 4px"}>
               Gift Option
@@ -485,6 +360,7 @@ export const CheckOutFormSheet = ({
             </Padded>
           </OptionsContainer>
 
+          {/* CREDIT CARD INFO */}
           <OptionsContainer
             title={"Credit Card Info"}
             name={"Credit Card Info"}
@@ -500,9 +376,19 @@ export const CheckOutFormSheet = ({
                 </Contained>
               ))}
             </Row>
-            {creditCardForm}
+            <CreditCardForm
+              creditInfo={creditInfo}
+              onChange={(key, value) =>
+                setCreditInfo({
+                  ...creditInfo,
+                  [key]: value,
+                })
+              }
+              showInvalidFields={showInvalidFields}
+            />
           </OptionsContainer>
 
+          {/* REVIEW SHOPPING CART */}
           <Contained padding={"15px "}>
             <Txt big bold padding={"0px 4px 4px 4px"}>
               Review Your Order
@@ -510,22 +396,47 @@ export const CheckOutFormSheet = ({
             <CheckOutShoppingCart cart={cart} />
           </Contained>
 
+          {/* ORDER SUMMARY */}
           <Contained padding={"30px 5px 0px 5px"}>
-            <OrderSummaryBox
-              subtotal={subtotal}
-              shippingOption={localForm.shippingOption}
-              tax={estimatedTax}
-            />
-          </Contained>
-          <Contained>
             <Row justifyCenter>
-              <SubmitButton onClick={handleSubmit}>Submit Your Order</SubmitButton>
+              <OrderSummaryBox
+                subtotal={subtotal}
+                shippingOption={localForm.shippingOption}
+                tax={estimatedTax}
+              />
             </Row>
           </Contained>
+
+          {invalidFields.length > 0 && (
+            <Row justifyCenter>
+              <Contained>
+                <ErrorTxt>
+                  {`${invalidFields.length} of the fields you entered ${
+                    invalidFields.length === 1 ? "is" : "are"
+                  } invalid.`}
+                </ErrorTxt>
+                <ErrorTxt>Please double check:</ErrorTxt>
+                <Padded padLeft={"20px"}>
+                  {invalidFields.map((field) => (
+                    <ErrorTxt bold key={`Error-message-${field}`}>
+                      {field}
+                    </ErrorTxt>
+                  ))}
+                </Padded>
+              </Contained>
+            </Row>
+          )}
+
+          <Contained>
+            <Column justifyCenter alignCenter>
+              <SubmitButton onClick={handleSubmit}>
+                Submit Your Order
+              </SubmitButton>
+            </Column>
+          </Contained>
         </Contained>
-       
-          <MiniCartView cart={cart} />
-        
+
+        <MiniCartView cart={cart} />
       </FormsAndMiniCart>
     </FormContainer>
   );

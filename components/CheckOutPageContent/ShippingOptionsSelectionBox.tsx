@@ -1,4 +1,4 @@
-import { ShippingOption, SHIPPING_OPTIONS } from "./ShippingOptions";
+import { ShippingOption, SHIPPING_OPTIONS } from "../../util/checkout/ShippingOptions";
 import { Txt } from "../Txt";
 import { Contained } from "../Contained";
 import { Row } from "../Row";
