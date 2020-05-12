@@ -1,12 +1,6 @@
 import { FunctionComponent } from "react";
-import useSWR from "swr";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-import {
-  KeyType as StoredType,
-  MODAL,
-  getModalsState,
-} from "../../storage/storage";
 import styled from "styled-components";
 import { Contained } from "../Contained";
 import { DisplayAtMedia } from "../DisplayAtMedia";
@@ -67,7 +61,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <Positioned
           absolute
-          top={`${height - 100}px`}
+          top={`${height - 70}px`}
           left={`${(width - 300) / 2}px`}
           zIndex={30}
         >
@@ -98,7 +92,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <ModalChildrenContainer
           width={`${width - 4}px`}
-          height={`${height - 245}px`}
+          height={`${height - 215}px`}
         >
           {children}
         </ModalChildrenContainer>

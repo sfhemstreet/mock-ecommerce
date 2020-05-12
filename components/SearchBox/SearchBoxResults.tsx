@@ -83,6 +83,7 @@ const TitleItem = styled.div`
 const ProdImg = styled.img`
   width: 60px;
   height: auto;
+  min-height: 30px;
 `;
 
 const GridItem = styled.div<{ name: string }>`
@@ -127,6 +128,7 @@ type SearchResults = {
 
 type SearchBoxResultsProps = {
   text: string;
+  close: () => void;
 };
 
 export function SearchBoxResults({ text }: SearchBoxResultsProps) {
@@ -179,18 +181,22 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
 
   const handleProductClick = (slug: string) => {
     router.push("/product/[productSlug]", `/product/${slug}`);
+    close();
   };
 
   const handleBrandClick = (slug: string) => {
     router.push("/brand/[brandSlug]", `/brand/${slug}`);
+    close();
   };
 
   const handleCategoryClick = (slug: string) => {
     router.push("/category/[categorySlug]", `/category/${slug}`);
+    close();
   };
 
   const handleSubCategoryClick = (slug: string) => {
     router.push("/products/[subcategorySlug]", `/products/${slug}`);
+    close();
   };
 
   if (queryResults.data === undefined) return <SpinningLoader />;

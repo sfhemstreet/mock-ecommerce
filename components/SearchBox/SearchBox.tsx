@@ -6,7 +6,6 @@ import { Centered } from "../Centered";
 import { SearchBoxResults } from "./SearchBoxResults";
 import { Transition } from "react-transition-group";
 import {
-  TransitionStatus,
   ENTERED,
   ENTERING
 } from "react-transition-group/Transition";
@@ -29,6 +28,8 @@ const SearchBoxInput = styled.input<{ isActive: boolean }>`
   border-bottom: ${props =>
     props.isActive ? `1px solid ${props.theme.colors.white}` : "none"};
 
+  border-radius: none;
+
   background: none;
   color: ${props => props.theme.colors.white};
   font-size: ${props => props.theme.typography.fontSize};
@@ -43,12 +44,14 @@ type SearchBoxProps = {
   isActive: boolean;
   onActiveClick: () => void;
   focusOnActive?: boolean;
+  close?: () => void;
 };
 
 export const SearchBox = ({
   isActive,
   onActiveClick,
-  focusOnActive = true
+  focusOnActive = true,
+  close = () => {}
 }: SearchBoxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -96,7 +99,7 @@ export const SearchBox = ({
       >
         {state => (
           <FadeContainer state={state}>
-            <SearchBoxResults text={searchText} />
+            <SearchBoxResults text={searchText} close={close} />
           </FadeContainer>
         )}
       </Transition>

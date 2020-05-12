@@ -133,6 +133,7 @@ export const SideDrawerMenu = ({
                   <SearchBox
                     isActive={isSearchBoxActive}
                     onActiveClick={handleSearchActive}
+                    close={close}
                   />
                 </Row>
               </Contained>
