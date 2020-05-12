@@ -42,10 +42,8 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
       <BackgroundBlackGradient>
         <SideDrawer
           open={isSideDrawerOpen}
-          setOpen={() => setSideDrawerOpen(!isSideDrawerOpen)}
           minWidth={sideDrawerClosedWidth}
           maxWidth={sideDrawerOpenWidth}
-          borderWidth={sideDrawerBorderWidth}
         >
           <SideDrawerMenu
             siteLogo={data.siteLogo}
