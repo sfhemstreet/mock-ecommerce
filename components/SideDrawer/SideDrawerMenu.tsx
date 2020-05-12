@@ -27,6 +27,7 @@ type SideDrawerMenuProps = {
   siteLogo: SiteLogo;
   navigationContent: Category[];
   sideDrawerWidth: number;
+  close: () => void;
 };
 
 /**
@@ -35,13 +36,15 @@ type SideDrawerMenuProps = {
  * @param {SiteLogo} siteLogo 
  * @param {Category[]} navigationContent NavigationContent to display
  * @param {number} sideDrawerWidth Width of parent SideDrawer in px
+ * @param {() => {}} close function to close side drawer
  *
  * @todo Add Link from next/link to headers and last subItems
  */
 export const SideDrawerMenu = ({
   siteLogo,
   navigationContent,
-  sideDrawerWidth
+  sideDrawerWidth,
+  close
 }: SideDrawerMenuProps): JSX.Element => {
   const router = useRouter();
 
@@ -82,6 +85,7 @@ export const SideDrawerMenu = ({
       // No subItems, right now this has to be a subcategory
       // Redirect to its products page
       router.push("/products/[subcategorySlug]", `/products/${item.slug}`);
+      close();
     }
   };
 
@@ -106,6 +110,7 @@ export const SideDrawerMenu = ({
   const handleTitleLinkClick = () => {
     const item = contentStack[contentStack.length - 1];
     router.push("/category/[categorySlug]", `/category/${item.slug}`);
+    close();
   }
 
   return (

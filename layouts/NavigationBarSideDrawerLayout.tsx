@@ -50,6 +50,7 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
             siteLogo={data.siteLogo}
             sideDrawerWidth={sideDrawerOpenWidth}
             navigationContent={data.navCategories}
+            close={() => setSideDrawerOpen(false)}
           />
         </SideDrawer>
         <BodyContainer

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
 import { Padded } from "../Padded";
 import { FilterIcon } from "./components/FilterIcon";
@@ -204,6 +204,10 @@ export const ProductsPageContent = ({
     setFilteredProducts(sortedProducts);
     setSortOption(option);
   };
+
+  useEffect(() => {
+    setFilteredProducts([...products]);
+  }, [title]);
 
   return (
     <Centered>
