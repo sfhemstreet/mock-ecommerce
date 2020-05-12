@@ -15,7 +15,10 @@ import { Contained } from "../Contained";
 import { mediaDevices } from "../DisplayAtMedia";
 import { Row } from "../Row";
 import { useState } from "react";
-import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
+import {
+  ShoppingCartProduct,
+  ShoppingCart,
+} from "../../storage/shoppingCart/shoppingCartTypes";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { FadeIn } from "../../keyframes/FadeIn";
 import { FlexBox } from "../FlexBox";
@@ -36,6 +39,7 @@ import { CheckOutShoppingCart } from "./CheckOutShoppingCart";
 import { ShippingOptionsSelectionBox } from "./ShippingOptionsSelectionBox";
 import { OrderSummaryBox } from "./OrderSummaryBox";
 import { SubmitButton } from "./SubmitButton";
+import { CheckOutCompleted } from "./CheckOutCompleted";
 
 const CartContainer = styled.div`
   display: flex;
@@ -54,8 +58,6 @@ const CartContainer = styled.div`
     justify-content: space-evenly;
   }
 `;
-
-
 
 const EditModalBackGround = styled.div`
   position: fixed;
@@ -82,7 +84,7 @@ const EditModalBackGround = styled.div`
 
 /**
  * CheckOutPageContent
- * 
+ *
  * Holds all CheckOut Page content
  */
 export const CheckOutPageContent = () => {
@@ -92,6 +94,10 @@ export const CheckOutPageContent = () => {
   const [editProduct, setEditProduct] = useState<ShoppingCartProduct | null>(
     null
   );
+
+  const [checkOutCompleted, setCheckOutCompleted] = useState(false);
+  const [completedForm, setCompletedForm] = useState<CheckOutForm>();
+  const [completedCart, setCompletedCart] = useState<ShoppingCart>();
 
   const [width, height] = useWindowDimensions();
 
@@ -112,6 +118,10 @@ export const CheckOutPageContent = () => {
         shoppingCart.data
       );
   };
+
+  if (checkOutCompleted && completedCart && completedForm) {
+    return <CheckOutCompleted cart={completedCart} form={completedForm} />;
+  }
 
   if (!checkoutForm.data || !shoppingCart.data)
     return (
@@ -251,6 +261,11 @@ export const CheckOutPageContent = () => {
                     closeCheckOutForm(),
                     checkoutForm.data
                   );
+              }}
+              onCheckOutComplete={(cart, form) => {
+                setCompletedCart(cart);
+                setCompletedForm(form);
+                setCheckOutCompleted(true);
               }}
             />
           </Row>

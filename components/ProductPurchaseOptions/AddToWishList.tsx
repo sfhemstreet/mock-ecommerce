@@ -31,7 +31,7 @@ const AddToWishListContainer = styled.button`
 
   :hover {
     color: ${props => props.theme.colors.rose};
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
   
   :active {
@@ -41,7 +41,7 @@ const AddToWishListContainer = styled.button`
 
   :focus {
     color: ${props => props.theme.colors.rose};
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
 `;
 

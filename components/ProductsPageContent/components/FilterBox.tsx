@@ -69,6 +69,7 @@ const SizeCheckBoxLabel = styled.label<LabelProps>`
   height: 35px;
   border-radius: 2px;
 
+  margin: 0px 3px;
   padding: 3px 3px 3px 3px;
 
   font-weight: ${(props) => (props.bold ? "500" : "400")};

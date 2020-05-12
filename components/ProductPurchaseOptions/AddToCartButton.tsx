@@ -32,7 +32,7 @@ const AddToCartContainer = styled.button`
 
   :hover {
     color: ${props => props.theme.colors.green};
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
 
   :active {
@@ -42,7 +42,7 @@ const AddToCartContainer = styled.button`
 
   :focus {
     color: ${props => props.theme.colors.green};
-    transform: scale(1.1);
+    transform: scale(1.01);
   }
 `;
 

@@ -119,7 +119,7 @@ function validateCreditCardSecurityCode(
 
   if (cardType === "americanExpress" && securityCode.length !== 4) {
     return false;
-  } else if (securityCode.length !== 3) {
+  } else if (cardType !== "americanExpress" && securityCode.length !== 3) {
     return false;
   } else {
     return true;

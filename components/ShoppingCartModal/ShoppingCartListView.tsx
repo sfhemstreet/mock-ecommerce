@@ -13,7 +13,7 @@ import {
   stopEditShoppingCartModal,
   closeShoppingCartModal
 } from "../../storage/modals/modalActions";
-import { DisplayAtMedia, mediaDevices } from "../DisplayAtMedia";
+import { DisplayAtMedia, mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { SubmitButton } from "./components/SubmitButton";
@@ -124,10 +124,17 @@ export const ShoppingCartListView = ({
     }, 500);
   };
 
+  const handleGoToProduct = (product: ShoppingCartProduct) => {
+    router.push(`/product/${product.slug}`);
+    if (width < mediaSizes.tablet){
+      updateModalsState(mutate, closeShoppingCartModal());
+    }
+  }
+
   const handleCheckOut = () => {
     if (items.products.length > 0) {
       router.push(`/checkout`);
-      updateModalsState(mutate, closeShoppingCartModal())
+      updateModalsState(mutate, closeShoppingCartModal());
     }
   };
 
@@ -178,6 +185,7 @@ export const ShoppingCartListView = ({
                             item={item}
                             onEdit={handleStartEdit}
                             onRemove={handleRemove}
+                            onClick={() => handleGoToProduct(item)}
                           />
                         </Padded>
                       </Transformed>

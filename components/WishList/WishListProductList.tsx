@@ -9,7 +9,7 @@ import { RemoveIcon } from "../RemoveIcon";
 import { updateWishList, updateModalsState } from "../../storage/storage";
 import {
   removeItemFromWishlist,
-  addItemToWishList
+  addItemToWishList,
 } from "../../storage/wishlist/wishListActions";
 import { mutate } from "swr";
 import { AddToCartSmallIcon } from "../AddToCartSmallIcon";
@@ -20,13 +20,14 @@ import { useRouter } from "next/router";
 import {
   closeWishListModal,
   stopEditWishListModal,
-  startEditWishListModal
+  startEditWishListModal,
 } from "../../storage/modals/modalActions";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { FadeContainer } from "../SearchBox/SearchIcon";
 import { EditShoppingCartProduct } from "../ShoppingCartModal/EditShoppingCartProduct";
 import { AddToCartFromWishList } from "./AddToCartFromWishList";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
+import { mediaSizes } from "../DisplayAtMedia";
 
 const ProductImg = styled.img`
   width: 100px;
@@ -53,7 +54,7 @@ const GridContainer = styled.div`
   gap: 3px 3px;
 
   background-color: white;
-  color: ${props => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.black};
 `;
 
 const ScrollArea = styled.div`
@@ -65,7 +66,7 @@ const ScrollArea = styled.div`
 `;
 
 const GridItem = styled.div<{ name: string }>`
-  grid-area: ${props => props.name};
+  grid-area: ${(props) => props.name};
 `;
 
 const LinkContainer = styled.a`
@@ -76,7 +77,7 @@ const LinkContainer = styled.a`
   transition: color 0.3s ease-in;
 
   :hover {
-    color: ${props => props.theme.colors.green};
+    color: ${(props) => props.theme.colors.green};
   }
 `;
 
@@ -123,13 +124,20 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
     // Let animation finish before removing local version of item
     setTimeout(() => {
       setDisplayedProducts([
-        ...displayedProducts.filter(i => i.id !== item.id)
+        ...displayedProducts.filter((i) => i.id !== item.id),
       ]);
     }, 300);
     // After local version is removed, remove from WishList
     setTimeout(() => {
       updateWishList(mutate, removeItemFromWishlist(item.id));
     }, 500);
+  };
+
+  const handleGoToProduct = (product: WishListProduct) => {
+    router.push(`/product/${product.slug}`);
+    if (width < mediaSizes.tablet) {
+      updateModalsState(mutate, closeWishListModal());
+    }
   };
 
   // Whenever products changes we want to wait a tiny bit for the animations,
@@ -149,7 +157,7 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
           key={addItem === null ? "ListScreen" : "AddScreen"}
           timeout={200}
         >
-          {state => (
+          {(state) => (
             <FadeContainer state={state}>
               {addItem === null ? (
                 <ScrollArea>
@@ -176,12 +184,12 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
                           </GridItem>
                           <GridItem name={"name"}>
                             <Column justifyEvenly>
-                              <Link href={`/product/${product.slug}`}>
-                                <LinkContainer>
-                                  <Txt small>{product.Brand.Name}</Txt>
-                                  <Txt bold>{product.Name}</Txt>
-                                </LinkContainer>
-                              </Link>
+                              <LinkContainer
+                                onClick={() => handleGoToProduct(product)}
+                              >
+                                <Txt small>{product.Brand.Name}</Txt>
+                                <Txt bold>{product.Name}</Txt>
+                              </LinkContainer>
                               <Txt big bold>
                                 {`$${product.Price}`}
                               </Txt>

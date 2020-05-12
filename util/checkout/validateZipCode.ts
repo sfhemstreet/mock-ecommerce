@@ -1,5 +1,7 @@
 export function validateZipCode(zipcode: string) {
-  zipcode = zipcode.replace(/\D/g, "");
+  if (zipcode.length < 5) return false;
 
-  return zipcode.length >= 5;
+  const regex = /[^0-9\- ]+/g;
+
+  return !regex.test(zipcode);
 }

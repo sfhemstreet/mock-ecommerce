@@ -7,7 +7,9 @@ const MiniCartContainer = styled.div`
   position: sticky;
   top: 20px;
 
-  width: 290px;
+  max-width: 290px;
+  min-width: 240px;
+  
   border: solid 1px ${(props) => props.theme.colors.black};
   border-radius: 3px;
 
@@ -70,9 +72,6 @@ type MiniCartViewProps = {
 
 export const MiniCartView = ({ cart }: MiniCartViewProps) => (
   <MiniCartContainer>
-    <Txt bold underline alignCenter>
-      Cart
-    </Txt>
     {cart.products.map((product, index) => (
       <MiniCartItem
         hasBottomLine={cart.products.length - 1 !== index}

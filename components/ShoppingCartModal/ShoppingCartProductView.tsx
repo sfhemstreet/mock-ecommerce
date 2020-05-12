@@ -25,7 +25,7 @@ const GridContainer = styled.div`
   min-height: 100px;
 
   background-color: white;
-  color: ${props => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.black};
 
   @media ${mediaDevices.mobileM} {
     min-height: 100px;
@@ -33,7 +33,7 @@ const GridContainer = styled.div`
 `;
 
 const GridItem = styled.div<{ gridName: string }>`
-  grid-area: ${props => props.gridName};
+  grid-area: ${(props) => props.gridName};
 `;
 
 const LinkContainer = styled.a`
@@ -44,7 +44,7 @@ const LinkContainer = styled.a`
   transition: color 0.3s ease-in;
 
   :hover {
-    color: ${props => props.theme.colors.green};
+    color: ${(props) => props.theme.colors.green};
   }
 `;
 
@@ -52,6 +52,7 @@ type ShoppingCartProductViewProps = {
   item: ShoppingCartProduct | undefined;
   onEdit: (item: ShoppingCartProduct) => void;
   onRemove: (item: ShoppingCartProduct) => void;
+  onClick: (item: ShoppingCartProduct) => void;
 };
 
 /**
@@ -60,11 +61,13 @@ type ShoppingCartProductViewProps = {
  * @param item
  * @param onRemove
  * @param onEdit
+ * @param onClick
  */
 export const ShoppingCartProductView = ({
   item,
   onEdit,
   onRemove,
+  onClick,
 }: ShoppingCartProductViewProps): JSX.Element => {
   if (!item) return <SpinningLoader />;
 
@@ -92,12 +95,10 @@ export const ShoppingCartProductView = ({
       </GridItem>
       <GridItem gridName={"name"}>
         <Column justifyEvenly>
-          <Link href={`/product/${item.slug}`}>
-            <LinkContainer>
-              <Txt small>{item.Brand.Name}</Txt>
-              <Txt bold>{item.Name}</Txt>
-            </LinkContainer>
-          </Link>
+          <LinkContainer onClick={() => onClick(item)}>
+            <Txt small>{item.Brand.Name}</Txt>
+            <Txt bold>{item.Name}</Txt>
+          </LinkContainer>
           <Txt big bold>
             {`$${calculateedPrice}`}
           </Txt>

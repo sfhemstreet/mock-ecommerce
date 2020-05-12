@@ -27,12 +27,15 @@ import {
   CreditCardInfo,
   BillingKeys,
   ShippingAddressKeys,
+  CreditCardInfoKeys,
 } from "../../util/checkout/CheckOutFormTypes";
 import { validateCreditCard } from "../../util/checkout/validateCreditCard";
 import { Column } from "../Column";
 import { ErrorTxt } from "./ErrorTxt";
 import { validateFieldReducer } from "../../util/checkout/validateFieldReducer";
 import { formatCamelCaseToRegularString } from "../../util/formatCamelCaseToRegularString";
+import { SpinningLoader } from "../SpinningLoader";
+import { CheckOutCompleted } from "./CheckOutCompleted";
 
 const FormContainer = styled.div`
   max-width: 800px;
@@ -130,6 +133,7 @@ type CheckOutFormProps = {
   subtotal: number;
   onEdit: (form: CheckOutForm) => void;
   onGoBack: () => void;
+  onCheckOutComplete: (cart: ShoppingCart, form: CheckOutForm) => void;
 };
 
 export const CheckOutFormSheet = ({
@@ -138,6 +142,7 @@ export const CheckOutFormSheet = ({
   subtotal,
   onEdit,
   onGoBack,
+  onCheckOutComplete
 }: CheckOutFormProps) => {
   // The localForm is a copy of the CheckOutForm saved in sessionStorage.
   const [localForm, setLocalForm] = useState<CheckOutForm>({ ...form });
@@ -156,11 +161,67 @@ export const CheckOutFormSheet = ({
   const [showInvalidFields, setShowInvalidFields] = useState(false);
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
 
+  // When the user hits submit and the fields are valid
+  // show loading screen while "network" event happens.
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleBillingFormInput = (key: BillingKeys, value: string) => {
+    // Sales tax is applied to where it is shipped
+    if (isBillingSameAsShipping && key === "state") {
+      setEstmatedTax(getTaxEstimate(value, subtotal));
+    }
+    if (key !== "email" && isBillingSameAsShipping) {
+      setLocalForm({
+        ...localForm,
+        billing: {
+          ...localForm.billing,
+          [key]: value,
+        },
+        shippingAddress: {
+          ...localForm.shippingAddress,
+          [key]: value,
+        },
+      });
+    } else {
+      setLocalForm({
+        ...localForm,
+        billing: {
+          ...localForm.billing,
+          [key]: value,
+        },
+      });
+    }
+  };
+
+  const handleShippingFormInput = (key: ShippingAddressKeys, value: string) => {
+    // Sales tax is applied to where it is shipped
+    if (key === "state") {
+      setEstmatedTax(getTaxEstimate(value, subtotal));
+    }
+    setLocalForm({
+      ...localForm,
+      shippingAddress: {
+        ...localForm.shippingAddress,
+        [key]: value,
+      },
+    });
+  };
+
+  const handleCreditCardFormInput = (
+    key: CreditCardInfoKeys,
+    value: string | { month: string; year: string }
+  ) => {
+    setCreditInfo({
+      ...creditInfo,
+      [key]: value,
+    });
+  };
+
   const handleSubmit = () => {
     setShowInvalidFields(true);
 
     let allGood = true;
-    // chek track of invalid field names
+    // Keep list of invalid field names to display to user
     const invalidFs = new Array<string>();
 
     // Go through all fields in billing section
@@ -175,7 +236,7 @@ export const CheckOutFormSheet = ({
     }
 
     // Go through all fields in shipping address section
-    // and see if they are valid IF we are shipping to 
+    // and see if they are valid IF we are shipping to
     // an address other than the billing address.
     if (!isBillingSameAsShipping) {
       for (const k in localForm.shippingAddress) {
@@ -202,12 +263,19 @@ export const CheckOutFormSheet = ({
         invalidFs.push(formatCamelCaseToRegularString(key));
       }
     });
-
+    
     setInvalidFields(invalidFs);
 
     if (allGood && invalidFs.length === 0) {
-      // TODO 
-    } 
+      // Make fake request and go to Completed screen
+      setIsLoading(true);
+      onEdit(localForm);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        onCheckOutComplete(cart, localForm);
+      }, 2000);
+    }
   };
 
   // If user selects Same as Billing option
@@ -227,217 +295,198 @@ export const CheckOutFormSheet = ({
   }, [isBillingSameAsShipping]);
 
   return (
-    <FormContainer>
-      <BackButton onClick={onGoBack}>Back to Cart</BackButton>
-      <FormsAndMiniCart>
-        <Contained>
-          {/* BILLING ADDRESS */}
-          <OptionsContainer title={"Billing Address"} name={"Billing Address"}>
-            <Txt big bold padding={"0px 4px"}>
-              Billing Address
-            </Txt>
-            <BillingForm
-              billing={localForm.billing}
-              onChange={(key, value) => {
-                if (key !== "email" && isBillingSameAsShipping) {
-                  setLocalForm({
-                    ...localForm,
-                    billing: {
-                      ...localForm.billing,
-                      [key]: value,
-                    },
-                    shippingAddress: {
-                      ...localForm.shippingAddress,
-                      [key]: value,
-                    },
-                  });
-                } else {
-                  setLocalForm({
-                    ...localForm,
-                    billing: {
-                      ...localForm.billing,
-                      [key]: value,
-                    },
-                  });
-                }
-              }}
-              onBlur={() => onEdit(localForm)}
-              showInvalidFields={showInvalidFields}
-            />
-          </OptionsContainer>
-
-          {/* SHIPPING ADDRESS */}
-          <OptionsContainer
-            title={"Shipping Address"}
-            name={"Shipping Address"}
-          >
-            <Txt big bold padding={"0px 4px"}>
-              Shipping Address
-            </Txt>
-            <Padded padding={"4px 4px"}>
-              <Row alignCenter>
-                <SelectBox
-                  label={`Ship to My Billing Address`}
-                  onClick={() => setIsBillingSameAsShipping(true)}
-                  isSelected={isBillingSameAsShipping}
-                />
-                <Txt noWrap small padding={"0px 6px"}>
-                  Ship to My Billing Address
+    <>
+      {isLoading ? (
+        <Row justifyCenter>
+          <SpinningLoader />
+        </Row>
+      ) : (
+        <FormContainer>
+          <BackButton onClick={onGoBack}>Back to Cart</BackButton>
+          <FormsAndMiniCart>
+            <Contained>
+              {/* BILLING ADDRESS */}
+              <OptionsContainer
+                title={"Billing Address"}
+                name={"Billing Address"}
+              >
+                <Txt big bold padding={"0px 4px"}>
+                  Billing Address
                 </Txt>
-              </Row>
-            </Padded>
-            <Padded padding={"2px 4px"}>
-              <Row alignCenter>
-                <SelectBox
-                  label={`Ship to Different Address`}
-                  onClick={() => setIsBillingSameAsShipping(false)}
-                  isSelected={!isBillingSameAsShipping}
+                <BillingForm
+                  billing={localForm.billing}
+                  onChange={handleBillingFormInput}
+                  onBlur={() => onEdit(localForm)}
+                  showInvalidFields={showInvalidFields}
                 />
-                <Txt noWrap small padding={"0px 6px"}>
-                  Ship to Different Address
+              </OptionsContainer>
+
+              {/* SHIPPING ADDRESS */}
+              <OptionsContainer
+                title={"Shipping Address"}
+                name={"Shipping Address"}
+              >
+                <Txt big bold padding={"0px 4px"}>
+                  Shipping Address
                 </Txt>
-              </Row>
-            </Padded>
-            {!isBillingSameAsShipping && (
-              <ShippingAddressForm
-                shippingAddress={localForm.shippingAddress}
-                onChange={(key, value) =>
-                  setLocalForm({
-                    ...localForm,
-                    shippingAddress: {
-                      ...localForm.shippingAddress,
-                      [key]: value,
-                    },
-                  })
-                }
-                onBlur={() => onEdit(localForm)}
-                showInvalidFields={showInvalidFields}
-              />
-            )}
-          </OptionsContainer>
-
-          {/* SHIPPING OPTION */}
-          <ShippingOptionsSelectionBox
-            onSelect={(option) => {
-              onEdit({
-                ...localForm,
-                shippingOption: option,
-              });
-              setLocalForm({
-                ...localForm,
-                shippingOption: option,
-              });
-            }}
-            shippingOption={localForm.shippingOption}
-          />
-
-          {/* GIFT OPTION */}
-          <OptionsContainer title={"Gift Option"} name={"Gift Option"}>
-            <Txt big bold padding={"0px 4px 4px 4px"}>
-              Gift Option
-            </Txt>
-            <Padded padding={"0px 0px 4px 6px"}>
-              <Row alignCenter justifyStart>
-                <SelectBox
-                  label={`Is this a gift? We will ship the package without prices listed on the invoice.`}
-                  onClick={() => {
-                    onEdit({
-                      ...localForm,
-                      isGift: !localForm.isGift,
-                    });
-                    setLocalForm({
-                      ...localForm,
-                      isGift: !localForm.isGift,
-                    });
-                  }}
-                  isSelected={localForm.isGift}
-                />
-                <Txt small padding={"2px 6px"}>
-                  Is this a gift? We will ship the package without prices listed
-                  on the invoice.
-                </Txt>
-              </Row>
-            </Padded>
-          </OptionsContainer>
-
-          {/* CREDIT CARD INFO */}
-          <OptionsContainer
-            title={"Credit Card Info"}
-            name={"Credit Card Info"}
-          >
-            <Txt big bold padding={"0px 4px 4px 4px"}>
-              Payment
-            </Txt>
-            <Row alignCenter>
-              <Txt padding={"0px 0px 0px 6px"}>We accept credit cards</Txt>
-              {CREDIT_CARD_OPTIONS.map((card) => (
-                <Contained padding={"0 4px"} key={`creditCardImg-${card.name}`}>
-                  <CreditCardImg src={card.image} alt={card.name} />
-                </Contained>
-              ))}
-            </Row>
-            <CreditCardForm
-              creditInfo={creditInfo}
-              onChange={(key, value) =>
-                setCreditInfo({
-                  ...creditInfo,
-                  [key]: value,
-                })
-              }
-              showInvalidFields={showInvalidFields}
-            />
-          </OptionsContainer>
-
-          {/* REVIEW SHOPPING CART */}
-          <Contained padding={"15px "}>
-            <Txt big bold padding={"0px 4px 4px 4px"}>
-              Review Your Order
-            </Txt>
-            <CheckOutShoppingCart cart={cart} />
-          </Contained>
-
-          {/* ORDER SUMMARY */}
-          <Contained padding={"30px 5px 0px 5px"}>
-            <Row justifyCenter>
-              <OrderSummaryBox
-                subtotal={subtotal}
-                shippingOption={localForm.shippingOption}
-                tax={estimatedTax}
-              />
-            </Row>
-          </Contained>
-
-          {invalidFields.length > 0 && (
-            <Row justifyCenter>
-              <Contained>
-                <ErrorTxt>
-                  {`${invalidFields.length} of the fields you entered ${
-                    invalidFields.length === 1 ? "is" : "are"
-                  } invalid.`}
-                </ErrorTxt>
-                <ErrorTxt>Please double check:</ErrorTxt>
-                <Padded padLeft={"20px"}>
-                  {invalidFields.map((field) => (
-                    <ErrorTxt bold key={`Error-message-${field}`}>
-                      {field}
-                    </ErrorTxt>
-                  ))}
+                <Padded padding={"4px 4px"}>
+                  <Row alignCenter>
+                    <SelectBox
+                      label={`Ship to My Billing Address`}
+                      onClick={() => setIsBillingSameAsShipping(true)}
+                      isSelected={isBillingSameAsShipping}
+                    />
+                    <Txt noWrap small padding={"0px 6px"}>
+                      Ship to My Billing Address
+                    </Txt>
+                  </Row>
                 </Padded>
+                <Padded padding={"2px 4px"}>
+                  <Row alignCenter>
+                    <SelectBox
+                      label={`Ship to Different Address`}
+                      onClick={() => setIsBillingSameAsShipping(false)}
+                      isSelected={!isBillingSameAsShipping}
+                    />
+                    <Txt noWrap small padding={"0px 6px"}>
+                      Ship to Different Address
+                    </Txt>
+                  </Row>
+                </Padded>
+                {!isBillingSameAsShipping && (
+                  <ShippingAddressForm
+                    shippingAddress={localForm.shippingAddress}
+                    onChange={handleShippingFormInput}
+                    onBlur={() => onEdit(localForm)}
+                    showInvalidFields={showInvalidFields}
+                  />
+                )}
+              </OptionsContainer>
+
+              {/* SHIPPING OPTION */}
+              <ShippingOptionsSelectionBox
+                onSelect={(option) => {
+                  onEdit({
+                    ...localForm,
+                    shippingOption: option,
+                  });
+                  setLocalForm({
+                    ...localForm,
+                    shippingOption: option,
+                  });
+                }}
+                shippingOption={localForm.shippingOption}
+              />
+
+              {/* GIFT OPTION */}
+              <OptionsContainer title={"Gift Option"} name={"Gift Option"}>
+                <Txt big bold padding={"0px 4px 4px 4px"}>
+                  Gift Option
+                </Txt>
+                <Padded padding={"0px 0px 4px 6px"}>
+                  <Row alignCenter justifyStart>
+                    <SelectBox
+                      label={`Is this a gift? We will ship the package without prices listed on the invoice.`}
+                      onClick={() => {
+                        onEdit({
+                          ...localForm,
+                          isGift: !localForm.isGift,
+                        });
+                        setLocalForm({
+                          ...localForm,
+                          isGift: !localForm.isGift,
+                        });
+                      }}
+                      isSelected={localForm.isGift}
+                    />
+                    <Txt small padding={"2px 6px"}>
+                      Is this a gift? We will ship the package without prices
+                      listed on the invoice.
+                    </Txt>
+                  </Row>
+                </Padded>
+              </OptionsContainer>
+
+              {/* CREDIT CARD INFO */}
+              <OptionsContainer
+                title={"Credit Card Info"}
+                name={"Credit Card Info"}
+              >
+                <Txt big bold padding={"0px 4px 4px 4px"}>
+                  Payment
+                </Txt>
+                <Row alignCenter>
+                  <Txt padding={"0px 0px 0px 6px"}>We accept credit cards</Txt>
+                  {CREDIT_CARD_OPTIONS.map((card) => (
+                    <Contained
+                      padding={"0 4px"}
+                      key={`creditCardImg-${card.name}`}
+                    >
+                      <CreditCardImg src={card.image} alt={card.name} />
+                    </Contained>
+                  ))}
+                </Row>
+                <CreditCardForm
+                  creditInfo={creditInfo}
+                  onChange={handleCreditCardFormInput}
+                  showInvalidFields={showInvalidFields}
+                />
+              </OptionsContainer>
+
+              {/* REVIEW SHOPPING CART */}
+              <Contained padding={"15px "}>
+                <Txt big bold padding={"0px 4px 4px 4px"}>
+                  Review Your Order
+                </Txt>
+                <CheckOutShoppingCart cart={cart} />
               </Contained>
-            </Row>
-          )}
 
-          <Contained>
-            <Column justifyCenter alignCenter>
-              <SubmitButton onClick={handleSubmit}>
-                Submit Your Order
-              </SubmitButton>
-            </Column>
-          </Contained>
-        </Contained>
+              {/* ORDER SUMMARY */}
+              <Contained padding={"30px 5px 0px 5px"}>
+                <Row justifyCenter>
+                  <OrderSummaryBox
+                    subtotal={subtotal}
+                    shippingOption={localForm.shippingOption}
+                    tax={estimatedTax}
+                  />
+                </Row>
+              </Contained>
 
-        <MiniCartView cart={cart} />
-      </FormsAndMiniCart>
-    </FormContainer>
+              {/* USER INPUT ERROR ALERT */}
+              {invalidFields.length > 0 && (
+                <Row justifyCenter>
+                  <Contained>
+                    <ErrorTxt>
+                      {`${invalidFields.length} of the fields you entered ${
+                        invalidFields.length === 1 ? "is" : "are"
+                      } invalid.`}
+                    </ErrorTxt>
+                    <ErrorTxt>Please double check:</ErrorTxt>
+                    <Padded padLeft={"20px"}>
+                      {invalidFields.map((field) => (
+                        <ErrorTxt bold key={`Error-message-${field}`}>
+                          {field}
+                        </ErrorTxt>
+                      ))}
+                    </Padded>
+                  </Contained>
+                </Row>
+              )}
+
+              {/* SUBMIT BUTTON */}
+              <Contained>
+                <Column justifyCenter alignCenter>
+                  <SubmitButton onClick={handleSubmit}>
+                    Submit Your Order
+                  </SubmitButton>
+                </Column>
+              </Contained>
+            </Contained>
+
+            <MiniCartView cart={cart} />
+          </FormsAndMiniCart>
+        </FormContainer>
+      )}
+    </>
   );
 };
