@@ -5,7 +5,6 @@ import { Txt } from "../Txt";
 import { Padded } from "../Padded";
 import { Column } from "../Column";
 import { Category } from "../../queries/types";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { useRef, useEffect } from "react";
