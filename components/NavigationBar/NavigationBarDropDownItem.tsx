@@ -43,7 +43,7 @@ export const NavigationBarDropDownItem = ({
   };
 
   const handleSubLink = (item: Category) => {
-    router.push("/products/[productSlug]", `/products/${item.slug}`);
+    router.push("/products/[subcategorySlug]", `/products/${item.slug}`);
   };
 
   useEffect(() => {
