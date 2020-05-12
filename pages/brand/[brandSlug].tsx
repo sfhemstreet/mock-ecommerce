@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps = async context => {
   const slug = context.params?.brandSlug;
 
   if (typeof slug !== "string") {
-    console.log("slug from params was not a string, which is bad.");
+    //console.log("slug from params was not a string, which is bad.");
     return { props: {} };
   }
 
