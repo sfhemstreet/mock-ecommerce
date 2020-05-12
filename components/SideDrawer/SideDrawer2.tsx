@@ -18,7 +18,6 @@ const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
 
   position: fixed;
   top: 0;
-  left: 0;
 
   overflow-x: hidden;
   z-index: ${(props) => props.zIndex};
@@ -54,12 +53,10 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   zIndex = 20,
   children,
 }): JSX.Element => {
-  // Screen width is used to calculate right position of the SideDrawer
-  const [screenWidth, setScreenWidth] = useState(INIT_SCREEN_WIDTH);
-
+ 
   // The current right border position of the SideDrawer
   const [sideDrawerPosition, setSideDrawerPosition] = useState(
-    SIDEDRAWER_OFF_SCREEN
+    -minWidth 
   );
 
   // Used to remove SideDrawer when screen is resized. Fixes resizing bug.
@@ -69,12 +66,8 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     // Remove side drawer so the drawer is percieved to be the same width
     setIsVisible(false);
 
-    // Get width of screen for correct drawer position.
-    const { width } = getWindowDimensions();
-    setScreenWidth(width);
-
     // Set the drawer position and display it again.
-    const initSideDrawerPosition = open ? width - maxWidth : width - minWidth;
+    const initSideDrawerPosition = open ? 0 : -maxWidth;
     setSideDrawerPosition(initSideDrawerPosition);
     setIsVisible(true);
   };
@@ -88,16 +81,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     };
   }, [open]);
 
-  // Check if maxWidth is bigger than the screen width - 10.
-  // Adjust maxWidth if invalid.
-  try {
-    if (process.env.NODE_ENV === "development" && maxWidth > screenWidth - 10) {
-      throw new Error("maxWidth is greater than width of display");
-    }
-  } catch (err) {
-    console.log(err);
-    maxWidth = screenWidth - 10;
-  }
+
 
   return (
     <>
@@ -106,7 +90,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
       {isVisible && (
         <SideDrawerContainer
           style={{
-            right: sideDrawerPosition,
+            left: sideDrawerPosition,
             pointerEvents: open ? "auto" : "none",
           }}
           drawerHeight={drawerHeight}
