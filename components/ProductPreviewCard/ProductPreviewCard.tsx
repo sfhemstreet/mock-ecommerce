@@ -214,7 +214,7 @@ export const ProductPreviewCard = ({
   const [productName, setProductName] = useState(productInfo.Name);
 
   const handleClick = () => {
-    router.push(`/product/${productInfo.slug}`);
+    router.push("/product/[productSlug]", `/product/${productInfo.slug}`);
   };
 
   const handleWishList = () => {

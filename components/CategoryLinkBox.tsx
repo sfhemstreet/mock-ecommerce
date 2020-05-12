@@ -38,11 +38,11 @@ export const CategoryLinkBox = ({
     <Contained width={"370px"} padding={"5px"}>
       <Row>
         <Txt small>
-          <CategoryLink onClick={() => router.push(`/category/${mainCategory.slug}`)}>{mainCategory.Name}</CategoryLink>
+          <CategoryLink onClick={() => router.push("/category/[categorySlug]",`/category/${mainCategory.slug}`)}>{mainCategory.Name}</CategoryLink>
         </Txt>
         &nbsp;<small>></small>&nbsp;
         <Txt small>
-          <CategoryLink onClick={() => router.push(`/products/${subCategory.slug}`)}>{subCategory.Name}</CategoryLink>
+          <CategoryLink onClick={() => router.push("/products/[subcategorySlug]",`/products/${subCategory.slug}`)}>{subCategory.Name}</CategoryLink>
         </Txt>
       </Row>
     </Contained>

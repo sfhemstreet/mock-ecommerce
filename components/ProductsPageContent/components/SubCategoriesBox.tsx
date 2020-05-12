@@ -30,7 +30,7 @@ export const SubCategoriesBox = ({ subcategories }: SubCategoriesBoxProps) => {
   const router = useRouter();
 
   const handleClick = (slug: string) => {
-    router.push(`/products/${slug}`);
+    router.push("/products/[productSlug]", `/products/${slug}`);
   };
 
   return (

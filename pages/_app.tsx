@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import App from "next/app";
 import Head from "next/head";
 import { createGlobalStyle, ThemeProvider } from "styled-components";

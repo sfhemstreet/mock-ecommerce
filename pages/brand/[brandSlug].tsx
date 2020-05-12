@@ -4,11 +4,9 @@ import {
 } from "../../queries/navigationBarSideDrawerLayoutQueries/getNavigationBarSideDrawerData";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { GetStaticProps, GetStaticPaths } from "next";
-import { Category, ProductPreview, BrandWithProducts } from "../../queries/types";
-import { getAllCategoryIdsSlugs } from "../../queries/categories/getAllCategoryIdsSlugs";
+import { BrandWithProducts } from "../../queries/types";
 import { ProductsPageContent } from "../../components/ProductsPageContent/ProductsPageContent";
-import { getCategoryBySlug } from "../../queries/categories/getCategoryBySlug";
-import { getTopProductsByCategorySlug } from "../../queries/product/getTopProductsByCategorySlug";
+
 import Head from "next/head";
 import { getAllBrands } from "../../queries/brand/getAllBrands";
 import { getBrandWithProductsBySlug } from "../../queries/brand/getBrandWithProductsBySlug";

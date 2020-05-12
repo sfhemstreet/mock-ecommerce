@@ -125,7 +125,7 @@ export const ShoppingCartListView = ({
   };
 
   const handleGoToProduct = (product: ShoppingCartProduct) => {
-    router.push(`/product/${product.slug}`);
+    router.push("/product/[productSlug]", `/product/${product.slug}`);
     if (width < mediaSizes.tablet){
       updateModalsState(mutate, closeShoppingCartModal());
     }

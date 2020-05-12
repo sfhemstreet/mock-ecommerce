@@ -29,7 +29,7 @@ import {
 } from "../../storage/productHistory/productHistoryActions";
 import { ProductHistoryItem } from "../../storage/productHistory/productHistoryTypes";
 import { ProductHistoryBanner } from "../../components/ProductHistoryBanner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const ProductPageContainer = styled.div`
   background: white;

@@ -8,7 +8,6 @@ import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawe
 import { Txt } from "../components/Txt";
 import { Centered } from "../components/Centered";
 import { Column } from "../components/Column";
-import { Row } from "../components/Row";
 import Head from "next/head";
 
 const FourZeroFourContainer = styled.div`

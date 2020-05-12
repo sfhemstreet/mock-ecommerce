@@ -178,19 +178,19 @@ export function SearchBoxResults({ text }: SearchBoxResultsProps) {
   const router = useRouter();
 
   const handleProductClick = (slug: string) => {
-    router.push(`/product/${slug}`);
+    router.push("/product/[productSlug]", `/product/${slug}`);
   };
 
   const handleBrandClick = (slug: string) => {
-    router.push(`/brand/${slug}`);
+    router.push("/brand/[brandSlug]", `/brand/${slug}`);
   };
 
   const handleCategoryClick = (slug: string) => {
-    router.push(`/category/${slug}`);
+    router.push("/category/[categorySlug]", `/category/${slug}`);
   };
 
   const handleSubCategoryClick = (slug: string) => {
-    router.push(`/products/${slug}`);
+    router.push("/products/[subcategorySlug]", `/products/${slug}`);
   };
 
   if (queryResults.data === undefined) return <SpinningLoader />;

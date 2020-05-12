@@ -39,11 +39,11 @@ export const NavigationBarDropDownItem = ({
   const startRef = useRef<HTMLAnchorElement>(null);
 
   const handleMainLink = (item: Category) => {
-    router.push(`/category/${item.slug}`);
+    router.push("/category/[categorySlug]", `/category/${item.slug}`);
   };
 
   const handleSubLink = (item: Category) => {
-    router.push(`/products/${item.slug}`);
+    router.push("/products/[productSlug]", `/products/${item.slug}`);
   };
 
   useEffect(() => {

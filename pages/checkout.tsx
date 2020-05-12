@@ -7,14 +7,9 @@ import {
 import { NavigationBarSideDrawerLayout } from "../layouts/NavigationBarSideDrawerLayout";
 import { Txt } from "../components/Txt";
 import Head from "next/head";
-import { Contained } from "../components/Contained";
 import { CheckOutPageContent } from "../components/CheckOutPageContent/CheckOutPageContent";
 import { WhiteContainer } from "../components/WhiteContainer";
 
-const CheckOutContainer = styled.div`
-  background-color: ${(props) => props.theme.colors.white};
-  color: ${(props) => props.theme.colors.black};
-`;
 
 type CheckOutPageProps = {
   navigationBarSideDrawerData: NavigationBarSideDrawerData;

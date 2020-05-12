@@ -81,7 +81,7 @@ export const SideDrawerMenu = ({
     else {
       // No subItems, right now this has to be a subcategory
       // Redirect to its products page
-      router.push(`/products/${item.slug}`);
+      router.push("/products/[subcategorySlug]", `/products/${item.slug}`);
     }
   };
 
@@ -105,7 +105,7 @@ export const SideDrawerMenu = ({
    */
   const handleTitleLinkClick = () => {
     const item = contentStack[contentStack.length - 1];
-    router.push(`/category/${item.slug}`);
+    router.push("/category/[categorySlug]", `/category/${item.slug}`);
   }
 
   return (
