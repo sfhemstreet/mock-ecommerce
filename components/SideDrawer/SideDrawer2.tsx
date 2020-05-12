@@ -6,21 +6,17 @@ import { Transition } from "react-transition-group";
 import { AppTheme } from "../../themes/AppTheme";
 
 type SideDrawerContainerProps = {
-  drawerHeight: string;
-  drawerWidth: number;
-  zIndex: number;
   showBorder: boolean;
 };
 
 const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
-  width: ${(props) => props.drawerWidth};
-  height: ${(props) => props.drawerHeight};
+  height: 100vh;
 
   position: fixed;
   top: 0;
 
   overflow-x: hidden;
-  z-index: ${(props) => props.zIndex};
+  z-index: ${(props) => props.theme.zIndexes.sideDrawer};
 
   background: ${(props) => props.theme.colors.black};
 
@@ -30,16 +26,9 @@ const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
   transition: ${(props) => props.theme.transitions.sideDrawer};
 `;
 
-// When resizing or on first render we want siebar off screen
-const SIDEDRAWER_OFF_SCREEN = 100000;
-const INIT_SCREEN_WIDTH = 200000;
-
 export type SideDrawerProps = {
   open?: boolean;
-  minWidth?: number;
-  maxWidth?: number;
-  drawerHeight?: string;
-  zIndex?: number;
+  width?: number;
 };
 
 /**
@@ -47,17 +36,11 @@ export type SideDrawerProps = {
  */
 export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
   open = false,
-  minWidth = 0,
-  maxWidth = 370,
-  drawerHeight = "100vh",
-  zIndex = 20,
+  width = 300,
   children,
 }): JSX.Element => {
- 
   // The current right border position of the SideDrawer
-  const [sideDrawerPosition, setSideDrawerPosition] = useState(
-    -minWidth 
-  );
+  const [sideDrawerPosition, setSideDrawerPosition] = useState(-width);
 
   // Used to remove SideDrawer when screen is resized. Fixes resizing bug.
   const [isVisible, setIsVisible] = useState(true);
@@ -67,7 +50,7 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     setIsVisible(false);
 
     // Set the drawer position and display it again.
-    const initSideDrawerPosition = open ? 0 : -maxWidth;
+    const initSideDrawerPosition = open ? 0 : -width;
     setSideDrawerPosition(initSideDrawerPosition);
     setIsVisible(true);
   };
@@ -81,8 +64,6 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
     };
   }, [open]);
 
-
-
   return (
     <>
       {/*  This will always be true unless the screen is being resized. 
@@ -90,32 +71,24 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
       {isVisible && (
         <SideDrawerContainer
           style={{
-            left: sideDrawerPosition,
+            left: `${sideDrawerPosition}px`,
             pointerEvents: open ? "auto" : "none",
           }}
-          drawerHeight={drawerHeight}
-          drawerWidth={maxWidth}
-          zIndex={zIndex}
           showBorder={open}
         >
-          {/* Only show children when
-          - drawer is open and draggableWidth is false
-          - draggableWidth is true but its not really close to closed position
-            */}
-          {
-            <Transition
-              in={open}
-              timeout={{
-                appear: 0,
-                enter: 0,
-                exit: 500,
-              }}
-              mountOnEnter
-              unmountOnExit
-            >
-              {children}
-            </Transition>
-          }
+          {/* Only show children when open*/}
+          <Transition
+            in={open}
+            timeout={{
+              appear: 0,
+              enter: 0,
+              exit: 500,
+            }}
+            mountOnEnter
+            unmountOnExit
+          >
+            {children}
+          </Transition>
         </SideDrawerContainer>
       )}
     </>

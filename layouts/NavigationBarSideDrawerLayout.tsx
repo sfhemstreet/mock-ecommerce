@@ -20,8 +20,6 @@ type NavigationBarSideDrawerLayoutProps = {
   data: NavigationBarSideDrawerData;
   filterChildrenWhenSideDrawerOpen?: boolean;
   sideDrawerOpenWidth?: number;
-  sideDrawerClosedWidth?: number;
-  sideDrawerBorderWidth?: number;
 };
 
 /**
@@ -37,8 +35,6 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
   data,
   filterChildrenWhenSideDrawerOpen,
   sideDrawerOpenWidth = 300,
-  sideDrawerClosedWidth = -20,
-  sideDrawerBorderWidth = 1,
   children,
 }): JSX.Element => {
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
@@ -48,8 +44,7 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
       <BackgroundBlackGradient>
         <SideDrawer
           open={isSideDrawerOpen}
-          minWidth={sideDrawerClosedWidth}
-          maxWidth={sideDrawerOpenWidth}
+          width={sideDrawerOpenWidth}
         >
           <SideDrawerMenu
             siteLogo={data.siteLogo}
