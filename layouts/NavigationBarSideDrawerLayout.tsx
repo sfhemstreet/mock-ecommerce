@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import { BackgroundBlackGradient } from "../components/Background";
 import { NavigationBar } from "../components/NavigationBar/NavigationBar";
 import { FullPageContainer } from "../components/FullPageContainer";
-import { SideDrawer } from "../components/SideDrawer/SideDrawer";
+import { SideDrawer } from "../components/SideDrawer/SideDrawer2";
 import { Transformed } from "../components/Transformed";
 import { Filtered } from "../components/Filtered";
 import { AppTheme } from "../themes/AppTheme";
