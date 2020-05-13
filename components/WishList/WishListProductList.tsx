@@ -134,7 +134,7 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
   };
 
   const handleGoToProduct = (product: WishListProduct) => {
-    router.push(`/product/${product.slug}`);
+    router.push("/product/[productSlug]", `/product/${product.slug}`);
     if (width < mediaSizes.tablet) {
       updateModalsState(mutate, closeWishListModal());
     }
