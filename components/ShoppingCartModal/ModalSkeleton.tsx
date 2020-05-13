@@ -61,7 +61,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <Positioned
           absolute
-          top={`${height - 70}px`}
+          top={`${height - 30}px`}
           left={`${(width - 300) / 2}px`}
           zIndex={30}
         >
@@ -83,7 +83,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       </DisplayAtMedia>
 
       <DisplayAtMedia mobile>
-        <Txt big bold alignCenter padding={"50px 0px 10px 0px"}>
+        <Txt big bold alignCenter padding={"20px 0px 10px 0px"}>
           {title}
         </Txt>
       </DisplayAtMedia>
@@ -92,7 +92,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <ModalChildrenContainer
           width={`${width - 4}px`}
-          height={`${height - 215}px`}
+          height={`${height - 170}px`}
         >
           {children}
         </ModalChildrenContainer>
