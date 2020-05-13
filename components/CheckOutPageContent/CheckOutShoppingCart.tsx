@@ -151,6 +151,7 @@ export const CheckOutShoppingCart = ({
                 <BrandLogo
                   src={process.env.BACKEND_URL + product.Brand.Logo.url}
                   alt={product.Brand.Name}
+                  small
                 />
               </Row>
             </Contained>

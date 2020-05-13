@@ -15,9 +15,6 @@ export const EditButton = styled.button<{ isSubmit?: boolean }>`
 
   transition: all 0.3s ease-in-out;
 
-  :hover {
-    transform: scale(1.05);
-  }
   :active {
     transform: scale(0.9);
   }

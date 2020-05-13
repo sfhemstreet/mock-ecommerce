@@ -25,14 +25,6 @@ const MenuIconLine = styled.div<MenuIconLineProps>`
   transform: ${props => `rotate(${props.angle}deg)`};
 
   transition: all 0.5s ease-in-out;
-
-  ${MenuIconContainer}:hover & {
-    background: ${props => props.theme.colors.rose};
-  }
-
-  ${MenuIconContainer}:focus & {
-    background: ${props => props.theme.colors.rose};
-  }
 `;
 
 export type MenuIconProps = {

@@ -1,4 +1,4 @@
-import { AcceptedCardsType, ACCEPTED_CREDIT_CARDS } from "./CreditCardOptions";
+import { AcceptedCardsType, ACCEPTED_CREDIT_CARDS, CREDIT_CARD_EXPIRATION_MONTHS, getCreditCardExpirationYears } from "./CreditCardOptions";
 import { CreditCardInfo } from "./CheckOutFormTypes";
 
 /**
@@ -130,12 +130,18 @@ function validateExpiration(
   expiration: { month: string, year: string }
 ): boolean {
 
+  if (!CREDIT_CARD_EXPIRATION_MONTHS.includes(expiration.month)) 
+    return false;
+
+  if (!getCreditCardExpirationYears().includes(expiration.year))
+    return false;
+  
   const now = new Date();
   const monthNow = now.getMonth() + 1;
   const yearNow = now.getFullYear();
 
-  const cardMonth = parseInt(expiration.month);
-  const cardYear = parseInt(expiration.year);
+  const cardMonth = parseInt(expiration.month, 10);
+  const cardYear = parseInt(expiration.year, 10);
 
   if (cardYear < yearNow) return false;
   if (cardYear === yearNow && cardMonth < monthNow) return false;

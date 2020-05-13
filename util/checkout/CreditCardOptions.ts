@@ -1,11 +1,4 @@
-export const initCreditCardInfo = {
-  cardNumber: "",
-  cardSecurityCode: "",
-  expiration: {
-    month: (new Date().getMonth() + 1).toString(),
-    year: new Date().getFullYear().toString(),
-  },
-};
+
 
 export const CREDIT_CARD_OPTIONS = [
   {
@@ -29,3 +22,28 @@ export const ACCEPTED_CREDIT_CARDS = {
 };
 
 export type AcceptedCardsType = keyof typeof ACCEPTED_CREDIT_CARDS;
+
+export const CREDIT_CARD_EXPIRATION_MONTHS = [
+  "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+
+export const getCreditCardExpirationYears = () => {
+  const numberOfYears = 30;
+  const minYear = new Date().getFullYear();
+  const yearArray = new Array<string>();
+
+  for (let i = 0; i < numberOfYears; i++) {
+    const year = minYear + i;
+    yearArray.push(`${year}`);
+  }
+
+  return yearArray
+}
+
+export const initCreditCardInfo = {
+  cardNumber: "",
+  cardSecurityCode: "",
+  expiration: {
+    month: CREDIT_CARD_EXPIRATION_MONTHS[new Date().getMonth()],
+    year: new Date().getFullYear().toString(),
+  },
+};
