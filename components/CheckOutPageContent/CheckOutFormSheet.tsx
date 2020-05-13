@@ -304,6 +304,7 @@ export const CheckOutFormSheet = ({
     if (containerRef && containerRef.current) {
       containerRef.current.scrollTo(0, 0);
     }
+    window.scrollTo(0,0);
   }, []);
 
   return (
