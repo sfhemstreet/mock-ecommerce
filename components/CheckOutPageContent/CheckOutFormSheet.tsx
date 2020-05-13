@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Txt } from "../Txt";
 import { mediaDevices } from "../DisplayAtMedia";
 import { CheckOutForm } from "../../storage/checkout/checkoutTypes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Padded } from "../Padded";
 import { Row } from "../Row";
 import { SelectBox } from "./SelectBox";
@@ -144,12 +144,18 @@ export const CheckOutFormSheet = ({
   onGoBack,
   onCheckOutComplete
 }: CheckOutFormProps) => {
+  // When components loads for first time we want 
+  // to make sure we are at the top of the form
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // The localForm is a copy of the CheckOutForm saved in sessionStorage.
   const [localForm, setLocalForm] = useState<CheckOutForm>({ ...form });
+
   // We do not save credit card info in storage, it is only here.
   const [creditInfo, setCreditInfo] = useState<CreditCardInfo>(
     initCreditCardInfo
   );
+
   const [isBillingSameAsShipping, setIsBillingSameAsShipping] = useState<
     boolean
   >(checkBillingSameAsShipping(form));
@@ -294,6 +300,12 @@ export const CheckOutFormSheet = ({
     }
   }, [isBillingSameAsShipping]);
 
+  useEffect(() => {
+    if (containerRef && containerRef.current) {
+      containerRef.current.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <>
       {isLoading ? (
@@ -301,7 +313,7 @@ export const CheckOutFormSheet = ({
           <SpinningLoader />
         </Row>
       ) : (
-        <FormContainer>
+        <FormContainer ref={containerRef}>
           <BackButton onClick={onGoBack}>Back to Cart</BackButton>
           <FormsAndMiniCart>
             <Contained>
