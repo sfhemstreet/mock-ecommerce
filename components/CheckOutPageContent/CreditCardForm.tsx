@@ -14,7 +14,7 @@ import { ErrorTxt } from "./ErrorTxt";
 import { CREDIT_CARD_EXPIRATION_MONTHS, getCreditCardExpirationYears } from "../../util/checkout/CreditCardOptions";
 
 const ExpirationDateInput = styled.select`
-  width: 60px;
+  width: 80px;
   height: 35px;
 
   border: none;
@@ -101,7 +101,7 @@ export const CreditCardForm = ({
                 ))}
               </ExpirationDateInput>
             </Contained>
-            <Contained padding={"2px 0px 2px 0px"}>
+            <Contained padding={"2px 0px 2px 2px"}>
               <CheckoutLabel title={title} htmlFor={`creditcard-${key}-year`}>
                 Year
               </CheckoutLabel>
