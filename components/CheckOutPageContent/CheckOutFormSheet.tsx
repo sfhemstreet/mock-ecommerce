@@ -302,9 +302,8 @@ export const CheckOutFormSheet = ({
 
   useEffect(() => {
     if (containerRef && containerRef.current) {
-      containerRef.current.scrollTo(0, 0);
+      window.scrollTo(0, containerRef.current.scrollHeight);
     }
-    window.scrollTo(0,0);
   }, []);
 
   return (
@@ -314,9 +313,9 @@ export const CheckOutFormSheet = ({
           <SpinningLoader />
         </Row>
       ) : (
-        <FormContainer ref={containerRef}>
+        <FormContainer >
           <BackButton onClick={onGoBack}>Back to Cart</BackButton>
-          <FormsAndMiniCart>
+          <FormsAndMiniCart ref={containerRef}>
             <Contained>
               {/* BILLING ADDRESS */}
               <OptionsContainer
