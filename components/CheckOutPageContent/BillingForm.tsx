@@ -21,14 +21,14 @@ export const BillingForm = ({
   onBlur,
   showInvalidFields,
 }: BillingFormProps) => {
-  const billingForm = Object.keys(billing).map((k) => {
+  const billingForm = Object.keys(billing).map((k, index) => {
     const key = k as BillingKeys;
     const title = formatCamelCaseToRegularString(key);
     const isValid = showInvalidFields
       ? validateFieldReducer(key, billing[key])
       : true;
     return (
-      <Padded padding={"10px"} key={`billing-${key}`}>
+      <Padded padding={"10px"} key={`billing-${key}-${index}`}>
         <CheckoutLabel title={title} htmlFor={`billing-${key}`}>
           <Row alignEnd>
             {title}

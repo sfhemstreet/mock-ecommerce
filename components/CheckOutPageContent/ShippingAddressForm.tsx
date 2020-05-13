@@ -24,14 +24,14 @@ export const ShippingAddressForm = ({
   onBlur,
   showInvalidFields,
 }: ShippingAddressFormProps) => {
-  const shippingForm = Object.keys(shippingAddress).map((k) => {
+  const shippingForm = Object.keys(shippingAddress).map((k, index) => {
     const key = k as ShippingAddressKeys;
     const title = formatCamelCaseToRegularString(key);
     const isValid = showInvalidFields
       ? validateFieldReducer(key, shippingAddress[key])
       : true;
     return (
-      <Padded padding={"10px"} key={`shipping-${key}-key`}>
+      <Padded padding={"10px"} key={`shipping-${key}-${index}`}>
         <CheckoutLabel title={title} htmlFor={`shipping-${key}`}>
           <Row alignEnd>
             {title}

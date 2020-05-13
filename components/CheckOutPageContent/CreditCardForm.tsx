@@ -54,12 +54,12 @@ export const CreditCardForm = ({
         cardSecurityCode: true,
         expiration: true,
       };
-  const creditCardForm = Object.keys(creditInfo).map((k) => {
+  const creditCardForm = Object.keys(creditInfo).map((k, index) => {
     const key = k as CreditCardInfoKeys;
     const title = formatCamelCaseToRegularString(key);
     const isValid = validationObject[key];
     return (
-      <Padded padding={"10px"} key={`creditcard-${key}`}>
+      <Padded padding={"10px"} key={`creditcard-${key}-${index}`}>
         <CheckoutLabel title={title} htmlFor={`creditcard-${key}`}>
           <Row alignEnd>
             {title} {showInvalidFields && !isValid && <ErrorTxt>- Invalid</ErrorTxt>}
