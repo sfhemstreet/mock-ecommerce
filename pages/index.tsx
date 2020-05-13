@@ -148,7 +148,7 @@ const Home = ({
         <Padded padTop={"50px"} padBottom={"50px"}>
           <BrandsBanner
             brands={brands}
-            onSelection={(brand) => router.push(`/brand/${brand.slug}`)}
+            onSelection={(brand) => router.push("/brand/[brandSlug]", `/brand/${brand.slug}`)}
           />
         </Padded>
       </NavigationBarSideDrawerLayout>
