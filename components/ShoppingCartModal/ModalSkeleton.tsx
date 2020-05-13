@@ -61,7 +61,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <Positioned
           absolute
-          top={`${height - 30}px`}
+          top={`${height - 50}px`}
           left={`${(width - 300) / 2}px`}
           zIndex={30}
         >

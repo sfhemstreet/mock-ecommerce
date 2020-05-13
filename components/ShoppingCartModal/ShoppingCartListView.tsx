@@ -207,7 +207,7 @@ export const ShoppingCartListView = ({
                         <DisplayAtMedia mobile>
                           <Positioned
                             absolute
-                            top={`${height - 230}px`}
+                            top={`${height - 110}px`}
                             style={{
                               left:
                                 state === ENTERED
