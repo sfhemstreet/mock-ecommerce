@@ -35,13 +35,13 @@ const ProductImg = styled.img`
 `;
 
 const WishListContainer = styled.div`
-  width: 98%;
+  width: 100%;
   height: 99%;
 
   overflow-y: scroll;
   overflow-x: hidden;
 
-  margin: 5px;
+  margin: 3px;
 `;
 
 const GridContainer = styled.div`

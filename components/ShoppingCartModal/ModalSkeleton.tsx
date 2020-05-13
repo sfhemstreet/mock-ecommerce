@@ -92,7 +92,7 @@ export const ModalSkeleton: FunctionComponent<ModalSkeletonProps> = ({
       <DisplayAtMedia mobile>
         <ModalChildrenContainer
           width={`${width - 4}px`}
-          height={`${height - 170}px`}
+          height={`${height - 120}px`}
         >
           {children}
         </ModalChildrenContainer>

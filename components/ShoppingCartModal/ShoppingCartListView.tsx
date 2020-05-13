@@ -32,13 +32,13 @@ const TransitionContainer = styled.div<{ state: TransitionStatus }>`
 `;
 
 const ShoppingCartListContainer = styled.div`
-  width: 98%;
+  width: 100%;
   height: 100%;
 
   overflow-y: scroll;
   overflow-x: hidden;
 
-  margin: 5px;
+  margin: 3px;
 `;
 
 const ProductScrollArea = styled.div<{ width: string; height: string }>`
@@ -170,8 +170,8 @@ export const ShoppingCartListView = ({
                 <>
                   {/* Dimensions are for fitting it nicely on a mobile screen */}
                   <ProductScrollArea
-                    width={`${width - 4}px`}
-                    height={`${height - 245}px`}
+                    width={`${width}px`}
+                    height={`${height - 170}px`}
                   >
                     {items.products.sort((a,b) => b.timeAdded - a.timeAdded).map(item => (
                       <Transformed
@@ -207,7 +207,7 @@ export const ShoppingCartListView = ({
                         <DisplayAtMedia mobile>
                           <Positioned
                             absolute
-                            top={`${height - 180}px`}
+                            top={`${height - 150}px`}
                             style={{
                               left:
                                 state === ENTERED

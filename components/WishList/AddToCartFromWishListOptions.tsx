@@ -154,7 +154,7 @@ export const AddToCartFromWishListOptions = ({
   return (
     <AddToCartFromWishListContainer>
       {/* Gives dimensions to container for mobile screens */}
-      <OptionsArea width={`${width - 4}px`} height={`${height - 245}px`}>
+      <OptionsArea width={`${width - 4}px`} height={`${height - 165}px`}>
         <Column justifyEvenly alignCenter>
           {/* Picture, Name, Brand */}
           <Padded padding={"10px 0px"}>
@@ -232,10 +232,10 @@ export const AddToCartFromWishListOptions = ({
       <DisplayAtMedia mobile>
         <Positioned
           absolute
-          top={`${height - 235}px`}
-          left={`${(width - 307) / 2}px`}
+          top={`${height - 155}px`}
+          left={`${(width - 305) / 2}px`}
         >
-          <Contained width={"300px"}>
+          <Contained width={"302px"}>
             <Row justifyBetween>
               <EditButton
                 onClick={onCancel}
