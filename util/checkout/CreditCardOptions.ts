@@ -47,3 +47,9 @@ export const initCreditCardInfo = {
     year: new Date().getFullYear().toString(),
   },
 };
+
+export const CREDIT_CARD_FORM_ORDER = {
+  cardNumber: 1,
+  cardSecurityCode: 2,
+  expiration: 3
+}

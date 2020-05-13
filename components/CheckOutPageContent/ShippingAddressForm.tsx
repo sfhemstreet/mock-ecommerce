@@ -10,6 +10,7 @@ import { CheckOutInput } from "./CheckOutInput";
 import { Row } from "../Row";
 import { validateFieldReducer } from "../../util/checkout/validateFieldReducer";
 import { ErrorTxt } from "./ErrorTxt";
+import { SHIPPING_FORM_ORDER } from "../../util/checkout/ShippingFormOrder";
 
 type ShippingAddressFormProps = {
   shippingAddress: ShippingAddress;
@@ -24,39 +25,45 @@ export const ShippingAddressForm = ({
   onBlur,
   showInvalidFields,
 }: ShippingAddressFormProps) => {
-  const shippingForm = Object.keys(shippingAddress).map((k, index) => {
-    const key = k as ShippingAddressKeys;
-    const title = formatCamelCaseToRegularString(key);
-    const isValid = showInvalidFields
-      ? validateFieldReducer(key, shippingAddress[key])
-      : true;
-    return (
-      <Padded padding={"10px"} key={`shipping-${key}-${index}`}>
-        <CheckoutLabel title={title} htmlFor={`shipping-${key}`}>
-          <Row alignEnd>
-            {title}
-            {showInvalidFields && !isValid && <ErrorTxt>- Invalid</ErrorTxt>}
-          </Row>
-        </CheckoutLabel>
-        {key === "state" ? (
-          <StateSelectionBox
-            onSelect={(state) => onChange(key, state)}
-            currentSelection={shippingAddress.state}
-          />
-        ) : (
-          <CheckOutInput
-            id={`shipping-${key}`}
-            name={`shipping-${key}`}
-            title={title}
-            type={"text"}
-            value={shippingAddress[key]}
-            onBlur={(evt) => onBlur()}
-            onChange={(evt) => onChange(key, evt.target.value)}
-          />
-        )}
-      </Padded>
-    );
-  });
+  const shippingForm = Object.keys(shippingAddress)
+    .sort(
+      (a, b) =>
+        SHIPPING_FORM_ORDER[a as ShippingAddressKeys] -
+        SHIPPING_FORM_ORDER[a as ShippingAddressKeys]
+    )
+    .map((k, index) => {
+      const key = k as ShippingAddressKeys;
+      const title = formatCamelCaseToRegularString(key);
+      const isValid = showInvalidFields
+        ? validateFieldReducer(key, shippingAddress[key])
+        : true;
+      return (
+        <Padded padding={"10px"} key={`shipping-${key}-${index}`}>
+          <CheckoutLabel title={title} htmlFor={`shipping-${key}`}>
+            <Row alignEnd>
+              {title}
+              {showInvalidFields && !isValid && <ErrorTxt>- Invalid</ErrorTxt>}
+            </Row>
+          </CheckoutLabel>
+          {key === "state" ? (
+            <StateSelectionBox
+              onSelect={(state) => onChange(key, state)}
+              currentSelection={shippingAddress.state}
+            />
+          ) : (
+            <CheckOutInput
+              id={`shipping-${key}`}
+              name={`shipping-${key}`}
+              title={title}
+              type={"text"}
+              value={shippingAddress[key]}
+              onBlur={(evt) => onBlur()}
+              onChange={(evt) => onChange(key, evt.target.value)}
+            />
+          )}
+        </Padded>
+      );
+    });
 
   return <>{shippingForm}</>;
 };

@@ -1,5 +1,5 @@
 import { formatCamelCaseToRegularString } from "../../util/formatCamelCaseToRegularString";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { Padded } from "../Padded";
 import { CheckoutLabel } from "./CheckOutLabel";
 import { CheckOutInput } from "./CheckOutInput";
@@ -11,7 +11,11 @@ import {
 } from "../../util/checkout/CheckOutFormTypes";
 import { validateCreditCard } from "../../util/checkout/validateCreditCard";
 import { ErrorTxt } from "./ErrorTxt";
-import { CREDIT_CARD_EXPIRATION_MONTHS, getCreditCardExpirationYears } from "../../util/checkout/CreditCardOptions";
+import {
+  CREDIT_CARD_EXPIRATION_MONTHS,
+  getCreditCardExpirationYears,
+  CREDIT_CARD_FORM_ORDER,
+} from "../../util/checkout/CreditCardOptions";
 
 const ExpirationDateInput = styled.select`
   width: 80px;
@@ -54,81 +58,92 @@ export const CreditCardForm = ({
         cardSecurityCode: true,
         expiration: true,
       };
-  const creditCardForm = Object.keys(creditInfo).map((k, index) => {
-    const key = k as CreditCardInfoKeys;
-    const title = formatCamelCaseToRegularString(key);
-    const isValid = validationObject[key];
-    return (
-      <Padded padding={"10px"} key={`creditcard-${key}-${index}`}>
-        <CheckoutLabel title={title} htmlFor={`creditcard-${key}`}>
-          <Row alignEnd>
-            {title} {showInvalidFields && !isValid && <ErrorTxt>- Invalid</ErrorTxt>}
-          </Row>
-        </CheckoutLabel>
-        {(key === "cardNumber" || key === "cardSecurityCode") && (
-          <CheckOutInput
-            small={key === "cardSecurityCode"}
-            id={`creditcard-${key}`}
-            name={`creditcard-${key}`}
-            title={title}
-            type={"text"}
-            value={creditInfo[key]}
-            onChange={(evt) => onChange(key, evt.target.value)}
-          />
-        )}
-        {key === "expiration" && (
-          <Row alignCenter>
-            <Contained padding={"2px 4px 2px 0px"}>
-              <CheckoutLabel title={title} htmlFor={`creditcard-${key}-month`}>
-                Month
-              </CheckoutLabel>
-              <ExpirationDateInput
-                id={`creditcard-${key}-month`}
-                name={`creditcard-${key}-month`}
-                title={title + " Month"}
-                value={creditInfo[key].month}
-                onChange={(evt) =>
-                  onChange(key, {
-                    ...creditInfo.expiration,
-                    month: evt.target.value,
-                  })
-                }
-              >
-                {CREDIT_CARD_EXPIRATION_MONTHS.map(month => (
-                  <option value={month} key={`Expiration-month-${month}`}>
-                    {month}
-                  </option>
-                ))}
-              </ExpirationDateInput>
-            </Contained>
-            <Contained padding={"2px 0px 2px 2px"}>
-              <CheckoutLabel title={title} htmlFor={`creditcard-${key}-year`}>
-                Year
-              </CheckoutLabel>
-              <ExpirationDateInput
-                id={`creditcard-${key}-year`}
-                name={`creditcard-${key}-year`}
-                title={title + " Year"}
-                value={creditInfo[key].year}
-                onChange={(evt) =>
-                  onChange(key, {
-                    ...creditInfo.expiration,
-                    year: evt.target.value,
-                  })
-                }
-              >
-                {getCreditCardExpirationYears().map(year => (
-                  <option value={year} key={`Expiration-year-${year}`}>
-                    {year}
-                  </option>
-                ))}
-              </ExpirationDateInput>
-            </Contained>
-          </Row>
-        )}
-      </Padded>
-    );
-  });
+
+  const creditCardForm = Object.keys(creditInfo)
+    .sort(
+      (a, b) =>
+        CREDIT_CARD_FORM_ORDER[a as CreditCardInfoKeys] -
+        CREDIT_CARD_FORM_ORDER[b as CreditCardInfoKeys]
+    )
+    .map((k, index) => {
+      const key = k as CreditCardInfoKeys;
+      const title = formatCamelCaseToRegularString(key);
+      const isValid = validationObject[key];
+      return (
+        <Padded padding={"10px"} key={`creditcard-${key}-${index}`}>
+          <CheckoutLabel title={title} htmlFor={`creditcard-${key}`}>
+            <Row alignEnd>
+              {title}{" "}
+              {showInvalidFields && !isValid && <ErrorTxt>- Invalid</ErrorTxt>}
+            </Row>
+          </CheckoutLabel>
+          {(key === "cardNumber" || key === "cardSecurityCode") && (
+            <CheckOutInput
+              small={key === "cardSecurityCode"}
+              id={`creditcard-${key}`}
+              name={`creditcard-${key}`}
+              title={title}
+              type={"text"}
+              value={creditInfo[key]}
+              onChange={(evt) => onChange(key, evt.target.value)}
+            />
+          )}
+          {key === "expiration" && (
+            <Row alignCenter>
+              <Contained padding={"2px 4px 2px 0px"}>
+                <CheckoutLabel
+                  title={title}
+                  htmlFor={`creditcard-${key}-month`}
+                >
+                  Month
+                </CheckoutLabel>
+                <ExpirationDateInput
+                  id={`creditcard-${key}-month`}
+                  name={`creditcard-${key}-month`}
+                  title={title + " Month"}
+                  value={creditInfo[key].month}
+                  onChange={(evt) =>
+                    onChange(key, {
+                      ...creditInfo.expiration,
+                      month: evt.target.value,
+                    })
+                  }
+                >
+                  {CREDIT_CARD_EXPIRATION_MONTHS.map((month) => (
+                    <option value={month} key={`Expiration-month-${month}`}>
+                      {month}
+                    </option>
+                  ))}
+                </ExpirationDateInput>
+              </Contained>
+              <Contained padding={"2px 0px 2px 2px"}>
+                <CheckoutLabel title={title} htmlFor={`creditcard-${key}-year`}>
+                  Year
+                </CheckoutLabel>
+                <ExpirationDateInput
+                  id={`creditcard-${key}-year`}
+                  name={`creditcard-${key}-year`}
+                  title={title + " Year"}
+                  value={creditInfo[key].year}
+                  onChange={(evt) =>
+                    onChange(key, {
+                      ...creditInfo.expiration,
+                      year: evt.target.value,
+                    })
+                  }
+                >
+                  {getCreditCardExpirationYears().map((year) => (
+                    <option value={year} key={`Expiration-year-${year}`}>
+                      {year}
+                    </option>
+                  ))}
+                </ExpirationDateInput>
+              </Contained>
+            </Row>
+          )}
+        </Padded>
+      );
+    });
 
   return <>{creditCardForm}</>;
 };
