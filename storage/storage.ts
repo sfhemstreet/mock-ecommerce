@@ -18,6 +18,7 @@ import { wishlistInitState } from './wishlist/wishListConstants';
 import { checkoutFormInitState } from './checkout/checkoutConstants';
 import { CheckOutForm, CheckOutFormActionTypes } from './checkout/checkoutTypes';
 import { checkoutReducer } from './checkout/checkoutReducer';
+import { mutate } from 'swr';
 
 /** Type of state stored in localStorage */ 
 type StorageStateType = ShoppingCart | WishList | SearchItemList | ModalsState | ProductHistoryState | CheckOutForm;
@@ -101,11 +102,11 @@ function getSessionStorageState(key: KeyType) {
       }
       return JSON.parse(serializedState);
     } catch (err) {
-      console.log('ERROR: getSessionStorageState', err);
+      //console.log('ERROR: getSessionStorageState', err);
       return getInitStateByKey(key);
     }
   } else {
-    console.log("storage.ts : Cannot get session storage");
+    //console.log("storage.ts : Cannot get session storage");
     return getInitStateByKey(key);
   }
 }
@@ -116,10 +117,10 @@ function setSessionStorageState(state: StorageStateType, key: KeyType): void {
       const serializedState = JSON.stringify(state);
       sessionStorage.setItem(key, serializedState)
     } catch (err) {
-      console.log("ERROR: setSessionStorageState", err);
+      //console.log("ERROR: setSessionStorageState", err);
     }
   } else {
-    console.log("storage.ts : Cannot set session stoage");
+    //console.log("storage.ts : Cannot set session stoage");
   }
 }
 
@@ -149,99 +150,93 @@ export async function tempstorage(key: KeyType): Promise<StorageStateType | unde
 /** 
  * Updates WishList in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {WishListActionTypes} action action from wishListActions.ts
  * @param {wishlist} wishlist if you have the current state of the wishlist supply it here
  */
-export async function updateWishList(mutateFn: any, action: WishListActionTypes, wishlist?: WishList ) {
+export async function mutateWishList(action: WishListActionTypes, wishlist?: WishList ) {
   if (!wishlist) 
     wishlist = await storage(WISHLIST) as WishList;
 
   const updatedWishlist = wishListReducer(wishlist, action);
   setLocalStorageState(updatedWishlist, WISHLIST);
-  return mutateFn(WISHLIST, updatedWishlist);
+  return mutate(WISHLIST, updatedWishlist);
 }
 
 
 /** 
  * Updates ShoppingCart in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {ShoppingCartActionTypes} action action from shoppingCartActions.ts
  * @param {StoredProductList} shoppingCart if you have the current state of the shoppingCart supply it here
  */
-export async function updateShoppingCart(mutateFn: any, action: ShoppingCartActionTypes, shoppingCart?: ShoppingCart) {
+export async function mutateShoppingCart(action: ShoppingCartActionTypes, shoppingCart?: ShoppingCart) {
   if (!shoppingCart) 
     shoppingCart = await storage(SHOPPING_CART) as ShoppingCart;
 
   const updatedShoppingCart = shoppingCartReducer(shoppingCart, action);
   setLocalStorageState(updatedShoppingCart, SHOPPING_CART);
-  return mutateFn(SHOPPING_CART, updatedShoppingCart);
+  return mutate(SHOPPING_CART, updatedShoppingCart);
 }
 
 
 /** 
  * Updates Search History in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {SearchHistoryActionTypes} action action from searchHistoryActions.ts
  * @param {SearchItemList} searchHistory if you have the current state of the seachHistory supply it here
  */
-export async function updateSearchHistory(mutateFn: any, action: SearchHistoryActionTypes, searchHistory?: SearchItemList) {
+export async function mutateSearchHistory(action: SearchHistoryActionTypes, searchHistory?: SearchItemList) {
   if (!searchHistory) 
     searchHistory = await storage(SEARCH_HISTORY) as SearchItemList;
 
   const updatedSearchHistory = searchHistoryReducer(searchHistory, action);
   setLocalStorageState(updatedSearchHistory, SEARCH_HISTORY);
-  return mutateFn(SEARCH_HISTORY, updatedSearchHistory);
+  return mutate(SEARCH_HISTORY, updatedSearchHistory);
 }
 
 /** 
  * Updates Modal State in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {ModalActionTypes} action action from modalActions.ts
  * @param {ModalsState} modalsState if you have the current state of the modals supply it here
  */
-export async function updateModalsState(mutateFn: any, action: ModalActionTypes, modalsState?: ModalsState) {
+export async function mutateModalsState(action: ModalActionTypes, modalsState?: ModalsState) {
   if (!modalsState) 
     modalsState = await storage(MODAL) as ModalsState;
 
   const updatedModalsState = modalReducer(modalsState, action);
   setLocalStorageState(updatedModalsState, MODAL);
-  return mutateFn(MODAL, updatedModalsState);
+  return mutate(MODAL, updatedModalsState);
 }
 
 /** 
  * Updates Product History in localStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {ProductHistoryActionTypes} action action from productHistoryActions.ts
  * @param {ProductHistoryState} productHistoryState if you have the current state of Product History supply it here
  */
-export async function updateProductHistory(mutateFn: any, action: ProductHistoryActionTypes, productHistory?: ProductHistoryState) {
+export async function mutateProductHistory(action: ProductHistoryActionTypes, productHistory?: ProductHistoryState) {
   if (!productHistory) 
     productHistory = await storage(PRODUCT_HISTORY) as ProductHistoryState;
 
   const updatedProductHistoryState = productHistoryReducer(productHistory, action);
   setLocalStorageState(updatedProductHistoryState, PRODUCT_HISTORY);
-  return mutateFn(PRODUCT_HISTORY, updatedProductHistoryState, false);
+  return mutate(PRODUCT_HISTORY, updatedProductHistoryState, false);
 }
 
 /** 
  * Updates Checkout Form in sessionStorage and in SWR cache. Supply the mutate function from "swr" package.
  * 
- * @param {mutateFn} mutateFn mutate function from "swr" package
  * @param {CheckOutFormActionTypes} action action from productHistoryActions.ts
  * @param {ProductHistoryState} checkoutForm if you have the current state of Checkout Form supply it here
  */
-export async function updateCheckoutForm(mutateFn: any, action: CheckOutFormActionTypes, checkoutForm?: CheckOutForm) {
+export async function mutateCheckoutForm(action: CheckOutFormActionTypes, checkoutForm?: CheckOutForm) {
   if (!checkoutForm)
     checkoutForm = await tempstorage(CHECKOUT_FORM) as CheckOutForm;
 
   const updatedCheckoutForm = checkoutReducer(checkoutForm, action);
   setSessionStorageState(updatedCheckoutForm, CHECKOUT_FORM);
-  return mutateFn(CHECKOUT_FORM, updatedCheckoutForm);
+  return mutate(CHECKOUT_FORM, updatedCheckoutForm);
 }
 
 

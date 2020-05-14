@@ -4,10 +4,9 @@ import { SpinningLoader } from "../SpinningLoader";
 import { useState, useEffect } from "react";
 import { Padded } from "../Padded";
 import { Transformed } from "../Transformed";
-
 import { Transition, SwitchTransition } from "react-transition-group";
 import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
-import { updateModalsState } from "../../storage/storage";
+import { mutateModalsState } from "../../storage/storage";
 import {
   startEditShoppingCartModal,
   stopEditShoppingCartModal,
@@ -91,13 +90,13 @@ export const ShoppingCartListView = ({
 
   // Handle Start Edit
   const handleStartEdit = (item: ShoppingCartProduct) => {
-    updateModalsState(mutate, startEditShoppingCartModal());
+    mutateModalsState(startEditShoppingCartModal());
     setEditItem(item);
   };
 
   // Handle Cancel Edit
   const handleCancelEditting = () => {
-    updateModalsState(mutate, stopEditShoppingCartModal());
+    mutateModalsState(stopEditShoppingCartModal());
     setEditItem(null);
     setItems({ ...list });
   };
@@ -127,14 +126,14 @@ export const ShoppingCartListView = ({
   const handleGoToProduct = (product: ShoppingCartProduct) => {
     router.push("/product/[productSlug]", `/product/${product.slug}`);
     if (width < mediaSizes.tablet){
-      updateModalsState(mutate, closeShoppingCartModal());
+      mutateModalsState(closeShoppingCartModal());
     }
   }
 
   const handleCheckOut = () => {
     if (items.products.length > 0) {
       router.push(`/checkout`);
-      updateModalsState(mutate, closeShoppingCartModal());
+      mutateModalsState(closeShoppingCartModal());
     }
   };
 

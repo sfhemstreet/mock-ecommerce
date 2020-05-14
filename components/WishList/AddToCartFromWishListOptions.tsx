@@ -1,10 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
-
 import {
   SelectBoxOption,
-  ProductOptionSelectBox
+  ProductOptionSelectBox,
 } from "../ProductPurchaseOptions/ProductOptionSelectBox";
 import { ColorPreviewBox } from "../ColorPreviewBox";
 import { Row } from "../Row";
@@ -16,14 +15,11 @@ import { ProductInfo } from "../../queries/types";
 import { mediaDevices, DisplayAtMedia } from "../DisplayAtMedia";
 import { Positioned } from "../Positioned";
 import { Contained } from "../Contained";
-
 import { EditButton } from "../ShoppingCartModal/components/EditButton";
 import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
-import { updateShoppingCart, updateModalsState } from "../../storage/storage";
+import { mutateModalsState, mutateShoppingCart } from "../../storage/storage";
 import { addItemToShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";
-import { mutate } from "swr";
 import { closeWishListOpenShoppingCart } from "../../storage/modals/modalActions";
-
 
 const AddToCartFromWishListContainer = styled.div`
   width: 100%;
@@ -39,10 +35,10 @@ const AddToCartFromWishListContainer = styled.div`
 `;
 
 const OptionsArea = styled.div<{ width: string; height: string }>`
-  color: ${props => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.black};
   background-color: white;
   width: 100%;
-  height: ${props => props.height};
+  height: ${(props) => props.height};
 
   @media ${mediaDevices.tablet} {
     width: 400px;
@@ -84,19 +80,18 @@ export const AddToCartFromWishListOptions = ({
   product,
   onCancel,
   width,
-  height
+  height,
 }: AddToCartFromWishListOptionsProps) => {
-
   const colorOptions: SelectBoxOption[] = product.AvailableColors.split(
     ","
   ).map((color, index) => ({
     text: color,
-    visual: <ColorPreviewBox color={color.toLowerCase()} />
+    visual: <ColorPreviewBox color={color.toLowerCase()} />,
   }));
 
   const sizeOptions: SelectBoxOption[] = product.AvailableSizes.split(
     ","
-  ).map(size => ({ text: size }));
+  ).map((size) => ({ text: size }));
 
   const quantityOptions = new Array<SelectBoxOption>();
   for (let i = 0; i < product.UnitsInStock; i++) {
@@ -104,13 +99,9 @@ export const AddToCartFromWishListOptions = ({
   }
 
   // Keeps track of selected Size
-  const [selectedSize, setSelectedSize] = useState(
-    sizeOptions[0].text
-  );
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[0].text);
   // Keeps track of selected Color
-  const [selectedColor, setSelectedColor] = useState(
-    colorOptions[0].text
-  );
+  const [selectedColor, setSelectedColor] = useState(colorOptions[0].text);
   // Keeps track of selected Quantity
   const [selectedQuantity, setSelectedQuantity] = useState(
     quantityOptions[0].text
@@ -144,10 +135,10 @@ export const AddToCartFromWishListOptions = ({
         Size: selectedSize,
         Color: selectedColor,
         Quantity: parseInt(selectedQuantity, 10),
-        Preview: product.Preview
+        Preview: product.Preview,
       };
-      updateShoppingCart(mutate, addItemToShoppingCart(item));
-      updateModalsState(mutate, closeWishListOpenShoppingCart());
+      mutateShoppingCart(addItemToShoppingCart(item));
+      mutateModalsState(closeWishListOpenShoppingCart());
     }
   }
 

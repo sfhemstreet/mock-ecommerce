@@ -1,17 +1,14 @@
 import styled from "styled-components";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { addItemToWishList } from "../../storage/wishlist/wishListActions";
 import { addItemToShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";
 import {
-  SHOPPING_CART,
   WISHLIST,
-  updateShoppingCart,
-  updateWishList,
-  getShoppingCart,
   getWishlist,
-  updateModalsState
+  mutateModalsState,
+  mutateWishList,
+  mutateShoppingCart,
 } from "../../storage/storage";
-
 import { mediaDevices } from "../DisplayAtMedia";
 import { Padded } from "../Padded";
 import { ColorPreviewBox } from "../ColorPreviewBox";
@@ -24,7 +21,6 @@ import { Column } from "../Column";
 import { AddToCartButton } from "./AddToCartButton";
 import { AddToWishListButton } from "./AddToWishList";
 import { Txt } from "../Txt";
-
 import { Row } from "../Row";
 import { BrandLogo } from "../BrandLogo";
 import { openWishListModal, openShoppingCartModal } from "../../storage/modals/modalActions";
@@ -89,7 +85,6 @@ export const ProductPurchaseOptions = ({
   );
 
   // Find out if product is in wishList
-  const shoppingCart = useSWR(SHOPPING_CART, getShoppingCart);
   const wishList = useSWR(WISHLIST, getWishlist);
 
   const isOnWishList =
@@ -118,8 +113,8 @@ export const ProductPurchaseOptions = ({
       Quantity: parseInt(selectedQuantity, 10),
       Preview: product.Preview
     };
-    updateShoppingCart(mutate, addItemToShoppingCart(item));
-    updateModalsState(mutate, openShoppingCartModal()); 
+    mutateShoppingCart(addItemToShoppingCart(item));
+    mutateModalsState(openShoppingCartModal()); 
   }
 
   function handleAddToWishList() {
@@ -132,8 +127,8 @@ export const ProductPurchaseOptions = ({
       Brand: product.Brand,
       Preview: product.Preview
     };
-    updateWishList(mutate, addItemToWishList(item));
-    updateModalsState(mutate, openWishListModal()); 
+    mutateWishList(addItemToWishList(item));
+    mutateModalsState(openWishListModal()); 
   }
 
   return (

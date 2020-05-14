@@ -7,6 +7,7 @@ import Document, {
   DocumentContext
 } from "next/document";
 import { ServerStyleSheet } from "styled-components";
+import { AppTheme } from "../themes/AppTheme";
 
 export default class MyDocument extends Document<any> {
   static async getInitialProps(context: DocumentContext) {
@@ -40,13 +41,14 @@ export default class MyDocument extends Document<any> {
     return (  
       <Html lang="en">
         <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link
             href="https://fonts.googleapis.com/css?family=Rubik:400,500&display=swap"
             rel="stylesheet"
           /> 
           {this.props.styleTags}
         </Head>
-        <body>
+        <body id={AppTheme.mainContainerId}>
           <Main />
           <NextScript />
         </body>

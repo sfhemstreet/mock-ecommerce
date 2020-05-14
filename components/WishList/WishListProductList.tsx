@@ -1,17 +1,11 @@
 import styled from "styled-components";
 import { WishListProduct } from "../../storage/wishlist/wishListTypes";
 import { Column } from "../Column";
-import Link from "next/link";
 import { Txt } from "../Txt";
 import { SpinningLoader } from "../SpinningLoader";
-import { EditIcon } from "../EditIcon";
 import { RemoveIcon } from "../RemoveIcon";
-import { updateWishList, updateModalsState } from "../../storage/storage";
-import {
-  removeItemFromWishlist,
-  addItemToWishList,
-} from "../../storage/wishlist/wishListActions";
-import { mutate } from "swr";
+import { mutateModalsState, mutateWishList } from "../../storage/storage";
+import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
 import { AddToCartSmallIcon } from "../AddToCartSmallIcon";
 import { Padded } from "../Padded";
 import { useState, useEffect } from "react";
@@ -24,7 +18,6 @@ import {
 } from "../../storage/modals/modalActions";
 import { SwitchTransition, Transition } from "react-transition-group";
 import { FadeContainer } from "../SearchBox/SearchIcon";
-import { EditShoppingCartProduct } from "../ShoppingCartModal/EditShoppingCartProduct";
 import { AddToCartFromWishList } from "./AddToCartFromWishList";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { mediaSizes } from "../DisplayAtMedia";
@@ -106,13 +99,13 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
 
   // Handle Start Add
   const handleStartAddToCart = (item: WishListProduct) => {
-    updateModalsState(mutate, startEditWishListModal());
+    mutateModalsState(startEditWishListModal());
     setAddItem(item);
   };
 
   // Handle Cancel Add
   const handleCancelAddToCart = () => {
-    updateModalsState(mutate, stopEditWishListModal());
+    mutateModalsState(stopEditWishListModal());
     setAddItem(null);
     setDisplayedProducts(products ? [...products] : []);
   };
@@ -129,14 +122,14 @@ export const WishListProductList = ({ products }: WishListProductListProps) => {
     }, 300);
     // After local version is removed, remove from WishList
     setTimeout(() => {
-      updateWishList(mutate, removeItemFromWishlist(item.id));
+      mutateWishList(removeItemFromWishlist(item.id));
     }, 500);
   };
 
   const handleGoToProduct = (product: WishListProduct) => {
     router.push("/product/[productSlug]", `/product/${product.slug}`);
     if (width < mediaSizes.tablet) {
-      updateModalsState(mutate, closeWishListModal());
+      mutateModalsState(closeWishListModal());
     }
   };
 

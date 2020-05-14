@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-
 import { mediaDevices, mediaSizes } from "../DisplayAtMedia";
 import { Txt } from "../Txt";
 import { Padded } from "../Padded";
@@ -9,11 +8,10 @@ import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { ProductPreview } from "../../queries/types";
 import { Transition } from "react-transition-group";
 import { TransitionStatus, ENTERED } from "react-transition-group/Transition";
-import { updateWishList } from "../../storage/storage";
-import { mutate } from "swr";
+import { mutateWishList } from "../../storage/storage";
 import {
   removeItemFromWishlist,
-  addItemToWishList
+  addItemToWishList,
 } from "../../storage/wishlist/wishListActions";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { useEffect, useState } from "react";
@@ -24,8 +22,8 @@ const ProductPreviewCardContainer = styled.div`
   width: 150px;
   height: 226px;
   position: relative;
-  color: ${props => props.theme.colors.productPreviewText};
-  background: ${props => props.theme.colors.productPreviewBackground};
+  color: ${(props) => props.theme.colors.productPreviewText};
+  background: ${(props) => props.theme.colors.productPreviewBackground};
 
   @media ${mediaDevices.mobileM} {
     width: 160px;
@@ -47,7 +45,7 @@ const ProductPreviewCardContainer = styled.div`
   cursor: pointer;
 
   :hover {
-    color: ${props => props.theme.colors.green};
+    color: ${(props) => props.theme.colors.green};
     transform: scale(1.02);
   }
 `;
@@ -104,13 +102,14 @@ const HeartIconContainer = styled.div<{ state: TransitionStatus }>`
 
   transition: all 0.3s ease-in;
 
-  opacity: ${props => (props.state === ENTERED ? 1 : 0)};
+  opacity: ${(props) => (props.state === ENTERED ? 1 : 0)};
 
   :focus,
   :hover {
-    box-shadow: 0px 1px 1px 1px ${props => props.theme.colors.transparentWhite};
+    box-shadow: 0px 1px 1px 1px
+      ${(props) => props.theme.colors.transparentWhite};
     transform: scale(1.1);
-    background-color: ${props => props.theme.colors.transparentWhite};
+    background-color: ${(props) => props.theme.colors.transparentWhite};
   }
 `;
 
@@ -118,13 +117,13 @@ const HeartSVG = styled.svg<{ isFilled: boolean }>`
   width: 24px;
   height: 24px;
 
-  fill: ${props =>
+  fill: ${(props) =>
     props.isFilled ? props.theme.colors.rose : props.theme.colors.black};
 
   transition: all 0.3s ease-in;
 
   ${HeartIconContainer}:hover & {
-    fill: ${props => props.theme.colors.rose};
+    fill: ${(props) => props.theme.colors.rose};
   }
 
   ${HeartIconContainer}:active & {
@@ -156,7 +155,7 @@ type ProductWishListIcon = {
 export const ProductWishListIcon = ({
   transitionStatus,
   onClick,
-  onWishList
+  onWishList,
 }: ProductWishListIcon) => {
   const handleClick = (evt: React.SyntheticEvent) => {
     // If this function is fired from a keyboard enter key press then
@@ -205,7 +204,7 @@ type ProductPreviewCardProps = {
  */
 export const ProductPreviewCard = ({
   productInfo,
-  isOnWishList
+  isOnWishList,
 }: ProductPreviewCardProps): JSX.Element => {
   const router = useRouter();
   const [width] = useWindowDimensions();
@@ -220,8 +219,7 @@ export const ProductPreviewCard = ({
   const handleWishList = () => {
     if (isOnWishList === undefined) return;
 
-    updateWishList(
-      mutate,
+    mutateWishList(
       isOnWishList
         ? removeItemFromWishlist(productInfo.id)
         : addItemToWishList({
@@ -230,11 +228,11 @@ export const ProductPreviewCard = ({
             Name: productInfo.Name,
             Brand: {
               id: productInfo.Brand.id,
-              Name: productInfo.Brand.Name
+              Name: productInfo.Brand.Name,
             },
             Preview: productInfo.Preview,
             Price: productInfo.Price,
-            Discount: productInfo.Discount
+            Discount: productInfo.Discount,
           })
     );
   };
@@ -304,12 +302,12 @@ export const ProductPreviewCard = ({
           in={isOnWishList !== undefined}
           timeout={{
             enter: 20,
-            exit: 300
+            exit: 300,
           }}
           mountOnEnter
           unmountOnExit
         >
-          {state => (
+          {(state) => (
             <ProductWishListIcon
               transitionStatus={state}
               onClick={handleWishList}

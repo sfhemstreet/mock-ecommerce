@@ -6,15 +6,15 @@ import {
   getWishlist,
   getModalsState,
   MODAL,
-  updateModalsState,
-  updateWishList
+  mutateModalsState,
+  mutateWishList,
 } from "../../storage/storage";
 import { SpinningLoader } from "../SpinningLoader";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import { Transition } from "react-transition-group";
 import {
   closeWishListModal,
-  toggleWishListModal
+  toggleWishListModal,
 } from "../../storage/modals/modalActions";
 
 import { removeItemFromWishlist } from "../../storage/wishlist/wishListActions";
@@ -31,7 +31,7 @@ const WishListIconContainer = styled.div<{ willShake: boolean }>`
   justify-content: center;
   align-items: center;
 
-  ${props => props.willShake && ShakeAnimationMixin};
+  ${(props) => props.willShake && ShakeAnimationMixin};
 `;
 
 type WishListSVGProps = {
@@ -39,7 +39,7 @@ type WishListSVGProps = {
 };
 
 const WishListSVG = styled.svg<WishListSVGProps>`
-  fill: ${props =>
+  fill: ${(props) =>
     props.isFilled ? props.theme.colors.rose : props.theme.colors.white};
   position: relative;
   cursor: pointer;
@@ -47,12 +47,12 @@ const WishListSVG = styled.svg<WishListSVGProps>`
   transition: fill 0.3s linear;
 
   :hover {
-    fill: ${props =>
+    fill: ${(props) =>
       props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
   }
 
   ${WishListIconContainer}:focus & {
-    fill: ${props =>
+    fill: ${(props) =>
       props.isFilled ? props.theme.colors.white : props.theme.colors.rose};
   }
 `;
@@ -61,10 +61,6 @@ const ShakeAnimationMixin = css `
   animation: ${UpDownWait} 15s linear infinite;
   animation-delay: 3s;
 `;
-
-
-
-
 
 /**
  * Displays a Material Icons heart icon that is filled in if items are in WishList
@@ -75,15 +71,11 @@ export const WishListNavigationIcon = (): JSX.Element => {
   const open = useSWR(MODAL, getModalsState);
 
   const handleCloseModal = () => {
-    if (open.data) updateModalsState(mutate, closeWishListModal(), open.data);
+    if (open.data) mutateModalsState(closeWishListModal(), open.data);
   };
 
   const handleClickIcon = () => {
-    updateModalsState(mutate, toggleWishListModal());
-  };
-
-  const handleItemRemoval = (item: WishListProduct) => {
-    updateWishList(mutate, removeItemFromWishlist(item.id));
+    mutateModalsState(toggleWishListModal());
   };
 
   if (!wishList.data || !open.data) return <SpinningLoader reverse />;
@@ -132,17 +124,14 @@ export const WishListNavigationIcon = (): JSX.Element => {
         in={open.data.wishlist.isOpen}
         timeout={{
           enter: 50,
-          exit: 400
+          exit: 400,
         }}
         mountOnEnter
         unmountOnExit
       >
-        {state => (
+        {(state) => (
           <Modal onClose={handleCloseModal} state={state}>
-            <ModalSkeleton
-              title={"WishList"}
-              onClose={handleCloseModal}
-            >
+            <ModalSkeleton title={"WishList"} onClose={handleCloseModal}>
               <WishListProductList products={wishList.data?.products} />
             </ModalSkeleton>
           </Modal>

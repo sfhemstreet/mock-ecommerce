@@ -52,4 +52,5 @@ export const AppTheme = {
   typography: Typography,
   transitions: Transitions,
   zIndexes: ZIndexes,
+  mainContainerId: "main_layout_container"
 }

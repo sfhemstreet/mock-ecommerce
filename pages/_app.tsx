@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle<ThemeWrapper>`
       color: ${(props) => props.theme.colors.white}; 
     }
 
-    ${props => props.noFocus === true && " :focus { outline: none; }"}
+    ${(props) => props.noFocus === true && " :focus { outline: none; }"}
   `;
 
 interface MyAppProps extends App {
@@ -29,15 +29,13 @@ interface MyAppProps extends App {
 }
 
 const MyApp = ({ Component, pageProps }: MyAppProps) => {
-
-  // Do not show the :focus ring around elements 
+  // Do not show the :focus ring around elements
   // unless user hits Tab on keyboard.
   const [noFocus, setFocus] = useState(true);
 
   const handleTabKeyPress = (evt: KeyboardEvent) => {
-    if (evt.key === "Tab")
-      setFocus(false);
-  }
+    if (evt.key === "Tab") setFocus(false);
+  };
 
   useEffect(() => {
     document.addEventListener("keydown", handleTabKeyPress, false);
@@ -47,16 +45,10 @@ const MyApp = ({ Component, pageProps }: MyAppProps) => {
   }, []);
 
   return (
-    <>
-      <Head>
-        <title>E Store</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <ThemeProvider theme={AppTheme}>
-        <GlobalStyle noFocus={noFocus} />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={AppTheme}>
+      <GlobalStyle noFocus={noFocus} />
+      <Component {...pageProps} />
+    </ThemeProvider>
   );
 };
 

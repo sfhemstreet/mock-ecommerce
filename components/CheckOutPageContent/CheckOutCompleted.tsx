@@ -1,12 +1,8 @@
-import styled from "styled-components";
 import { ShoppingCart } from "../../storage/shoppingCart/shoppingCartTypes";
 import { CheckOutForm } from "../../storage/checkout/checkoutTypes";
 import { Txt } from "../Txt";
-import { useState } from "react";
-import { CheckOutShoppingCart } from "./CheckOutShoppingCart";
-import { mutate } from "swr";
 import { deleteCheckOutForm } from "../../storage/checkout/checkoutActions";
-import { updateCheckoutForm, updateShoppingCart } from "../../storage/storage";
+import { mutateCheckoutForm, mutateShoppingCart } from "../../storage/storage";
 import { removeAllItemsFromShoppingCart } from "../../storage/shoppingCart/shoppingCartActions";
 import { Column } from "../Column";
 import { FlexBox } from "../FlexBox";
@@ -24,8 +20,8 @@ type CheckOutCompletedProps = {
 };
 
 export const CheckOutCompleted = ({ cart, form }: CheckOutCompletedProps) => {
-  updateCheckoutForm(mutate, deleteCheckOutForm());
-  updateShoppingCart(mutate, removeAllItemsFromShoppingCart());
+  mutateCheckoutForm(deleteCheckOutForm());
+  mutateShoppingCart(removeAllItemsFromShoppingCart());
 
   const billingInfo = Object.keys(form.billing).map((k) => {
     const key = k as BillingKeys;

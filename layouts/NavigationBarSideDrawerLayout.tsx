@@ -40,7 +40,7 @@ export const NavigationBarSideDrawerLayout: FunctionComponent<NavigationBarSideD
   const [isSideDrawerOpen, setSideDrawerOpen] = useState(false);
 
   return (
-    <FullPageContainer>
+    <FullPageContainer >
       <BackgroundBlackGradient>
         <SideDrawer
           open={isSideDrawerOpen}

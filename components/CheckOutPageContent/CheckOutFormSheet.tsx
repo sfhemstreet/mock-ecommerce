@@ -36,6 +36,7 @@ import { validateFieldReducer } from "../../util/checkout/validateFieldReducer";
 import { formatCamelCaseToRegularString } from "../../util/formatCamelCaseToRegularString";
 import { SpinningLoader } from "../SpinningLoader";
 import { CheckOutCompleted } from "./CheckOutCompleted";
+import { scrollToTop } from "../../util/scrollToTop";
 
 const FormContainer = styled.div`
   max-width: 800px;
@@ -301,9 +302,7 @@ export const CheckOutFormSheet = ({
   }, [isBillingSameAsShipping]);
 
   useEffect(() => {
-    if (containerRef && containerRef.current) {
-      window.scrollTo(0, containerRef.current.scrollHeight);
-    }
+    scrollToTop()
   }, []);
 
   return (

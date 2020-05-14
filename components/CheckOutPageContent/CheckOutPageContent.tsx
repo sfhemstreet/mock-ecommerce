@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { SpinningLoader } from "../SpinningLoader";
 import {
   SHOPPING_CART,
   getShoppingCart,
-  updateShoppingCart,
   CHECKOUT_FORM,
   getCheckoutForm,
-  updateCheckoutForm,
+  mutateCheckoutForm,
+  mutateShoppingCart,
 } from "../../storage/storage";
 import { Centered } from "../Centered";
 import { Txt } from "../Txt";
@@ -103,17 +103,12 @@ export const CheckOutPageContent = () => {
 
   const handleEditCartProduct = (product: ShoppingCartProduct) => {
     if (shoppingCart.data)
-      updateShoppingCart(
-        mutate,
-        editShoppingCartItem(product),
-        shoppingCart.data
-      );
+      mutateShoppingCart(editShoppingCartItem(product), shoppingCart.data);
   };
 
   const handleRemoveCartProduct = (product: ShoppingCartProduct) => {
     if (shoppingCart.data)
-      updateShoppingCart(
-        mutate,
+      mutateShoppingCart(
         removeItemFromShoppingCart(product.id, product.timeAdded),
         shoppingCart.data
       );
@@ -131,7 +126,7 @@ export const CheckOutPageContent = () => {
     );
 
   if (shoppingCart.data.products.length === 0) {
-    updateCheckoutForm(mutate, closeCheckOutForm(), checkoutForm.data);
+    mutateCheckoutForm(closeCheckOutForm(), checkoutForm.data);
     return (
       <Centered>
         <Txt alignCenter bold big padding={"250px 0px"}>
@@ -174,8 +169,7 @@ export const CheckOutPageContent = () => {
                   <ShippingOptionsSelectionBox
                     onSelect={(option) => {
                       if (checkoutForm.data)
-                        updateCheckoutForm(
-                          mutate,
+                        mutateCheckoutForm(
                           editCheckOutForm({
                             ...checkoutForm.data,
                             shippingOption: option,
@@ -192,8 +186,7 @@ export const CheckOutPageContent = () => {
                     <SubmitButton
                       onClick={() => {
                         if (checkoutForm.data) {
-                          updateCheckoutForm(
-                            mutate,
+                          mutateCheckoutForm(
                             openCheckOutForm(),
                             checkoutForm.data
                           );
@@ -247,20 +240,12 @@ export const CheckOutPageContent = () => {
               subtotal={subtotalCost}
               onEdit={(f: CheckOutForm) => {
                 if (checkoutForm.data) {
-                  updateCheckoutForm(
-                    mutate,
-                    editCheckOutForm(f),
-                    checkoutForm.data
-                  );
+                  mutateCheckoutForm(editCheckOutForm(f), checkoutForm.data);
                 }
               }}
               onGoBack={() => {
                 if (checkoutForm.data)
-                  updateCheckoutForm(
-                    mutate,
-                    closeCheckOutForm(),
-                    checkoutForm.data
-                  );
+                  mutateCheckoutForm(closeCheckOutForm(), checkoutForm.data);
               }}
               onCheckOutComplete={(cart, form) => {
                 setCompletedCart(cart);

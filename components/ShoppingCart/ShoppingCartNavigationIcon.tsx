@@ -8,22 +8,22 @@ import {
   getShoppingCart,
   getModalsState,
   MODAL,
-  updateModalsState,
-  updateShoppingCart
+  mutateModalsState,
+  mutateShoppingCart,
 } from "../../storage/storage";
 import { SpinningLoader } from "../SpinningLoader";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
 import Transition from "react-transition-group/Transition";
 import {
   closeShoppingCartModal,
-  toggleShoppingCartModal
+  toggleShoppingCartModal,
 } from "../../storage/modals/modalActions";
 import { Modal } from "../ShoppingCartModal/Modal";
 import { ModalSkeleton } from "../ShoppingCartModal/ModalSkeleton";
 
 import {
   removeItemFromShoppingCart,
-  editShoppingCartItem
+  editShoppingCartItem,
 } from "../../storage/shoppingCart/shoppingCartActions";
 import { ShoppingCartProduct } from "../../storage/shoppingCart/shoppingCartTypes";
 import { ShoppingCartListView } from "../ShoppingCartModal/ShoppingCartListView";
@@ -41,22 +41,22 @@ const ShoppingCartIconContainer = styled.div<{ willShake: boolean }>`
   justify-content: center;
   align-items: center;
 
-  ${props => props.willShake && ShakeAnimationMixin};
+  ${(props) => props.willShake && ShakeAnimationMixin};
 `;
 
 const ShoppingCartSVG = styled.svg`
-  fill: ${props => props.theme.colors.white};
+  fill: ${(props) => props.theme.colors.white};
   position: relative;
   cursor: pointer;
 
   transition: fill 0.3s linear;
 
   ${ShoppingCartIconContainer}:hover & {
-    fill: ${props => props.theme.colors.rose};
+    fill: ${(props) => props.theme.colors.rose};
   }
 
   ${ShoppingCartIconContainer}:focus & {
-    fill: ${props => props.theme.colors.rose};
+    fill: ${(props) => props.theme.colors.rose};
   }
 `;
 
@@ -65,7 +65,7 @@ const ShoppingCartCircle = styled.div`
   top: -15px;
   left: 10px;
 
-  background-color: ${props => props.theme.colors.green};
+  background-color: ${(props) => props.theme.colors.green};
 
   width: 23px;
   height: 23px;
@@ -83,18 +83,18 @@ const ShoppingCartCircle = styled.div`
   transition: background-color 0.3s linear;
 
   ${ShoppingCartIconContainer}:hover & {
-    background-color: ${props => props.theme.colors.rose};
+    background-color: ${(props) => props.theme.colors.rose};
   }
 
   ${ShoppingCartIconContainer}:focus & {
-    background-color: ${props => props.theme.colors.rose};
+    background-color: ${(props) => props.theme.colors.rose};
   }
 `;
 
 const ShoppingCartNumber = styled.p`
   font-size: 13px;
-  font-family: ${props => props.theme.typography.fontFamily};
-  color: ${props => props.theme.colors.white};
+  font-family: ${(props) => props.theme.typography.fontFamily};
+  color: ${(props) => props.theme.colors.white};
   margin: 0;
   padding: 0;
 
@@ -103,11 +103,11 @@ const ShoppingCartNumber = styled.p`
   transition: color 0.3s linear;
 
   ${ShoppingCartIconContainer}:hover & {
-    color: ${props => props.theme.colors.black};
+    color: ${(props) => props.theme.colors.black};
   }
 
   ${ShoppingCartIconContainer}:focus & {
-    color: ${props => props.theme.colors.black};
+    color: ${(props) => props.theme.colors.black};
   }
 `;
 
@@ -119,7 +119,7 @@ const AddToCartRipple = styled.div<{ delay: string }>`
   width: 23px;
   height: 23px;
 
-  background-color: ${props => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.white};
   border-radius: 50%;
 
   opacity: 0;
@@ -127,7 +127,7 @@ const AddToCartRipple = styled.div<{ delay: string }>`
   cursor: pointer;
 
   animation: ${ScaleSmallToBig} 1s linear;
-  animation-delay: ${props => props.delay};
+  animation-delay: ${(props) => props.delay};
 `;
 
 /**
@@ -141,24 +141,21 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
   const open = useSWR(MODAL, getModalsState);
 
   const handleCloseModal = () => {
-    updateModalsState(mutate, closeShoppingCartModal());
+    mutateModalsState(closeShoppingCartModal());
   };
 
   const handleClickIcon = () => {
-    updateModalsState(mutate, toggleShoppingCartModal());
+    mutateModalsState(toggleShoppingCartModal());
   };
 
   if (!shoppingCart.data || !open.data) return <SpinningLoader />;
 
   const handleItemEdit = (item: ShoppingCartProduct) => {
-    updateShoppingCart(mutate, editShoppingCartItem(item));
+    mutateShoppingCart(editShoppingCartItem(item));
   };
 
   const handleItemRemoval = (item: ShoppingCartProduct) => {
-    updateShoppingCart(
-      mutate,
-      removeItemFromShoppingCart(item.id, item.timeAdded)
-    );
+    mutateShoppingCart(removeItemFromShoppingCart(item.id, item.timeAdded));
   };
 
   return (
@@ -191,7 +188,7 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
             <div
               key={`ShoppingCartRipples${shoppingCart.data.products.length}`}
             >
-              {[0, 0.2, 0.5, 0.7].map(sec => (
+              {[0, 0.2, 0.5, 0.7].map((sec) => (
                 <AddToCartRipple key={`ripple${sec}`} delay={`${sec}s`} />
               ))}
             </div>
@@ -209,17 +206,14 @@ export const ShoppingCartNavigationIcon = (): JSX.Element => {
         in={open.data.shoppingCart.isOpen}
         timeout={{
           enter: 50,
-          exit: 400
+          exit: 400,
         }}
         mountOnEnter
         unmountOnExit
       >
-        {state => (
+        {(state) => (
           <Modal onClose={handleCloseModal} state={state}>
-            <ModalSkeleton
-              title={"Shopping Cart"}
-              onClose={handleCloseModal}
-            >
+            <ModalSkeleton title={"Shopping Cart"} onClose={handleCloseModal}>
               <ShoppingCartListView
                 list={shoppingCart.data}
                 onEdit={(item: ShoppingCartProduct) => handleItemEdit(item)}

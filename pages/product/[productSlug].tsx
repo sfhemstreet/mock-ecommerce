@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NavigationBarSideDrawerLayout } from "../../layouts/NavigationBarSideDrawerLayout";
 import { CategoryLinkBox } from "../../components/CategoryLinkBox";
@@ -21,7 +21,7 @@ import Head from "next/head";
 import {
   PRODUCT_HISTORY,
   getProductHistory,
-  updateProductHistory
+  mutateProductHistory,
 } from "../../storage/storage";
 import {
   updateItemInProductHistory,
@@ -95,8 +95,7 @@ export default function SingleProductPage({
         ...productHistory.data.products[index],
         timeViewed: now
       };
-      updateProductHistory(
-        mutate,
+      mutateProductHistory(
         updateItemInProductHistory(item),
         productHistory.data
       );
@@ -118,8 +117,7 @@ export default function SingleProductPage({
         Category: product.Category,
         Subcategory: product.Subcategory
       };
-      updateProductHistory(
-        mutate,
+      mutateProductHistory(
         addItemToProductHistory(item),
         productHistory.data
       );
