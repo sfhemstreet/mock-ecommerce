@@ -9,6 +9,7 @@ import { mediaDevices } from "../DisplayAtMedia";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { accessibleEnterKeyPress } from "../../util/accessibleEnterKeyPress";
+import { debounce } from "../../util/debounce";
 
 const SearchBoxResultsContainer = styled.div`
   width: 210px;
