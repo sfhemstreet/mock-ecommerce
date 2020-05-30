@@ -4,6 +4,8 @@ import { Transition } from "react-transition-group";
 
 type SideDrawerContainerProps = {
   showBorder: boolean;
+  transform: string;
+  pointerEvents: string;
 };
 
 const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
@@ -20,7 +22,10 @@ const SideDrawerContainer = styled.div<SideDrawerContainerProps>`
   border-right: ${(props) =>
     props.showBorder ? `1px solid ${props.theme.colors.white}` : "none"};
 
+  transform: ${props => props.transform};
   transition: ${(props) => props.theme.transitions.sideDrawer};
+
+  pointer-events: ${props => props.pointerEvents};
 `;
 
 export type SideDrawerProps = {
@@ -68,10 +73,8 @@ export const SideDrawer: FunctionComponent<SideDrawerProps> = ({
       When the screen is resized do not display the sidedrawer, this fixes weird side effects. */}
       {isVisible && (
         <SideDrawerContainer
-          style={{
-            transform: `translateX(${sideDrawerPosition}px)`,
-            pointerEvents: open ? "auto" : "none",
-          }}
+          transform={`translateX(${sideDrawerPosition}px)`}
+          pointerEvents={open ? "auto" : "none"}
           showBorder={open}
         >
           {/* Only show children when open*/}

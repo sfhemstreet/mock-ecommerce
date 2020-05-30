@@ -19,10 +19,7 @@ const MenuIconLine = styled.div<MenuIconLineProps>`
   height: 6px;
   background: ${props => props.theme.colors.white};
 
-  /* position: absolute;
-  top: ${props => `${props.top}px`}; */
   transform: ${props => `translateY(${props.top}px) rotate(${props.angle}deg)`};
-
   transition: all 0.5s ease-in-out;
 `;
 
