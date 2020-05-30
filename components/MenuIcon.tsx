@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { accessibleEnterKeyPress } from "../util/accessibleEnterKeyPress";
 
 const MenuIconContainer = styled.div`
-  width: 33px;
+  width: 34px;
   height: 28px;
   position: relative;
   cursor: pointer;
@@ -19,10 +19,9 @@ const MenuIconLine = styled.div<MenuIconLineProps>`
   height: 6px;
   background: ${props => props.theme.colors.white};
 
-  position: absolute;
-
-  top: ${props => `${props.top}px`};
-  transform: ${props => `rotate(${props.angle}deg)`};
+  /* position: absolute;
+  top: ${props => `${props.top}px`}; */
+  transform: ${props => `translateY(${props.top}px) rotate(${props.angle}deg)`};
 
   transition: all 0.5s ease-in-out;
 `;
@@ -48,11 +47,11 @@ export const MenuIcon = ({
       angle={isOpen ? 45 : 0}
     />
     <MenuIconLine
-      top={isOpen ? 11 : 11}
+      top={isOpen ? 5 : 5}
       angle={isOpen ? -135 : 0}
     />
     <MenuIconLine
-      top={isOpen ? 11 : 22}
+      top={isOpen ? -1 : 10}
       angle={isOpen ? -45 : 0}
     />
   </MenuIconContainer>
